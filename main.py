@@ -1,4 +1,6 @@
 from pygame.locals import *
+
+from buttonHandler import button_handler
 from textures.TextureLoader import *
 
 BLACK = (0, 0, 0)
@@ -54,10 +56,21 @@ class App:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     running = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    button_handler(self.buttons)
 
             pygame.draw.rect(self.screen, RED, self.buttons[0])
             pygame.draw.rect(self.screen, GREEN, self.buttons[1])
             pygame.draw.rect(self.screen, BLUE, self.buttons[2])
+            font = pygame.font.SysFont(None, 64)
+            img0 = font.render('   START', True, BLACK)
+            img1 = font.render('OPTIONS', True, BLACK)
+            img2 = font.render('    QUIT', True, BLACK)
+            img3 = font.render('JAREK GAME ', True, GREEN)
+            self.screen.blit(img0, self.buttons[0])
+            self.screen.blit(img1, self.buttons[1])
+            self.screen.blit(img2, self.buttons[2])
+            self.screen.blit(img3, (self.screen_size[0]/3 + 40, self.screen_size[1]/3))
 
             pygame.display.update()
 
