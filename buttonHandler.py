@@ -1,4 +1,5 @@
 import pygame
+from Gameplay import Gameplay
 
 
 def button_trigger(buttons, mouse):
@@ -9,22 +10,24 @@ def button_trigger(buttons, mouse):
             return i
         i += 1
     return 404
-def button_handler(buttons):
+
+
+def button_handler(buttons, self):
     mouse = pygame.mouse.get_pos()
     selected_button_index = button_trigger(buttons, mouse)
     if selected_button_index == 0:
+        Gameplay(self)
         print(selected_button_index)
     elif selected_button_index == 1:
         print(selected_button_index)
     elif selected_button_index == 2:
         print(selected_button_index)
     elif selected_button_index == 404:
-        print(selected_button_index)
+        # print(selected_button_index)
+        pass
     else:
         print(selected_button_index)
         raise Exception("index numer should be 0, 1 or 2")
 
-#     x       y
-#     [432.0, 405.0, 216.0, 90.0]
-#     [432.0, 513.0, 216.0, 90.0]
-#     [432.0, 621.0, 216.0, 90.0]
+    return selected_button_index
+

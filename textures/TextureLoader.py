@@ -1,4 +1,7 @@
 import pygame
+from textures.colors import Colors
+
+Color = Colors()
 
 
 def LoadingScreenLoadTexture(screen_size):
@@ -17,3 +20,18 @@ def LoadingScreenAnimation(screen, screenSize, i, bg):
         i = 0
     i -= 1
     return i
+
+
+def Load_Buttons(self):
+    pygame.draw.rect(self.screen, Color.RED, self.buttons[0])
+    pygame.draw.rect(self.screen, Color.GREEN, self.buttons[1])
+    pygame.draw.rect(self.screen, Color.BLUE, self.buttons[2])
+    font = pygame.font.SysFont(None, 64)
+    img0 = font.render('   START', True, Color.BLACK)
+    img1 = font.render('OPTIONS', True, Color.BLACK)
+    img2 = font.render('    QUIT', True, Color.BLACK)
+    img3 = font.render('JAREK GAME ', True, Color.GREEN)
+    self.screen.blit(img0, self.buttons[0])
+    self.screen.blit(img1, self.buttons[1])
+    self.screen.blit(img2, self.buttons[2])
+    self.screen.blit(img3, (self.screen_size[0] / 3 + 40, self.screen_size[1] / 3))
