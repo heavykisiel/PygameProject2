@@ -23,7 +23,6 @@ def button_handler(buttons, self):
     elif selected_button_index == 2:
         print(selected_button_index)
     elif selected_button_index == 404:
-        # print(selected_button_index)
         pass
     else:
         print(selected_button_index)

@@ -16,7 +16,6 @@ def LoadingScreenAnimation(screen, screenSize, i, bg):
     screen.blit(bg, (screenSize[0] + i, 0))
     if i == -screenSize[0]:
         screen.blit(bg, (screenSize[0] + i, 0))
-        print(pygame.mouse.get_pos(), bg.get_width(), bg.get_height())
         i = 0
     i -= 1
     return i

@@ -65,7 +65,7 @@ class App:
                 for event in pygame.event.get():
                     if event.type == QUIT:
                         running = False
-                        Gameplay()
+                        Gameplay(self.screen)
             elif self.current_Game_State == "quit":
                 running = False
                 pygame.display.quit()
@@ -84,4 +84,3 @@ class App:
 
 if __name__ == '__main__':
     App().run()
-
