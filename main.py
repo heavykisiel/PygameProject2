@@ -46,9 +46,13 @@ class App:
         """run main event loop"""
         running = True
         i = 0
-
+        gameplay_instance = None
         while running:
             pygame.time.Clock().tick(60)  # tickrate
+            if self.current_Game_State == "playing":
+                if gameplay_instance is not None:
+                    gameplay_instance.run()
+                    running = False
             if self.current_Game_State == "menu":
                 i = LoadingScreenAnimation(self.screen, self.screen_size, i, self.bg)
                 Load_Buttons(self)
@@ -61,11 +65,8 @@ class App:
                             pass
                         else:
                             self.current_Game_State = self.gameState[selected_button_index]
-            elif self.current_Game_State == "playing":
-                for event in pygame.event.get():
-                    if event.type == QUIT:
-                        running = False
-                        Gameplay(self.screen)
+            elif self.current_Game_State == "playing" and gameplay_instance is None:
+                gameplay_instance = Gameplay(self.screen)
             elif self.current_Game_State == "quit":
                 running = False
                 pygame.display.quit()
