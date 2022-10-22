@@ -10,6 +10,19 @@ def LoadingScreenLoadTexture(screen_size):
     return bg
 
 
+def Load_Block_Textures(block_pixels, id_block):
+    if id_block == 0:
+        grass_block = pygame.image.load('textures/grass.jpg').convert()
+        grass_block = pygame.transform.scale(grass_block, (block_pixels, block_pixels))
+        grass_block.set_colorkey((0, 0, 0))
+        return grass_block
+    elif id_block == 1:
+        sand_block = pygame.image.load('textures/sand.jpg').convert()
+        sand_block = pygame.transform.scale(sand_block, (block_pixels, block_pixels))
+        sand_block.set_colorkey((0, 0, 0))
+        return sand_block
+
+
 def LoadingScreenAnimation(screen, screenSize, i, bg):
     screen.fill((0, 0, 0))
     screen.blit(bg, (i, 0))

@@ -1,7 +1,8 @@
+
 class Map:
     def __init__(self):
-        self.ChunksX = 4  # 64
-        self.ChunksY = 4  # 64
+        self.ChunksX = 16  # 64
+        self.ChunksY = 16  # 64
 
         self.ChunkMap = [[[0, 0, 0] for x in range(self.ChunksX)] for y in range(self.ChunksY)]
         self.mapPrinter()
@@ -15,4 +16,4 @@ class Map:
         self.ChunkMap[1][1] = [1, 1, 1]
 
 
-#ChunkSize = {'x': 8, 'y': 8}
+# ChunkSize = {'x': 8, 'y': 8}
