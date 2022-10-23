@@ -32,8 +32,20 @@ class Gameplay:
         self.player_pos = (0, 0)
 
     def LoadNewGame(self, player):
+
+        # Validate player_pos
         self.player_pos += player.direction * self.player.speed
-        print(self.player_pos)
+        if self.player_pos[0] < 0:
+            self.player_pos[0] = 0
+        if self.player_pos[1] < 0:
+            self.player_pos[1] = 0
+        if self.player_pos[0] > (self.map_Data.ChunksX-1) * self.rectSize - 64:
+            self.player_pos[0] = (self.map_Data.ChunksX-1) * self.rectSize - 64
+        if self.player_pos[1] > (self.map_Data.ChunksY-1) * self.rectSize:
+            self.player_pos[1] = (self.map_Data.ChunksY-1) * self.rectSize
+
+        print("{0}, {1}".format(self.player_pos, (self.map_Data.ChunksY - 1) * self.rectSize ))
+
         for y, row in enumerate(self.map_Data.ChunkMap):
             for x, tile in enumerate(row):
                 if tile:

@@ -10,6 +10,14 @@ def LoadingScreenLoadTexture(screen_size):
     return bg
 
 
+def Load_Player_Texture():
+    player_img = pygame.image.load('textures/player.png').convert_alpha()
+    player_img = pygame.transform.scale(player_img, (20, 20))
+    player_img.set_colorkey((246, 246, 246))
+
+    return player_img
+
+
 def Load_Block_Textures(block_pixels, id_block):
     if id_block == 0:
         grass_block = pygame.image.load('textures/grass.jpg').convert()
