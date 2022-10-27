@@ -31,67 +31,144 @@ class Gameplay(pygame.sprite.Group):
         self.rectSizex = self.surface_size[0]  # 1080
         self.rectSizey = self.surface_size[1]  # 720
 
-        self.grass_block = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 0)
-        self.sand_block = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 1)
-        self.door_texture = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 2)
+        self.floor_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 0)
+        self.eastWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 1)
+        self.northWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 2)
+        self.southWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 3)
+        self.westWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 4)
+        self.eastNorthWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 5)
+        self.westNorthWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 6)
+        self.eastSouthWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 7)
+        self.westSouthWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 8)
         self.map_Data = Map.Map()
         self.player_pos = self.player.player_position
+        self.wall_collider_rect = self.detect_rect_colliders()
+        self.doorlist = None
 
-    def LoadNewFrame(self, player):
-
-        # Validate player_pos
-        self.player_pos += player.direction * self.player.speed
-
-        # if self.player_pos[0] < 0:
-        #     self.player_pos[0] = 0
-        # if self.player_pos[1] < 0:
-        #     self.player_pos[1] = 0
-        # if self.player_pos[0] > (self.map_Data.ChunksX - 1) * self.rectSizex:
-        #     self.player_pos[0] = (self.map_Data.ChunksX - 1) * self.rectSizex
-        # if self.player_pos[1] > (self.map_Data.ChunksY - 1) * self.rectSizey:
-        #     self.player_pos[1] = (self.map_Data.ChunksY - 1) * self.rectSizey
-
-        print("{0}, {1}".format(self.player_pos, (self.map_Data.ChunksY - 1) * self.rectSizex))
-
+    def detect_rect_colliders(self):
+        lista = list()
+        listb = list()
         for y, row in enumerate(self.map_Data.ChunkMap):
             for x, tile in enumerate(row):
                 if tile:
-                    pygame.draw.rect(self.screen, (255, 255, 255),
-                                     pygame.Rect(x * self.rectSizex, y * self.rectSizey,
-                                                 self.rectSizex,
-                                                 self.rectSizey), 1)
-                    # pomocniczy rectangle można wykomentować
+                    for rowC in range(self.texture_count_per_tilex):
+                        for tileC in range(self.texture_count_per_tiley):
+                            if rowC == self.texture_count_per_tilex - 1 or rowC == 0 or \
+                                    tileC == self.texture_count_per_tiley - 1 or tileC == 0:
+                                border_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
+                                                  tile[1] * self.rectSizey + tileC * self.block_pixelsy,
+                                                  self.block_pixelsx, self.block_pixelsy)
+                                lista.append(border_pos)
+                                if (rowC == self.texture_count_per_tilex / 2 and (
+                                        tileC == self.texture_count_per_tiley - 1 or tileC == 0)) or \
+                                        (tileC == self.texture_count_per_tiley / 2 and (
+                                                rowC == self.texture_count_per_tilex - 1 or rowC == 0)):
+                                    door_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
+                                                    tile[1] * self.rectSizey + tileC * self.block_pixelsy,
+                                                    self.block_pixelsx, self.block_pixelsy)
+                                    listb.append(door_pos)
+        self.doorlist = listb
+        return lista
+
+    def drawMap(self, player):
+
+        # Validate player_pos
+        self.player_pos += player.direction * self.player.speed
+        if self.doorlist is not None:
+            for door in self.doorlist:
+                if self.player.rect.colliderect(door):
+                    self.renderNewRoom()
+        if self.player_pos[0] < self.block_pixelsx / 2:
+            self.player_pos[0] = self.block_pixelsx / 2
+        if self.player_pos[1] < self.block_pixelsy / 2:
+            self.player_pos[1] = self.block_pixelsy / 2
+        if self.player_pos[0] > self.rectSizex - self.block_pixelsx:
+            self.player_pos[0] = self.rectSizex - self.block_pixelsx
+        if self.player_pos[1] > self.rectSizey - self.block_pixelsy:
+            self.player_pos[1] = self.rectSizey - self.block_pixelsy
+
+        print("{0}, {1}".format(self.player_pos, self.player.rect.left))
+
+        # fill screen with floor
+        for y, row in enumerate(self.map_Data.ChunkMap):
+            for x, tile in enumerate(row):
+                if tile:
                     for rowC in range(self.texture_count_per_tilex):
                         for tileC in range(self.texture_count_per_tiley):
                             offset_pos = tile[0] * self.rectSizex + rowC * self.block_pixelsx, \
                                          tile[1] * self.rectSizey + tileC * self.block_pixelsy
-                            self.screen.blit(self.grass_block, offset_pos)
-                            if rowC == self.texture_count_per_tilex - 1 or rowC == 0 or tileC == self.texture_count_per_tiley - 1 or tileC == 0:
-                                border_pos = tile[0] * self.rectSizex + rowC * self.block_pixelsx, tile[
-                                    1] * self.rectSizey + tileC * self.block_pixelsy
-                                self.screen.blit(self.sand_block, border_pos)
-                            if (rowC == self.texture_count_per_tilex / 2 and (tileC == self.texture_count_per_tiley -1 or tileC == 0)) or \
-                                    (tileC == self.texture_count_per_tiley / 2 and (rowC == self.texture_count_per_tilex -1 or rowC == 0)):
-                                door_pos = tile[0] * self.rectSizex + rowC * self.block_pixelsx, tile[
-                                    1] * self.rectSizey + tileC * self.block_pixelsy
-                                self.screen.blit(self.door_texture, door_pos)
-                            # biom render
-                            if tile[2] == 1:
-                                offset_pos = tile[0] * self.rectSizex + rowC * self.block_pixelsx, \
-                                             tile[1] * self.rectSizey + tileC * self.block_pixelsy
-                                self.screen.blit(self.sand_block, offset_pos)
+                            self.screen.blit(self.floor_tex, offset_pos)
+        # fill screen with borders
+        for x in self.wall_collider_rect:
+            if x.top == 0:
+                self.screen.blit(self.northWall_tex, (x.x, x.y))
+                if x.x == 0 and x.y == 0:
+                    self.screen.blit(self.westNorthWall_tex, (x.x, x.y))
+                if x.x == 1050 and x.y == 0:
+                    self.screen.blit(self.eastNorthWall_tex, (x.x, x.y))
+            if x.left == 0 and x.top != 0:
+                self.screen.blit(self.westWall_tex, (x.x, x.y))
+            if x.right == 1080 and x.y != 0:
+                self.screen.blit(self.eastWall_tex, (x.x, x.y))
+            if x.bottom == 720:
+                self.screen.blit(self.southWall_tex, (x.x, x.y))
+                if x.x == 1050 and x.y == 690:
+                    self.screen.blit(self.eastSouthWall_tex, (x.x, x.y))
+                if x.x == 0 and x.y == 690:
+                    self.screen.blit(self.westSouthWall_tex, (x.x, x.y))
+        self.detect_rect_colliders()
+        self.screen.blit(player.image, self.player_pos)
+        # print(listb.__len__())
+        # for x in listb:
+        #     pygame.draw.rect(self.screen, (0, 0, 200), x, 1)
 
+        # for y, row in enumerate(self.map_Data.ChunkMap):
+        #     for x, tile in enumerate(row):
+        #         if tile:
+        #             pygame.draw.rect(self.screen, (255, 255, 255),
+        #                              pygame.Rect(x * self.rectSizex, y * self.rectSizey,
+        #                                          self.rectSizex,
+        #                                          self.rectSizey), 1)
+        #             # pomocniczy rectangle można wykomentować
+        #             for rowC in range(self.texture_count_per_tilex):
+        #                 for tileC in range(self.texture_count_per_tiley):
+        #                     offset_pos = tile[0] * self.rectSizex + rowC * self.block_pixelsx, \
+        #                                  tile[1] * self.rectSizey + tileC * self.block_pixelsy
+        #                     self.screen.blit(self.grass_block, offset_pos)
+        #                     if rowC == self.texture_count_per_tilex - 1 or rowC == 0 or tileC == self.texture_count_per_tiley - 1 or tileC == 0:
+        #                         border_pos = tile[0] * self.rectSizex + rowC * self.block_pixelsx, \
+        #                                      tile[1] * self.rectSizey + tileC * self.block_pixelsy
+        #
+        #                         self.screen.blit(self.sand_block, border_pos)
+        #                     if (rowC == self.texture_count_per_tilex / 2 and (
+        #                             tileC == self.texture_count_per_tiley - 1 or tileC == 0)) or \
+        #                             (tileC == self.texture_count_per_tiley / 2 and (
+        #                                     rowC == self.texture_count_per_tilex - 1 or rowC == 0)):
+        #                         door_pos = tile[0] * self.rectSizex + rowC * self.block_pixelsx, tile[
+        #                             1] * self.rectSizey + tileC * self.block_pixelsy
+        #                         self.screen.blit(self.door_texture, door_pos)
+        #                     # biom render
+        #                     if tile[2] == 1:
+        #                         offset_pos = tile[0] * self.rectSizex + rowC * self.block_pixelsx, \
+        #                                      tile[1] * self.rectSizey + tileC * self.block_pixelsy
+        #                         self.screen.blit(self.sand_block, offset_pos)
 
-            self.screen.blit(player.image, self.player_pos)
-            # scaled_surface = pygame.transform.scale(self.screen,
-            #                                         self.surface_size_vector * self.camera_group.zoom_scale)
-            #
-            # scaled_rect = scaled_surface.get_rect(center=(self.half_screen_w, self.half_screen_h))
-            # self.screen.blit(scaled_surface, scaled_rect)
+        # if self.player.rect.colli
 
-            # tile[0] == x
-            # tile[1] == y
-            # tile[2] == biom_id
+        # scaled_surface = pygame.transform.scale(self.screen,
+        #                                         self.surface_size_vector * self.camera_group.zoom_scale)
+        #
+        # scaled_rect = scaled_surface.get_rect(center=(self.half_screen_w, self.half_screen_h))
+        # self.screen.blit(scaled_surface, scaled_rect)
+
+        # tile[0] == x
+        # tile[1] == y
+        # tile[2] == biom_id
+
+        self.return_gamedata()
+
+    def return_gamedata(self):
+        self.player.player_position = self.player_pos
 
     def run(self):
 
@@ -109,7 +186,7 @@ class Gameplay(pygame.sprite.Group):
                     # zoom jest ale są cyrki, ale można się pobawić
             self.screen.fill((0, 0, 0))
             self.camera_group.update()
-            self.LoadNewFrame(self.player)
+            self.drawMap(self.player)
             self.camera_group.draw(self.player)
             self.player.bulletGroup.update()
             self.player.bulletGroup.draw(self.screen)

@@ -20,20 +20,57 @@ def Load_Player_Texture():
 
 def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
     if id_block == 0:
-        grass_block = pygame.image.load('textures/grass.jpg').convert()
-        grass_block = pygame.transform.scale(grass_block, (block_pixels_x, block_pixels_y))
-        grass_block.set_colorkey((0, 0, 0))
-        return grass_block
+        floor_block = pygame.image.load('textures/maptex/floor.png').convert()
+        floor_block = pygame.transform.scale(floor_block, (block_pixels_x, block_pixels_y))
+        floor_block.set_colorkey((0, 0, 0))
+        return floor_block
     elif id_block == 1:
-        sand_block = pygame.image.load('textures/sand.jpg').convert()
-        sand_block = pygame.transform.scale(sand_block, (block_pixels_x, block_pixels_y))
-        sand_block.set_colorkey((0, 0, 0))
-        return sand_block
+        wall_e_block = pygame.image.load('textures/maptex/E.png').convert()
+        wall_e_block = pygame.transform.scale(wall_e_block, (block_pixels_x, block_pixels_y))
+        wall_e_block.set_colorkey((0, 0, 0))
+        return wall_e_block
     elif id_block == 2:
-        sand_block = pygame.image.load('textures/Door.png').convert()
-        sand_block = pygame.transform.scale(sand_block, (block_pixels_x, block_pixels_y))
-        sand_block.set_colorkey((0, 0, 0))
-        return sand_block
+        wall_n_block = pygame.image.load('textures/maptex/N.png').convert()
+        wall_n_block = pygame.transform.scale(wall_n_block, (block_pixels_x, block_pixels_y))
+        wall_n_block.set_colorkey((0, 0, 0))
+        return wall_n_block
+    elif id_block == 3:
+        wall_s_block = pygame.image.load('textures/maptex/S.png').convert()
+        wall_s_block = pygame.transform.scale(wall_s_block, (block_pixels_x, block_pixels_y))
+        wall_s_block.set_colorkey((0, 0, 0))
+        return wall_s_block
+    elif id_block == 4:
+        wall_w_block = pygame.image.load('textures/maptex/W.png').convert()
+        wall_w_block = pygame.transform.scale(wall_w_block, (block_pixels_x, block_pixels_y))
+        wall_w_block.set_colorkey((0, 0, 0))
+        return wall_w_block
+    elif id_block == 5:
+        wall_ne_block = pygame.image.load('textures/maptex/NE.png').convert()
+        wall_ne_block = pygame.transform.scale(wall_ne_block, (block_pixels_x, block_pixels_y))
+        wall_ne_block.set_colorkey((0, 0, 0))
+        return wall_ne_block
+    elif id_block == 6:
+        wall_we_block = pygame.image.load('textures/maptex/NW.png').convert()
+        wall_we_block = pygame.transform.scale(wall_we_block, (block_pixels_x, block_pixels_y))
+        wall_we_block.set_colorkey((0, 0, 0))
+        return wall_we_block
+    elif id_block == 7:
+        wall_se_block = pygame.image.load('textures/maptex/SE.png').convert()
+        wall_se_block = pygame.transform.scale(wall_se_block, (block_pixels_x, block_pixels_y))
+        wall_se_block.set_colorkey((0, 0, 0))
+        return wall_se_block
+    elif id_block == 8:
+        wall_sw_block = pygame.image.load('textures/maptex/SW.png').convert()
+        wall_sw_block = pygame.transform.scale(wall_sw_block, (block_pixels_x, block_pixels_y))
+        wall_sw_block.set_colorkey((0, 0, 0))
+        return wall_sw_block
+    elif id_block == 9:
+        wall_block_block = pygame.image.load('textures/maptex/MID.png').convert()
+        wall_block_block = pygame.transform.scale(wall_block_block, (block_pixels_x, block_pixels_y))
+        wall_block_block.set_colorkey((0, 0, 0))
+        return wall_block_block
+
+
 
 
 def LoadingScreenAnimation(screen, screenSize, i, bg):

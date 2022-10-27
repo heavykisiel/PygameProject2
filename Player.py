@@ -1,6 +1,5 @@
 import pygame
 
-
 from textures import TextureLoader
 from Bullets import Bullets
 
@@ -11,10 +10,10 @@ class Player(pygame.sprite.Sprite):
         self.image = TextureLoader.Load_Player_Texture()
         self.rect = self.image.get_rect(center=pos)
         self.direction = pygame.math.Vector2()
-        self.player_position = (560, 360)
+        self.player_position = pos
         # spawn
         self.speed = 16
-        self.speedBullet = 2
+        self.speedBullet = 32
         self.shootCooldown = 0
         self.lastShot = pygame.time.get_ticks()
         self.bulletGroup = pygame.sprite.Group()
@@ -55,22 +54,22 @@ class Player(pygame.sprite.Sprite):
             print("XDDDDD")
             self.shootCooldown = 20
             if self.playerDirection == 2 or self.playerDirection == -2:
-                bullet = Bullets(self.rect.centerx + (0.75 * self.rect.size[0] * (self.playerDirection / 2)),
-                                 self.rect.centery, 2, self.playerDirection , self.speedBullet)
+                bullet = Bullets(self.player_position[0] + (0.1 * self.rect.size[0] * (self.playerDirection / 2)),
+                                 self.player_position[1], 1, self.playerDirection, self.speedBullet)
 
                 self.bulletGroup.add(bullet)
                 self.shooting = False
             else:
                 if self.playerDirection == 1:
-                    bullet = Bullets(self.rect.centerx,
-                                     self.rect.centery + (0.5 * self.rect.size[0] * self.playerDirection), 1,
+                    bullet = Bullets(self.player_position[0],
+                                     self.player_position[1] + (0.1 * self.rect.size[0] * self.playerDirection), 1,
                                      self.playerDirection, self.speedBullet)
 
                     self.bulletGroup.add(bullet)
                     self.shooting = False
                 else:
-                    bullet = Bullets(self.rect.centerx,
-                                     self.rect.centery + (0.5 * self.rect.size[0] * self.playerDirection), 1,
+                    bullet = Bullets(self.player_position[0],
+                                     self.player_position[1] + (0.1 * self.rect.size[0] * self.playerDirection), 1,
                                      self.playerDirection, self.speedBullet)
                     print(bullet)
 

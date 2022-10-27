@@ -20,7 +20,6 @@ class Camera(pygame.sprite.Group):
         self.keyboard_control()
         self.zoom_keyboard_control()
 
-
     def zoom_keyboard_control(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_q]:
@@ -37,4 +36,3 @@ class Camera(pygame.sprite.Group):
 
         self.offset.x = self.camera_rect.left - self.camera_borders['left']
         self.offset.y = self.camera_rect.top - self.camera_borders['top']
-

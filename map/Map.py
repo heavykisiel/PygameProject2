@@ -13,7 +13,7 @@ class Map:
             for enumj, j in enumerate(i):
                 self.ChunkMap[enumi][enumj] = [enumi, enumj, 0]
 
-        self.ChunkMap[1][1] = [1, 1, 1]
+        # self.ChunkMap[1][1] = [1, 1, 1]
 
 
 # ChunkSize = {'x': 8, 'y': 8}
