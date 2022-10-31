@@ -17,6 +17,13 @@ def Load_Player_Texture():
 
     return player_img
 
+def Load_Enemy_Texture():
+    enemy_img = pygame.image.load('textures/enemy.png').convert_alpha()
+    enemy_img = pygame.transform.scale(enemy_img, (100, 100))
+    enemy_img.set_colorkey((246, 246, 246))
+
+    return enemy_img
+
 
 def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
     if id_block == 0:
