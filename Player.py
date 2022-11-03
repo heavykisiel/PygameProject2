@@ -55,6 +55,7 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         if self.shootCooldown > 0:
             self.shootCooldown -= 1
+        #print(self.player_position)
         self.input()
         
         
@@ -62,26 +63,34 @@ class Player(pygame.sprite.Sprite):
     def shoot(self):
 
         if self.shootCooldown == 0:
-            print("XDDDDD")
+            
             self.shootCooldown = 20
-            if self.playerDirection == 2 or self.playerDirection == -2:
-                bullet = Bullets(self.player_position[0] + (0.1 * self.rect.size[0] * (self.playerDirection / 2)),
-                                 self.player_position[1], 1, self.playerDirection, self.speedBullet,self.surface_size)
+            
+            if self.playerDirection == 2:
+                bullet = Bullets(self.player_position[0] + (0.1 * self.rect.size[0] * self.playerDirection/2),
+                                 self.player_position[1], 1, self.speedBullet,self.surface_size,self.player_position[1]+10000,self.player_position[0])
+                print("test")
+                self.bulletGroup.add(bullet)
+                self.shooting = False
+            elif self.playerDirection == -2:
+                bullet = Bullets(self.player_position[0]+ (0.1 * self.rect.size[0] * self.playerDirection/2),
+                                 self.player_position[1], 1, self.speedBullet,self.surface_size,self.player_position[1]-10000,self.player_position[0])
 
                 self.bulletGroup.add(bullet)
                 self.shooting = False
-            else:
-                if self.playerDirection == 1:
+                
+            
+            elif self.playerDirection == 1:
                     bullet = Bullets(self.player_position[0],
                                      self.player_position[1] + (0.1 * self.rect.size[0] * self.playerDirection), 1,
-                                     self.playerDirection, self.speedBullet,self.surface_size)
+                                      self.speedBullet,self.surface_size,self.player_position[1],self.player_position[0]+1000)
 
                     self.bulletGroup.add(bullet)
                     self.shooting = False
-                else:
+            else:
                     bullet = Bullets(self.player_position[0],
-                                     self.player_position[1] + (0.1 * self.rect.size[0] * self.playerDirection), 1,
-                                     self.playerDirection, self.speedBullet,self.surface_size)
+                                     self.player_position[1] + (0.3 * self.rect.size[0] * self.playerDirection), 1,
+                                      self.speedBullet,self.surface_size,self.player_position[1],self.player_position[0]-1000)
                     print(bullet)
 
                     self.bulletGroup.add(bullet)

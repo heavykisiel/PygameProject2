@@ -1,8 +1,8 @@
 import pygame
 from textures import TextureLoader
-
+import math
 class Bullets(pygame.sprite.Sprite):
-    def __init__(self, x, y, scale, direction, speed,surface_size):
+    def __init__(self, x, y, scale, speed,surface_size,targetx,targety):
         pygame.sprite.Sprite.__init__(self)
         image = TextureLoader.Load_Bullet_test_Texture()
         self.image = pygame.transform.scale(image, (int(image.get_width() * scale), int(image.get_height() * scale)))
@@ -10,15 +10,27 @@ class Bullets(pygame.sprite.Sprite):
         self.rect.center = [x, y]
         self.surface_size = surface_size
         self.speed = speed
-        self.direction = direction
         self.speedBullet = 2
         self.shoot = 0
-
+        self.targetx = targetx
+        self.targety = targety
+        
+        angle = math.atan2(self.targetx-self.rect.y,self.targety-self.rect.x)
+        self.dx = math.cos(angle)*speed
+        self.dy = math.sin(angle)*speed
+        
+    def move(self):
+        self.rect.x += int(self.dx)
+        self.rect.y += int(self.dy)
+        
+        
     def update(self):
-        if self.direction == 1 or self.direction == -1:
-            self.rect.x += (self.direction * self.speed)
-        if self.direction == 2 or self.direction == -2:
-            self.rect.y += ((self.direction / 2) * self.speed)
+        self.move()
+        
+        # if self.direction == 1 or self.direction == -1:
+        #     self.rect.x += (self.direction * self.speed)
+        # if self.direction == 2 or self.direction == -2:
+        #     self.rect.y += ((self.direction / 2) * self.speed)
         
         if self.rect.left<15 or self.rect.right > self.surface_size[0]-15:
             self.kill()

@@ -26,7 +26,7 @@ class Gameplay(pygame.sprite.Group):
         self.camera_group = Camera()
         self.display = pygame.Surface((300, 300))
         self.player = Player((540, 360), self.camera_group,self.screen,self.surface_size)
-        self.enemy=Enemy((540,360),self.camera_group,self.screen)
+        self.enemy=Enemy((560,300),self.camera_group,self.screen,self.surface_size,self.player)
         self.enemyGroup = pygame.sprite.Group()
         self.enemyGroup.add(self.enemy)
         self.block_pixelsx = 30
@@ -77,7 +77,8 @@ class Gameplay(pygame.sprite.Group):
         return lista
 
     def drawMap(self, player):
-
+        if player.direction.magnitude() != 0:
+            player.direction = player.direction.normalize()
         # Validate player_pos
         self.player_pos += player.direction * self.player.speed
         if self.doorlist is not None:
@@ -93,7 +94,7 @@ class Gameplay(pygame.sprite.Group):
         if self.player_pos[1] > self.rectSizey - self.block_pixelsy:
             self.player_pos[1] = self.rectSizey - self.block_pixelsy
 
-        print("{0}, {1}".format(self.player_pos, self.player.rect.left))
+       # print("{0}, {1}".format(self.player_pos, self.player.rect.left))
 
         # fill screen with floor
         for y, row in enumerate(self.map_Data.ChunkMap):
@@ -194,16 +195,23 @@ class Gameplay(pygame.sprite.Group):
             self.camera_group.update()
             self.drawMap(self.player)
             
-            for self.enemy in self.enemyGroup:       
-                 self.enemy.draw()
+            for self.enemy in self.enemyGroup: 
+                self.enemy.direction_distance(self.player)   
+                self.enemy.draw()
+                self.enemy.status(self.player)
+                #self.enemy.rangeCollide(self.player)
             
             
             self.camera_group.draw(self.player)
             self.player.bulletGroup.update()
             self.player.bulletGroup.draw(self.screen)
+            self.enemy.enemybulletGroup.update()
+            self.enemy.enemybulletGroup.draw(self.screen)
+            
+            
             if self.player.shooting:
                 self.player.shoot()
-
+                
                 
             if pygame.sprite.spritecollide(self.enemy, self.player.bulletGroup, False):
                 if self.enemy.alive:
