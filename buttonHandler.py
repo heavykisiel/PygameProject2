@@ -16,7 +16,6 @@ def button_handler(buttons, self):
     mouse = pygame.mouse.get_pos()
     selected_button_index = button_trigger(buttons, mouse)
     if selected_button_index == 0:
-        Gameplay(self)
         print(selected_button_index)
     elif selected_button_index == 1:
         print(selected_button_index)

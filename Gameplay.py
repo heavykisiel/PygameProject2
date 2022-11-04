@@ -12,7 +12,6 @@ from Enemy import Enemy
 from Bullets import Bullets
 
 
-
 class Gameplay(pygame.sprite.Group):
 
     def __init__(self, screen):
@@ -25,8 +24,8 @@ class Gameplay(pygame.sprite.Group):
         self.screen.fill((0, 0, 0))
         self.camera_group = Camera()
         self.display = pygame.Surface((300, 300))
-        self.player = Player((540, 360), self.camera_group,self.screen,self.surface_size)
-        self.enemy=Enemy((540,360),self.camera_group,self.screen)
+        self.player = Player((540, 360), self.camera_group, self.screen, self.surface_size)
+        self.enemy = Enemy((540, 360), self.camera_group, self.screen)
         self.enemyGroup = pygame.sprite.Group()
         self.enemyGroup.add(self.enemy)
         self.block_pixelsx = 30
@@ -193,27 +192,25 @@ class Gameplay(pygame.sprite.Group):
             self.screen.fill((0, 0, 0))
             self.camera_group.update()
             self.drawMap(self.player)
-            
-            for self.enemy in self.enemyGroup:       
-                 self.enemy.draw()
-            
-            
+
+            for self.enemy in self.enemyGroup:
+                self.enemy.draw()
+
             self.camera_group.draw(self.player)
             self.player.bulletGroup.update()
             self.player.bulletGroup.draw(self.screen)
             if self.player.shooting:
                 self.player.shoot()
 
-                
             if pygame.sprite.spritecollide(self.enemy, self.player.bulletGroup, False):
                 if self.enemy.alive:
                     print("ZYCIEZYCIEZYCIEZYCIE")
-                    self.enemy.healthMin -=20
+                    self.enemy.healthMin -= 20
                     self.enemy.health -= 20
                     for bullets in self.player.bulletGroup:
                         bullets.kill()
                     print(self.enemy.health)
-                    
+
             pygame.display.update()
             pygame.time.Clock().tick(60)
 

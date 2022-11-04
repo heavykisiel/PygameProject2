@@ -1,51 +1,73 @@
 import random
+
+
 class Map:
     def __init__(self):
-        self.ChunksX = 8  # 64
-        self.ChunksY = 8  # 64
-
-        self.ChunkMap = [[[0, 0, 0] for x in range(self.ChunksX)] for y in range(self.ChunksY)]
+        self.ChunksX = 4  # 64
+        self.ChunksY = 4  # 64
+        self.ChunkMap = [[[0, 0, 0] for _ in range(self.ChunksX)] for _ in range(self.ChunksY)]
         self.mapPrinter()
 
     def mapPrinter(self):
-
-        mazeStart_X = random.randint(1, self.ChunksX - 2)
-        mazeStart_Y = random.randint(1, self.ChunksY - 2)
-        wall_types = ['w', 'n', 's', 'e']
-        walls = []
-
+        # render map coords
         for enumx, x in enumerate(self.ChunkMap):
             for enumy, y in enumerate(x):
-                self.ChunkMap[enumx][enumy] = [enumx, enumy, 0]
-        self.ChunkMap[mazeStart_X][mazeStart_Y] = [mazeStart_X, mazeStart_Y, 'wnse']
-        walls.append([mazeStart_X - 1, mazeStart_Y])    # wall west
-        walls.append([mazeStart_X, mazeStart_Y - 1])    # wall north
-        walls.append([mazeStart_X, mazeStart_Y + 1])    # wall south
-        walls.append([mazeStart_X + 1, mazeStart_Y])    # wall east
+                self.ChunkMap[enumx][enumy] = [enumx, enumy, 'wnse', 0]
+        # random spawn
+        maze_start_x = random.randint(1, self.ChunksX - 2)
+        maze_start_y = random.randint(1, self.ChunksY - 2)
 
-        # current_cell = self.ChunkMap[mazeStart_X][mazeStart_Y]
-        # x = random.randint(0, 3)
-        # print(has_walls(current_cell))
-        # # if x == 0:
-        # #     wall_types[0]
-        # #     if current_cell[2].:
-        #
-        # print(mazeStart_X, mazeStart_Y)
-        # for x in self.ChunkMap:
-        #     print(x)
-        # self.ChunkMap[1][1] = [1, 1, 1]
+        visited = list()
+        visited.append([maze_start_x, maze_start_y])
+        self.ChunkMap[maze_start_x][maze_start_y] = [maze_start_x, maze_start_y, 'wnse', 1]
+        backtrack_count = 0
+        while self.ChunksX * self.ChunksY > len(visited) + backtrack_count:
+            print(len(visited))
+            print(self.ChunksX*self.ChunksY)
+            # neighbours / breaking wall options
+            stri = ""
+            x_pos, y_pos = visited[len(visited) - 1]
+            print(x_pos, y_pos)
+            if x_pos > 0 and self.ChunkMap[x_pos - 1][y_pos][3] == 0:
+                stri += 'n'
+            if y_pos > 0 and self.ChunkMap[x_pos][y_pos - 1][3] == 0:
+                stri += 'w'
+            if x_pos < self.ChunksX - 1 and self.ChunkMap[x_pos + 1][y_pos][3] == 0:
+                stri += 's'
+            if y_pos < self.ChunksY - 1 and self.ChunkMap[x_pos][y_pos + 1][3] == 0:
+                stri += 'e'
 
-def has_walls(cell, wall):
-    str_wall = ""
-    for char in cell:
-        if char == 'w':
-            str_wall += 'w'
-        if char == 'n':
-            str_wall += 'n'
-        if char == 's':
-            str_wall += 's'
-        if char == 'e':
-            str_wall += 'e'
-    return str_wall
+            if stri != "":
+                print(f"stri: {stri}")
+                random_wall = random.choice(stri)
+                print(f"randomchaince: {random_wall}")
+                if random_wall.__contains__('n'):
+                    self.setRoomValue(x_pos, y_pos, 'n', 1)  # delete north wall
+                    self.setRoomValue(x_pos - 1, y_pos, 's', 1)  # delete south wall next room
+                    visited.append([x_pos - 1, y_pos])
+                if random_wall.__contains__('w'):
+                    self.setRoomValue(x_pos, y_pos, 'w', 1)  # delete west wall
+                    self.setRoomValue(x_pos, y_pos - 1, 'e', 1)  # delete east wall next room
+                    visited.append([x_pos, y_pos - 1])
+                if random_wall.__contains__('s'):
+                    self.setRoomValue(x_pos, y_pos, 's', 1)  # delete south wall
+                    self.setRoomValue(x_pos + 1, y_pos, 'n', 1)  # delete north wall next room
+                    visited.append([x_pos + 1, y_pos])
+                if random_wall.__contains__('e'):
+                    self.setRoomValue(x_pos, y_pos, 'e', 1)  # delete south wall
+                    self.setRoomValue(x_pos, y_pos + 1, 'w', 1)  # delete north wall next room
+                    visited.append([x_pos, y_pos + 1])
+            else:
+                visited.pop()
+                backtrack_count += 1
+        for x in self.ChunkMap:
+            print(x)
+        print("end")
+        # TODO
+        # można testy też do tego napisac
+
+    def setRoomValue(self, x, y, wall, visited):
+        self.ChunkMap[x][y][2] = str(self.ChunkMap[x][y][2]).replace(wall, "")
+        self.ChunkMap[x][y][3] = 1 if visited else 0
 
 # ChunkSize = {'x': 8, 'y': 8}
