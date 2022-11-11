@@ -74,7 +74,6 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
     elif id_block == 9:
         wall_block_block = pygame.image.load('textures/maptex/MID.png').convert()
         wall_block_block = pygame.transform.scale(wall_block_block, (block_pixels_x, block_pixels_y))
-        wall_block_block.set_colorkey((0, 0, 0))
         return wall_block_block
 
 

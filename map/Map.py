@@ -6,6 +6,9 @@ class Map:
         self.ChunksX = 4  # 64
         self.ChunksY = 4  # 64
         self.ChunkMap = [[[0, 0, 0] for _ in range(self.ChunksX)] for _ in range(self.ChunksY)]
+        self.maze_start_x = random.randint(1, self.ChunksX - 2)
+        self.maze_start_y = random.randint(1, self.ChunksY - 2)
+
         self.mapPrinter()
 
     def mapPrinter(self):
@@ -14,12 +17,12 @@ class Map:
             for enumy, y in enumerate(x):
                 self.ChunkMap[enumx][enumy] = [enumx, enumy, 'wnse', 0]
         # random spawn
-        maze_start_x = random.randint(1, self.ChunksX - 2)
-        maze_start_y = random.randint(1, self.ChunksY - 2)
+        # maze_start_x = random.randint(1, self.ChunksX - 2)
+        # maze_start_y = random.randint(1, self.ChunksY - 2)
 
         visited = list()
-        visited.append([maze_start_x, maze_start_y])
-        self.ChunkMap[maze_start_x][maze_start_y] = [maze_start_x, maze_start_y, 'wnse', 1]
+        visited.append([self.maze_start_x, self.maze_start_y])
+        self.ChunkMap[self.maze_start_x][self.maze_start_y] = [self.maze_start_x, self.maze_start_y, 'wnse', 1]
         backtrack_count = 0
         while self.ChunksX * self.ChunksY > len(visited) + backtrack_count:
             print(len(visited))
