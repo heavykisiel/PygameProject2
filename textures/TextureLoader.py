@@ -10,15 +10,19 @@ def LoadingScreenLoadTexture(screen_size):
     return bg
 
 
-def Load_Player_Texture():
-    player_img = pygame.image.load('textures/player.png').convert_alpha()
-    player_img = pygame.transform.scale(player_img, (20, 20))
+def Load_Front_Player_Texture(side,i):
+    
+    
+    player_img = pygame.image.load(f'textures/player/{side}/{i}.png').convert_alpha()
+    player_img = pygame.transform.scale(player_img, (36, 56))
+        
+    
     player_img.set_colorkey((246, 246, 246))
-
     return player_img
 
-def Load_Enemy_Texture():
-    enemy_img = pygame.image.load('textures/enemy.png').convert_alpha()
+
+def Load_Enemy_Texture(i):
+    enemy_img = pygame.image.load(f'textures/{i}.png').convert_alpha()
     enemy_img = pygame.transform.scale(enemy_img, (100, 100))
     enemy_img.set_colorkey((246, 246, 246))
 

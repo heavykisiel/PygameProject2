@@ -1,4 +1,5 @@
 import pygame
+import os 
 
 from textures import TextureLoader
 from Bullets import Bullets
@@ -10,7 +11,22 @@ green = (0, 255, 0)
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, group, screen, surface_size):
         super().__init__(group)
-        self.image = TextureLoader.Load_Player_Texture()
+        self.index = 0
+        self.animation_list=[]
+        self.action = 0
+        animation_folders = ['front','back','right','left']
+        
+        
+        for animation in animation_folders:
+            loop_list = []
+            filesNumber = len(os.listdir(f'textures/player/{animation}'))
+            for i in range (filesNumber):
+                img = TextureLoader.Load_Front_Player_Texture(animation,i)
+                loop_list.append(img)
+            self.animation_list.append(loop_list)  
+        
+        
+        self.image = self.animation_list[self.action][self.index]
         self.rect = self.image.get_rect(center=pos)
         self.direction = pygame.math.Vector2()
         self.playerDirection = 1
@@ -28,7 +44,19 @@ class Player(pygame.sprite.Sprite):
         self.lastShot = pygame.time.get_ticks()
         self.bulletGroup = pygame.sprite.Group()
         self.shooting = False
-
+        self.time = pygame.time.get_ticks()
+    
+    def animation(self):
+        cooldown = 100
+        self.image = self.animation_list[self.action][self.index]
+        
+        if pygame.time.get_ticks() - self.time > cooldown:
+            self.time = pygame.time.get_ticks()
+            self.index += 1
+            self.side = 2
+        if self.index >= len(self.animation_list[self.action]):
+            self.index = 0
+            
     def input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
@@ -57,6 +85,7 @@ class Player(pygame.sprite.Sprite):
             self.shootCooldown -= 1
         # print(self.player_position)
         self.input()
+        self.animation()
 
     def shoot(self):
 
