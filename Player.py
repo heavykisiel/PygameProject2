@@ -30,7 +30,6 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=pos)
         self.direction = pygame.math.Vector2()
         self.playerDirection = 1
-        self.player_position = pos
         self.screen = screen
         self.surface_size = surface_size
         # spawn
@@ -94,33 +93,33 @@ class Player(pygame.sprite.Sprite):
             self.shootCooldown = 20
 
             if self.playerDirection == 2:
-                bullet = Bullets(self.player_position[0] + (0.1 * self.rect.size[0] * self.playerDirection / 2),
-                                 self.player_position[1], 1, self.speedBullet, self.surface_size,
-                                 self.player_position[1] + 10000, self.player_position[0])
+                bullet = Bullets(self.rect.centerx + (0.1 * self.rect.size[0] * self.playerDirection / 2),
+                                 self.rect.centery, 1, self.speedBullet, self.surface_size,
+                                 self.rect.centery + 10000, self.rect.centerx)
                 print("test")
                 self.bulletGroup.add(bullet)
                 self.shooting = False
             elif self.playerDirection == -2:
-                bullet = Bullets(self.player_position[0] + (0.1 * self.rect.size[0] * self.playerDirection / 2),
-                                 self.player_position[1], 1, self.speedBullet, self.surface_size,
-                                 self.player_position[1] - 10000, self.player_position[0])
+                bullet = Bullets(self.rect.centerx + (0.1 * self.rect.size[0] * self.playerDirection / 2),
+                                 self.rect.centery, 1, self.speedBullet, self.surface_size,
+                                 self.rect.centery - 10000, self.rect.centerx)
 
                 self.bulletGroup.add(bullet)
                 self.shooting = False
 
             elif self.playerDirection == 1:
-                bullet = Bullets(self.player_position[0],
-                                 self.player_position[1] + (0.1 * self.rect.size[0] * self.playerDirection), 1,
-                                 self.speedBullet, self.surface_size, self.player_position[1],
-                                 self.player_position[0] + 1000)
+                bullet = Bullets(self.rect.centerx,
+                                 self.rect.centery + (0.1 * self.rect.size[0] * self.playerDirection), 1,
+                                 self.speedBullet, self.surface_size, self.rect.centery,
+                                 self.rect.centerx + 1000)
 
                 self.bulletGroup.add(bullet)
                 self.shooting = False
             else:
-                bullet = Bullets(self.player_position[0],
-                                 self.player_position[1] + (0.3 * self.rect.size[0] * self.playerDirection), 1,
-                                 self.speedBullet, self.surface_size, self.player_position[1],
-                                 self.player_position[0] - 1000)
+                bullet = Bullets(self.rect.centerx,
+                                 self.rect.centery + (0.3 * self.rect.size[0] * self.playerDirection), 1,
+                                 self.speedBullet, self.surface_size, self.rect.centery,
+                                 self.rect.centerx - 1000)
                 print(bullet)
 
                 self.bulletGroup.add(bullet)

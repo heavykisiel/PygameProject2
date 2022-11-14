@@ -27,12 +27,7 @@ class Bullets(pygame.sprite.Sprite):
     def update(self):
         self.move()
         
-        # if self.direction == 1 or self.direction == -1:
-        #     self.rect.x += (self.direction * self.speed)
-        # if self.direction == 2 or self.direction == -2:
-        #     self.rect.y += ((self.direction / 2) * self.speed)
-        
-        if self.rect.left<15 or self.rect.right > self.surface_size[0]-15:
+        if self.rect.left<15 or self.rect.right > self.surface_size[0]-15: #DO ZROBIENIA PO PRZENIESIU NA LABIRYNT W WYKONANIU NIKODEMA
             self.kill()
     
             
