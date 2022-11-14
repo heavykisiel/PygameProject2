@@ -15,15 +15,16 @@ class Map:
         # render map coords
         for enumx, x in enumerate(self.ChunkMap):
             for enumy, y in enumerate(x):
-                self.ChunkMap[enumx][enumy] = [enumx, enumy, 'wnse', 0]
+                self.ChunkMap[enumx][enumy] = [enumx, enumy, 'wnse', 0, 0]
         # random spawn
         # maze_start_x = random.randint(1, self.ChunksX - 2)
         # maze_start_y = random.randint(1, self.ChunksY - 2)
 
         visited = list()
         visited.append([self.maze_start_x, self.maze_start_y])
-        self.ChunkMap[self.maze_start_x][self.maze_start_y] = [self.maze_start_x, self.maze_start_y, 'wnse', 1]
+        self.ChunkMap[self.maze_start_x][self.maze_start_y] = [self.maze_start_x, self.maze_start_y, 'wnse', 1, 0]
         backtrack_count = 0
+        backtracked_room = False
         while self.ChunksX * self.ChunksY > len(visited) + backtrack_count:
             print(len(visited))
             print(self.ChunksX*self.ChunksY)
@@ -41,6 +42,9 @@ class Map:
                 stri += 'e'
 
             if stri != "":
+                if backtracked_room and backtrack_count == 1:
+                    self.ChunkMap[x_pos][y_pos][4] = 1
+                    backtracked_room = False
                 print(f"stri: {stri}")
                 random_wall = random.choice(stri)
                 print(f"randomchaince: {random_wall}")
@@ -61,6 +65,7 @@ class Map:
                     self.setRoomValue(x_pos, y_pos + 1, 'w', 1)  # delete north wall next room
                     visited.append([x_pos, y_pos + 1])
             else:
+                backtracked_room = True
                 visited.pop()
                 backtrack_count += 1
         for x in self.ChunkMap:
@@ -72,5 +77,4 @@ class Map:
     def setRoomValue(self, x, y, wall, visited):
         self.ChunkMap[x][y][2] = str(self.ChunkMap[x][y][2]).replace(wall, "")
         self.ChunkMap[x][y][3] = 1 if visited else 0
-
 # ChunkSize = {'x': 8, 'y': 8}

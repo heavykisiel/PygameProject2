@@ -184,7 +184,7 @@ class Gameplay(pygame.sprite.Group):
         return listC
 
     def drawMap(self, player):
-        playerOffset = self.camera_group.offset.x
+
         MapRect = Rect(0, 0, self.map_Data.ChunksX * self.rectSizex, self.map_Data.ChunksY * self.rectSizey)
         ground_offset = MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
             self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)
@@ -233,14 +233,14 @@ class Gameplay(pygame.sprite.Group):
         #         self.player_pos += player.direction * self.player.speed
         #         self.player.rect.x += player.direction.x * self.player.speed
         #         self.player.rect.y += player.direction.y * self.player.speed
-        # if self.player_pos[0] < self.block_pixelsx / 2:
-        #     self.player_pos[0] = self.block_pixelsx / 2
-        # if self.player_pos[1] < self.block_pixelsy / 2:
-        #     self.player_pos[1] = self.block_pixelsy / 2
-        # if self.player_pos[0] > self.rectSizex - self.block_pixelsx:
-        #     self.player_pos[0] = self.rectSizex - self.block_pixelsx
-        # if self.player_pos[1] > self.rectSizey - self.block_pixelsy:
-        #     self.player_pos[1] = self.rectSizey - self.block_pixelsy
+        if self.player_pos[0] < 0 + (self.currentChunk[0] * self.rectSizex):
+            self.currentChunk[0] -= 1
+        if self.player_pos[1] < 0 + (self.currentChunk[1] * self.rectSizey):
+            self.currentChunk[1] -= 1
+        if self.player_pos[0] > self.rectSizex + (self.currentChunk[0] * self.rectSizex):
+            self.currentChunk[0] += 1
+        if self.player_pos[1] > self.rectSizey + (self.currentChunk[1] * self.rectSizey):
+            self.currentChunk[1] += 1
 
         # print("{0}".format(self.player_pos,))
 
