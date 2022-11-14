@@ -56,27 +56,35 @@ class Player(pygame.sprite.Sprite):
         if self.index >= len(self.animation_list[self.action]):
             self.index = 0
             
+    def actionMetod(self,newAction):
+        if newAction != self.action:
+            self.action = newAction
+            self.index = 0
+            self.time = pygame.time.get_ticks()  
+                    
     def input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
             self.direction.y = -1
             self.playerDirection = -2
+            self.actionMetod(1)
         elif keys[pygame.K_DOWN]:
             self.direction.y = 1
             self.playerDirection = 2
+            self.actionMetod(0)
         else:
             self.direction.y = 0
         if keys[pygame.K_RIGHT]:
             self.direction.x = 1
-
             self.playerDirection = 1
+            self.actionMetod(2)
         elif keys[pygame.K_LEFT]:
             self.playerDirection = -1
             self.direction.x = -1
+            self.actionMetod(3)
         else:
             self.direction.x = 0
         if keys[pygame.K_SPACE]:
-            print("1231231231231231223LOLOLO")
             self.shooting = True
 
     def update(self):
