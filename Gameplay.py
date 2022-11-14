@@ -204,21 +204,21 @@ class Gameplay(pygame.sprite.Group):
                 print(f"player.rect.left: {self.player.rect.left}    |   x.right: {x.right}")
                 if abs(player.rect.top - x.bottom) < 20:
                     print(f"player hit top")
-                    self.player.rect.centery = x.bottom
+                    
                     self.player.rect.y = x.bottom
 
                 if abs(player.rect.left - x.right) < 20:
                     print(f"player hit left")
-                    self.player.rect.centerx = x.right +10
+                    
                     self.player.rect.x = x.right +10
                 if abs(player.rect.right - x.left) < 20:
                     print(f"player hit right")
-                    self.player.rect.centerx = x.left - self.player.rect.width
+                   
                     self.player.rect.x = x.left - self.player.rect.width
 
                 if abs(player.rect.bottom-30 - x.top) < 20:
                     print(f"player hit bottom")
-                    self.player.rect.centery = x.top - self.player.rect.height
+                   
                     self.player.rect.y = x.top - self.player.rect.height
                    
                    
