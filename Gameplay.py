@@ -26,6 +26,7 @@ class Gameplay(pygame.sprite.Group):
         self.surface_size_vector = pygame.math.Vector2(self.surface_size)
         self.screen.fill((0, 0, 0))
         self.camera_group = Camera()
+        
         self.display = pygame.Surface((300, 300))
         self.rectSizex = self.surface_size[0]  # 1080
         self.rectSizey = self.surface_size[1]  # 720
@@ -44,6 +45,7 @@ class Gameplay(pygame.sprite.Group):
         self.block_pixelsy = 30
         self.texture_count_per_tilex = 36
         self.texture_count_per_tiley = 24
+        
         # mnożenie block_pixels i texture count per title musi byc równe rectSize
 
 
@@ -195,8 +197,10 @@ class Gameplay(pygame.sprite.Group):
             player.direction = player.direction.normalize()
         # Validate player_pos
         
-        self.player.rect.x += player.direction.x * self.player.speed
-        self.player.rect.y += player.direction.y * self.player.speed
+        
+        self.player.rect.x += player.direction.x* self.player.speed
+        self.player.rect.y += player.direction.y* self.player.speed
+        
         print(self.player.rect.center)
         for x in self.wall_collider_rect:
             if player.rect.colliderect(x):
@@ -218,7 +222,7 @@ class Gameplay(pygame.sprite.Group):
 
                 if abs(player.rect.bottom-30 - x.top) < 20:
                     print(f"player hit bottom")
-                   
+                    
                     self.player.rect.y = x.top - self.player.rect.height
                    
                    
@@ -277,16 +281,22 @@ class Gameplay(pygame.sprite.Group):
             self.screen.blit(self.floor_tex, (x.x, x.y) + ground_offset)
 
         # self.detect_rect_colliders()
-        self.screen.blit(player.image, self.player.rect.center + ground_offset)
-
+        self.screen.blit(player.image, self.player.rect.topleft+ground_offset)
+        #pygame.draw.rect(self.screen, (255, 255, 0), self.player.rect)
         for enemy in self.enemyGroup: 
                 enemy.direction_distance(self.player)   
                 enemy.draw(ground_offset)
                 enemy.status(self.player)
                 enemy.enemybulletGroup.update()
                 enemy.enemybulletGroup.draw(self.screen)
-
-
+        
+        if self.player.shooting:
+            
+                self.player.shoot(ground_offset)        
+        
+        self.player.bulletGroup.update()
+        
+        self.player.bulletGroup.draw(self.screen)
         # tile[0] == x
         # tile[1] == y
         # tile[2] == biom_id
@@ -317,12 +327,9 @@ class Gameplay(pygame.sprite.Group):
             # self.enemy.rangeCollide(self.player)
 
             self.camera_group.draw(self.player)
-            self.player.bulletGroup.update()
-            self.player.bulletGroup.draw(self.screen)
-           
+            
 
-            if self.player.shooting:
-                self.player.shoot()
+            
                 
             
                 
@@ -335,14 +342,28 @@ class Gameplay(pygame.sprite.Group):
                 else: 
                     for a in collide:
                         pass
+            
+            for enemy in self.enemyGroup:            
+                if pygame.sprite.spritecollide(enemy, self.player.bulletGroup, False):
+                    if enemy.alive:
+                        enemy.healthMin -= 20
+                        enemy.health -= 20
                         
-            if pygame.sprite.spritecollide(self.enemy, self.player.bulletGroup, False):
-                if self.enemy.alive:
-                    self.enemy.healthMin -= 20
-                    self.enemy.health -= 20
-                    for bullets in self.player.bulletGroup:
-                        bullets.kill()
+                        for bullets in self.player.bulletGroup:
+                            
+                            bullets.kill()
+                            
+                        
+                if pygame.sprite.spritecollide(self.player, enemy.enemybulletGroup, False):
+                    if enemy.alive:
+                        self.player.health -=20 
+                        print(self.player.health)
                     
+                        for bullets in enemy.enemybulletGroup:
+                            
+                            bullets.kill()
+                             
+            
 
             pygame.display.update()
             pygame.time.Clock().tick(60)

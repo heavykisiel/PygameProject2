@@ -45,6 +45,7 @@ class Enemy(pygame.sprite.Sprite):
                 if self.distance >= 100:
                     self.rect.x += self.direction[0] * self.speed
                     self.rect.y += self.direction[1] * self.speed
+                    
                 
         if self.enemyName == "ogier":
             if self.moving:
@@ -78,8 +79,9 @@ class Enemy(pygame.sprite.Sprite):
             self.moving = False
             self.ai()
             
-    def draw(self,offset):   
-        self.screen.blit(self.image, self.rect.center + offset)
+    def draw(self,offset):
+        self.offset = offset
+        self.screen.blit(self.image, self.rect.topleft+offset)
         
     def respawn(self):
         self.rect[0]= random.randrange(0,600)
@@ -105,8 +107,8 @@ class Enemy(pygame.sprite.Sprite):
         if self.shootCooldown == 0: 
             self.shootCooldown = 30 
             if self.direction[0] > 1 or self.direction[0] < -1:
-                bullet = Bullets(self.rect.centerx(0.75 * self.rect.size[0]*self.direction[0]),
-                                 self.rect.centery, 1, 1, self.speedBullet,self.surface_size,self.player.rect.centery,self.player.rect.centerx)
+                bullet = Bullets(self.rect.centerx(0.75 * self.rect.size[0]*self.direction[0]) + self.offset[0],
+                                 self.rect.centery+ self.offset[1], 1, 1, self.speedBullet,self.surface_size,self.player.rect.centery,self.player.rect.centerx)
                 self.enemybulletGroup.add(bullet)
                 
                 
