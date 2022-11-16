@@ -60,7 +60,7 @@ class App:
                     if event.type == QUIT:
                         running = False
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        selected_button_index = button_handler(self.buttons, self.screen)
+                        selected_button_index = button_handler(self.buttons)
                         if selected_button_index == 404:
                             pass
                         else:

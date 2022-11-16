@@ -10,13 +10,10 @@ def LoadingScreenLoadTexture(screen_size):
     return bg
 
 
-def Load_Front_Player_Texture(side,i):
-    
-    
+def Load_Front_Player_Texture(side, i):
     player_img = pygame.image.load(f'textures/player/{side}/{i}.png').convert_alpha()
     player_img = pygame.transform.scale(player_img, (36, 56))
-        
-    
+
     player_img.set_colorkey((246, 246, 246))
     return player_img
 
@@ -79,8 +76,6 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
         wall_block_block = pygame.image.load('textures/maptex/MID.png').convert()
         wall_block_block = pygame.transform.scale(wall_block_block, (block_pixels_x, block_pixels_y))
         return wall_block_block
-
-
 
 
 def LoadingScreenAnimation(screen, screenSize, i, bg):

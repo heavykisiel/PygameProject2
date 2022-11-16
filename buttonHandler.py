@@ -12,7 +12,7 @@ def button_trigger(buttons, mouse):
     return 404
 
 
-def button_handler(buttons, self):
+def button_handler(buttons):
     mouse = pygame.mouse.get_pos()
     selected_button_index = button_trigger(buttons, mouse)
     if selected_button_index == 0:
@@ -28,4 +28,3 @@ def button_handler(buttons, self):
         raise Exception("index numer should be 0, 1 or 2")
 
     return selected_button_index
-
