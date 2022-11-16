@@ -27,7 +27,6 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = 4
         self.speedBullet = 32
         self.shootCooldown = 0
-        self.lastShot = pygame.time.get_ticks()
         self.enemybulletGroup = pygame.sprite.Group()
         self.shooting = False
         self.moving = False
@@ -113,7 +112,6 @@ class Enemy(pygame.sprite.Sprite):
                                      self.rect.centery + (0.1 * self.rect.size[1] * self.direction[1]), 1,
                                      self.speedBullet, self.surface_size, self.player.rect.centery,
                                      self.player.rect.centerx)
-
                     self.enemybulletGroup.add(bullet)
 
                 else:
@@ -121,7 +119,6 @@ class Enemy(pygame.sprite.Sprite):
                                      self.rect.centery + (0.1 * self.rect.size[1] * self.direction[1]), 1,
                                      self.speedBullet, self.surface_size, self.player.rect.centery,
                                      self.player.rect.centerx)
-
                     self.enemybulletGroup.add(bullet)
                      
                     
