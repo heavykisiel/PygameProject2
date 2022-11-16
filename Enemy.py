@@ -78,9 +78,9 @@ class Enemy(pygame.sprite.Sprite):
             self.moving = False
             self.ai()
             
-    def draw(self,offset):
+    def draw(self, offset):
         self.offset = offset
-        self.screen.blit(self.image, self.rect.topleft+offset)
+        self.screen.blit(self.image, self.rect.topleft + self.offset)
         
     def respawn(self):
         self.rect[0] = random.randrange(0, 600)

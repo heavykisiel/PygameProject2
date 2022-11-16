@@ -17,9 +17,11 @@ class Map:
             for enumy, y in enumerate(x):
                 self.ChunkMap[enumx][enumy] = [enumx, enumy, 'wnse', 0, 0]
         # random spawn
-        # maze_start_x = random.randint(1, self.ChunksX - 2)
-        # maze_start_y = random.randint(1, self.ChunksY - 2)
-
+        # [0] maze_start_x = random.randint(1, self.ChunksX - 2)
+        # [1]maze_start_y = random.randint(1, self.ChunksY - 2)
+        # [2] walls
+        # [3] visited
+        # [4] mobs can spawn
         visited = list()
         visited.append([self.maze_start_x, self.maze_start_y])
         self.ChunkMap[self.maze_start_x][self.maze_start_y] = [self.maze_start_x, self.maze_start_y, 'wnse', 1, 0]
@@ -68,6 +70,8 @@ class Map:
                 backtracked_room = True
                 visited.pop()
                 backtrack_count += 1
+            # set random mob spawn locations
+            self.ChunkMap[x_pos][y_pos][4] = random.randint(0, 1)
         for x in self.ChunkMap:
             print(x)
         print("end")

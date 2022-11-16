@@ -65,6 +65,9 @@ class Gameplay(pygame.sprite.Group):
         self.wall_collider_rect = self.detect_rect_colliders()
         self.doorlist = None
         self.walls_opti = self.OptedWalls()
+        self.MapRect = Rect(0, 0, self.map_Data.ChunksX * self.rectSizex, self.map_Data.ChunksY * self.rectSizey)
+        self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
+            self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)
 
     def detect_rect_colliders(self):
         lista = list()
@@ -189,18 +192,72 @@ class Gameplay(pygame.sprite.Group):
 
     def drawMap(self, player):
 
-        MapRect = Rect(0, 0, self.map_Data.ChunksX * self.rectSizex, self.map_Data.ChunksY * self.rectSizey)
-        ground_offset = MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
+        self.GamePlay_Logic(player)
+
+        # fill screen with floor
+        for y, row in enumerate(self.map_Data.ChunkMap):
+            for x, tile in enumerate(row):
+                if tile:
+                    for rowC in range(self.texture_count_per_tilex):
+                        for tileC in range(self.texture_count_per_tiley):
+                            offset_pos = tile[0] * self.rectSizex + rowC * self.block_pixelsx, \
+                                         tile[1] * self.rectSizey + tileC * self.block_pixelsy
+                            self.screen.blit(self.floor_tex, offset_pos + self.ground_offset)
+        # fill screen with borders
+        for x in self.wall_collider_rect:
+            self.screen.blit(self.midWall_tex, (x.x, x.y) + self.ground_offset)
+
+        for x in self.doorlistv2:
+            self.screen.blit(self.floor_tex, (x.x, x.y) + self.ground_offset)
+
+        # self.detect_rect_colliders()
+        self.screen.blit(player.image, self.player.rect.topleft + self.ground_offset)
+
+        for enemy in self.enemyGroup:
+            enemy.direction_distance(self.player)
+            enemy.draw(self.ground_offset)
+            enemy.status(self.player)
+            enemy.enemybulletGroup.update()
+            enemy.enemybulletGroup.draw(self.screen)
+
+    # self.return_gamedata()
+        self.screen.blit(player.image, self.player.rect.topleft+self.ground_offset)
+        #pygame.draw.rect(self.screen, (255, 255, 0), self.player.rect)
+        for enemy in self.enemyGroup:
+                enemy.direction_distance(self.player)
+                enemy.draw(self.ground_offset)
+                enemy.status(self.player)
+                enemy.enemybulletGroup.update()
+                enemy.enemybulletGroup.draw(self.screen)
+
+        if self.player.shooting:
+
+                self.player.shoot(self.ground_offset)
+
+        self.player.bulletGroup.update()
+
+        self.player.bulletGroup.draw(self.screen)
+        # tile[0] == x
+        # tile[1] == y
+        # tile[2] == biom_id
+
+       # self.return_gamedata()
+
+    # def return_gamedata(self):
+    #     self.player.player_position = self.player_pos
+
+    def GamePlay_Logic(self, player):
+
+        self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
             self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)
         self.screen.fill((0, 0, 0))
         if player.direction.magnitude() != 0:
             player.direction = player.direction.normalize()
 
         # Validate player_pos
-        
 
-        self.player.rect.x += player.direction.x* self.player.speed
-        self.player.rect.y += player.direction.y* self.player.speed
+        self.player.rect.x += player.direction.x * self.player.speed
+        self.player.rect.y += player.direction.y * self.player.speed
 
         print(self.player.rect.center)
         for x in self.wall_collider_rect:
@@ -209,24 +266,22 @@ class Gameplay(pygame.sprite.Group):
                 print(f"player.rect.left: {self.player.rect.left}    |   x.right: {x.right}")
                 if abs(player.rect.top - x.bottom) < 20:
                     print(f"player hit top")
-                    
+
                     self.player.rect.y = x.bottom
 
                 if abs(player.rect.left - x.right) < 20:
                     print(f"player hit left")
-                    
-                    self.player.rect.x = x.right +10
+
+                    self.player.rect.x = x.right
                 if abs(player.rect.right - x.left) < 20:
                     print(f"player hit right")
-                   
+
                     self.player.rect.x = x.left - self.player.rect.width
 
-                if abs(player.rect.bottom-30 - x.top) < 20:
+                if abs(player.rect.bottom - 30 - x.top) < 20:
                     print(f"player hit bottom")
-                   
+
                     self.player.rect.y = x.top - self.player.rect.height
-                   
-                   
 
         # for i in self.wall_collider_rect:
         #     if self.player.rect.colliderect(i):
@@ -248,58 +303,6 @@ class Gameplay(pygame.sprite.Group):
             self.currentChunk[1] += 1
 
         # print("{0}".format(self.player_pos,))
-
-        # fill screen with floor
-        for y, row in enumerate(self.map_Data.ChunkMap):
-            for x, tile in enumerate(row):
-                if tile:
-                    for rowC in range(self.texture_count_per_tilex):
-                        for tileC in range(self.texture_count_per_tiley):
-                            offset_pos = tile[0] * self.rectSizex + rowC * self.block_pixelsx, \
-                                         tile[1] * self.rectSizey + tileC * self.block_pixelsy
-                            self.screen.blit(self.floor_tex, offset_pos + ground_offset)
-        # fill screen with borders
-        for x in self.wall_collider_rect:
-            self.screen.blit(self.midWall_tex, (x.x, x.y) + ground_offset)
-
-        for x in self.doorlistv2:
-            self.screen.blit(self.floor_tex, (x.x, x.y) + ground_offset)
-
-        # self.detect_rect_colliders()
-        self.screen.blit(player.image, self.player.rect.topleft + ground_offset)
-
-        for enemy in self.enemyGroup:
-            enemy.direction_distance(self.player)
-            enemy.draw(ground_offset)
-            enemy.status(self.player)
-            enemy.enemybulletGroup.update()
-            enemy.enemybulletGroup.draw(self.screen)
-
-    # self.return_gamedata()
-        self.screen.blit(player.image, self.player.rect.topleft+ground_offset)
-        #pygame.draw.rect(self.screen, (255, 255, 0), self.player.rect)
-        for enemy in self.enemyGroup:
-                enemy.direction_distance(self.player)
-                enemy.draw(ground_offset)
-                enemy.status(self.player)
-                enemy.enemybulletGroup.update()
-                enemy.enemybulletGroup.draw(self.screen)
-
-        if self.player.shooting:
-
-                self.player.shoot(ground_offset)
-
-        self.player.bulletGroup.update()
-
-        self.player.bulletGroup.draw(self.screen)
-        # tile[0] == x
-        # tile[1] == y
-        # tile[2] == biom_id
-
-       # self.return_gamedata()
-
-    # def return_gamedata(self):
-    #     self.player.player_position = self.player_pos
 
     def run(self):
 
@@ -323,12 +326,6 @@ class Gameplay(pygame.sprite.Group):
 
             self.camera_group.draw(self.player)
 
-
-
-                
-            
-                
-                
             for enemies in self.enemyGroup.sprites():
                 test1 = [x for x in self.enemyGroup if x != enemies]
                 collide = pygame.sprite.spritecollide(enemies, test1, False)
@@ -348,17 +345,14 @@ class Gameplay(pygame.sprite.Group):
 
                             bullets.kill()
 
-
                 if pygame.sprite.spritecollide(self.player, enemy.enemybulletGroup, False):
                     if enemy.alive:
-                        self.player.health -=20
+                        self.player.health -= 20
                         print(self.player.health)
 
                         for bullets in enemy.enemybulletGroup:
 
                             bullets.kill()
-
-
 
             pygame.display.update()
             pygame.time.Clock().tick(60)
