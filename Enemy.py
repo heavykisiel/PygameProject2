@@ -23,8 +23,9 @@ class Enemy(pygame.sprite.Sprite):
         animation_folders = ['idle', 'attack']
         for animation in animation_folders:
             loop_list = []
-            filesNumber = len(os.listdir(f'textures/enemies/{self.enemyName}/{animation}'))
-            for i in range(filesNumber):
+            self.filesNumber = len(os.listdir(f'textures/enemies/{self.enemyName}/{animation}'))
+            print(self.filesNumber)
+            for i in range(self.filesNumber):
                 img = TextureLoader.Load_Enemy_Texture(self.enemyName,animation, i)
                 loop_list.append(img)
             self.animation_list.append(loop_list)
@@ -47,18 +48,30 @@ class Enemy(pygame.sprite.Sprite):
         self.moving = False
         self.range = 200
         self.time = pygame.time.get_ticks()
-    
+        self.shootAnimationCooldown = 0
+        
     def animation(self):
         cooldown = 300
         self.image = self.animation_list[self.action][self.index]
         if pygame.time.get_ticks() - self.time > cooldown :
             self.time = pygame.time.get_ticks()
             self.index += 1
-            
+        
         if self.index >= len(self.animation_list[self.action]):
-            self.index = 0    
+            self.index = 0
+        
+        print(self.index)
+
+    def actionMetod(self, newAction):
+        if newAction != self.action:
+            self.action = newAction
+            self.index = 0
+            self.time = pygame.time.get_ticks()
+               
+            
     def move(self):
         if self.enemyName == "skeleton":
+           
             if self.moving:
                 
                 if self.direction.magnitude() != 0:
@@ -66,9 +79,12 @@ class Enemy(pygame.sprite.Sprite):
                 if self.distance >= 100:
                     self.rect.x += self.direction[0] * self.speed
                     self.rect.y += self.direction[1] * self.speed
-                
+                    
+
         if self.enemyName == "destroyer":
+           
             if self.moving:
+                
                 if self.direction.magnitude() != 0:
                     self.direction = self.direction.normalize()
                 if self.distance >= 100:
@@ -92,10 +108,16 @@ class Enemy(pygame.sprite.Sprite):
     def status(self, player):
         self.distance = self.direction_distance(player)[0]
         if self.distance <= self.range:
-            self.shoot()
-            self.moving = True
-        elif self.distance >= 2 * self.range:
+            self.actionMetod(1)
+            if self.action == 1 and self.index == (self.filesNumber-1):
+                self.shooting = True
             self.moving = False
+            
+                
+           
+        elif self.distance >= self.range:
+            self.moving = True
+            self.actionMetod(0)
             self.ai()
             
     def draw(self, offset):
@@ -111,39 +133,48 @@ class Enemy(pygame.sprite.Sprite):
             self.health = 0
             self.alive = False
             self.kill()
-
-    def update(self):
+    def timer(self):
+        if self.shootAnimationCooldown > 0:
+            self.shootAnimationCooldown -= 1
         if self.shootCooldown > 0:
+            
             self.shootCooldown -= 1
             self.shooting = False
-
+    
+    def update(self):
+        self.timer()
+        self.animation()
         self.check_alive()
         self.move()
-        self.animation()
+    
     def shoot(self):
-
-        if self.shootCooldown == 0:
-            self.shootCooldown = 30
-            if self.direction[0] > 1 or self.direction[0] < -1:
-                bullet = Bullets(self.rect.centerx(0.75 * self.rect.size[0] * self.direction[0]),
-                                 self.rect.centery, 1, 1, self.speedBullet, self.surface_size, self.player.rect.centery,
-                                 self.player.rect.centerx)
-                self.enemybulletGroup.add(bullet)
-
-            else:
-                if self.direction[1] < 1:
-                    bullet = Bullets(self.rect.centerx,
-                                     self.rect.centery + (0.1 * self.rect.size[1] * self.direction[1]), 1,
-                                     self.speedBullet, self.surface_size, self.player.rect.centery,
-                                     self.player.rect.centerx)
+        if self.shooting:
+            if self.shootCooldown == 0:
+                self.shootCooldown = 35
+                self.actionMetod(1)
+                if self.direction[0] > 1 or self.direction[0] < -1:
+                    bullet = Bullets(self.rect.centerx(0.75 * self.rect.size[0] * self.direction[0]),
+                                    self.rect.centery, 1, 1, self.speedBullet, self.surface_size, self.player.rect.centery,
+                                    self.player.rect.centerx)
                     self.enemybulletGroup.add(bullet)
+                    self.shooting = False
 
                 else:
-                    bullet = Bullets(self.rect.centerx,
-                                     self.rect.centery + (0.1 * self.rect.size[1] * self.direction[1]), 1,
-                                     self.speedBullet, self.surface_size, self.player.rect.centery,
-                                     self.player.rect.centerx)
-                    self.enemybulletGroup.add(bullet)
+                    if self.direction[1] < 1:
+                        bullet = Bullets(self.rect.centerx,
+                                        self.rect.centery + (0.1 * self.rect.size[1] * self.direction[1]), 1,
+                                        self.speedBullet, self.surface_size, self.player.rect.centery,
+                                        self.player.rect.centerx)
+                        self.enemybulletGroup.add(bullet)
+                        self.shooting = False
+
+                    else:
+                        bullet = Bullets(self.rect.centerx,
+                                        self.rect.centery + (0.1 * self.rect.size[1] * self.direction[1]), 1,
+                                        self.speedBullet, self.surface_size, self.player.rect.centery,
+                                        self.player.rect.centerx)
+                        self.enemybulletGroup.add(bullet)
+                        self.shooting = False
                      
                     
               
