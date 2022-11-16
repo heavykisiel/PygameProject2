@@ -1,5 +1,6 @@
 import pygame
 import random
+import os
 
 from textures import TextureLoader
 from Bullets import Bullets
@@ -14,7 +15,21 @@ class Enemy(pygame.sprite.Sprite):
         super().__init__(group)
 
         self.enemyName = enemyName
-        self.image = TextureLoader.Load_Enemy_Texture(self.enemyName)
+        
+        self.index = 0
+        self.animation_list = []
+        self.action = 0
+        
+        animation_folders = ['idle', 'attack']
+        for animation in animation_folders:
+            loop_list = []
+            filesNumber = len(os.listdir(f'textures/enemies/{self.enemyName}/{animation}'))
+            for i in range(filesNumber):
+                img = TextureLoader.Load_Enemy_Texture(self.enemyName,animation, i)
+                loop_list.append(img)
+            self.animation_list.append(loop_list)
+
+        self.image = self.animation_list[self.action][self.index]
         self.rect = self.image.get_rect(center=pos)
         self.screen = screen
         self.direction = pygame.math.Vector2()
@@ -31,10 +46,19 @@ class Enemy(pygame.sprite.Sprite):
         self.shooting = False
         self.moving = False
         self.range = 200
-        
+        self.time = pygame.time.get_ticks()
+    
+    def animation(self):
+        cooldown = 300
+        self.image = self.animation_list[self.action][self.index]
+        if pygame.time.get_ticks() - self.time > cooldown :
+            self.time = pygame.time.get_ticks()
+            self.index += 1
+            
+        if self.index >= len(self.animation_list[self.action]):
+            self.index = 0    
     def move(self):
-        print(self.rect.center)
-        if self.enemyName == "bulbazaurus":
+        if self.enemyName == "skeleton":
             if self.moving:
                 
                 if self.direction.magnitude() != 0:
@@ -43,7 +67,7 @@ class Enemy(pygame.sprite.Sprite):
                     self.rect.x += self.direction[0] * self.speed
                     self.rect.y += self.direction[1] * self.speed
                 
-        if self.enemyName == "ogier":
+        if self.enemyName == "destroyer":
             if self.moving:
                 if self.direction.magnitude() != 0:
                     self.direction = self.direction.normalize()
@@ -95,7 +119,7 @@ class Enemy(pygame.sprite.Sprite):
 
         self.check_alive()
         self.move()
-
+        self.animation()
     def shoot(self):
 
         if self.shootCooldown == 0:
