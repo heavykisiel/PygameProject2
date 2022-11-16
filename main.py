@@ -1,6 +1,6 @@
 from pygame.locals import *
 
-from Gameplay import Gameplay
+from Gameplay.Gameplay import Gameplay
 from buttonHandler import button_handler
 from textures.TextureLoader import *
 from textures.colors import Colors

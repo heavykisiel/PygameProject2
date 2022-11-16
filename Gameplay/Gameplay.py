@@ -9,6 +9,9 @@ from map import Map
 from textures.TextureLoader import Load_Block_Textures
 from Player import Player
 from Enemy import Enemy
+from .Utilities.GameplayUtilities import OptedWalls
+from .Utilities.GameplayUtilities import detect_rect_colliders
+from .Utilities.GameplayUtilities import doors
 
 
 class Gameplay(pygame.sprite.Group):
@@ -58,133 +61,13 @@ class Gameplay(pygame.sprite.Group):
         self.westSouthWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 8)
         self.midWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 9)
 
-        self.doorlistv2 = self.doors()
-        self.wall_collider_rect = self.detect_rect_colliders()
+        self.doorlistv2 = doors(self)
+        self.wall_collider_rect = detect_rect_colliders(self)
         self.doorlist = None
-        self.walls_opti = self.OptedWalls()
+        self.walls_opti = OptedWalls(self)
         self.MapRect = Rect(0, 0, self.map_Data.ChunksX * self.rectSizex, self.map_Data.ChunksY * self.rectSizey)
         self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
             self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)
-
-    def detect_rect_colliders(self):
-        lista = list()
-        for y, row in enumerate(self.map_Data.ChunkMap):
-            for x, tile in enumerate(row):
-                if tile:
-                    for rowC in range(self.texture_count_per_tilex):
-                        for tileC in range(self.texture_count_per_tiley):
-                            if rowC == self.texture_count_per_tilex - 1 or rowC == 0 or \
-                                    tileC == self.texture_count_per_tiley - 1 or tileC == 0:
-                                border_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
-                                                  tile[1] * self.rectSizey + tileC * self.block_pixelsy,
-                                                  self.block_pixelsx, self.block_pixelsy)
-                                lista.append(border_pos)
-                                # if (rowC == self.texture_count_per_tilex / 2 and (
-                                #         tileC == self.texture_count_per_tiley - 1 or tileC == 0)) or \
-                                #         (tileC == self.texture_count_per_tiley / 2 and (
-                                #                 rowC == self.texture_count_per_tilex - 1 or rowC == 0)):
-                                #     door_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
-                                #                     tile[1] * self.rectSizey + tileC * self.block_pixelsy,
-                                #                     self.block_pixelsx, self.block_pixelsy)
-                                #     listb.append(door_pos)
-        print(f"lista len before: {len(lista)}")
-        for door in self.doorlistv2:
-            for xx in lista:
-                if xx.contains(door):
-                    print(f"{door}")
-                    lista.remove(xx)
-        print(f"door length: {len(self.doorlistv2)}  |  lista length after: {len(lista)} ")
-        return lista
-
-    def OptedWalls(self):
-        # currently unused
-        a = list()
-        for x in self.wall_collider_rect:
-            if x.x < 1100:
-                a.append(x)
-            elif x.y < 800:
-                a.append(x)
-        return a
-
-    def doors(self):
-        listC = list()
-        for y, row in enumerate(self.map_Data.ChunkMap):
-            for x, tile in enumerate(row):
-                if tile:
-                    doorStr = "wnse"
-                    print(f"{tile[2]}")
-                    if str(tile[2]).__contains__('w'):
-                        doorStr = doorStr.replace('w', '')
-                    if str(tile[2]).__contains__('n'):
-                        doorStr = doorStr.replace('n', '')
-                    if str(tile[2]).__contains__('s'):
-                        doorStr = doorStr.replace('s', '')
-                    if str(tile[2]).__contains__('e'):
-                        doorStr = doorStr.replace('e', '')
-                    print(f"kierunek drzwii {doorStr} w chunku x:{tile[0]} y:{tile[1]}")
-                    for rowC in range(self.texture_count_per_tilex):
-                        for tileC in range(self.texture_count_per_tiley):
-                            if doorStr.__contains__('n') and (rowC == 0 and
-                                                              tileC == self.texture_count_per_tiley / 2):
-                                door_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
-                                                tile[1] * self.rectSizey + tileC * self.block_pixelsy,
-                                                self.block_pixelsx, self.block_pixelsy)
-                                listC.append(door_pos)
-                                door_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
-                                                tile[1] * self.rectSizey + (tileC - 1) * self.block_pixelsy,
-                                                self.block_pixelsx, self.block_pixelsy)
-                                listC.append(door_pos)
-                                door_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
-                                                tile[1] * self.rectSizey + (tileC + 1) * self.block_pixelsy,
-                                                self.block_pixelsx, self.block_pixelsy)
-                                listC.append(door_pos)
-                            if doorStr.__contains__('w') and (
-                                    rowC == self.texture_count_per_tilex / 2 and
-                                    tileC == 0):
-                                door_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
-                                                tile[1] * self.rectSizey + tileC * self.block_pixelsy,
-                                                self.block_pixelsx, self.block_pixelsy)
-                                listC.append(door_pos)
-                                door_pos = Rect(tile[0] * self.rectSizex + (rowC + 1) * self.block_pixelsx,
-                                                tile[1] * self.rectSizey + tileC * self.block_pixelsy,
-                                                self.block_pixelsx, self.block_pixelsy)
-                                listC.append(door_pos)
-                                door_pos = Rect(tile[0] * self.rectSizex + (rowC - 1) * self.block_pixelsx,
-                                                tile[1] * self.rectSizey + tileC * self.block_pixelsy,
-                                                self.block_pixelsx, self.block_pixelsy)
-                                listC.append(door_pos)
-
-                            if doorStr.__contains__('s') and (tileC == self.texture_count_per_tiley / 2 and
-                                                              rowC == self.texture_count_per_tilex - 1):
-                                door_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
-                                                tile[1] * self.rectSizey + tileC * self.block_pixelsy,
-                                                self.block_pixelsx, self.block_pixelsy)
-                                listC.append(door_pos)
-                                door_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
-                                                tile[1] * self.rectSizey + (tileC - 1) * self.block_pixelsy,
-                                                self.block_pixelsx, self.block_pixelsy)
-                                listC.append(door_pos)
-                                door_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
-                                                tile[1] * self.rectSizey + (tileC + 1) * self.block_pixelsy,
-                                                self.block_pixelsx, self.block_pixelsy)
-                                listC.append(door_pos)
-
-                            if doorStr.__contains__('e') and (tileC == self.texture_count_per_tiley - 1 and
-                                                              rowC == self.texture_count_per_tilex / 2):
-                                door_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
-                                                tile[1] * self.rectSizey + tileC * self.block_pixelsy,
-                                                self.block_pixelsx, self.block_pixelsy)
-                                listC.append(door_pos)
-                                door_pos = Rect(tile[0] * self.rectSizex + (rowC + 1) * self.block_pixelsx,
-                                                tile[1] * self.rectSizey + tileC * self.block_pixelsy,
-                                                self.block_pixelsx, self.block_pixelsy)
-                                listC.append(door_pos)
-                                door_pos = Rect(tile[0] * self.rectSizex + (rowC - 1) * self.block_pixelsx,
-                                                tile[1] * self.rectSizey + tileC * self.block_pixelsy,
-                                                self.block_pixelsx, self.block_pixelsy)
-                                listC.append(door_pos)
-
-        return listC
 
     def drawMap(self, player):
         # player interaction with map elements
@@ -288,15 +171,8 @@ class Gameplay(pygame.sprite.Group):
                     running = False
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.MOUSEWHEEL:
-                    self.camera_group.zoom_scale += event.y * 0.03
-                    # zoom jest ale są cyrki, ale można się pobawić
-            self.screen.fill((0, 0, 0))
             self.camera_group.update()
             self.drawMap(self.player)
-
-            # self.enemy.rangeCollide(self.player)
-
             self.camera_group.draw(self.player)
 
             for enemies in self.enemyGroup.sprites():
