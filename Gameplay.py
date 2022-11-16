@@ -26,6 +26,7 @@ class Gameplay(pygame.sprite.Group):
         self.surface_size_vector = pygame.math.Vector2(self.surface_size)
         self.screen.fill((0, 0, 0))
         self.camera_group = Camera()
+
         self.display = pygame.Surface((300, 300))
         self.rectSizex = self.surface_size[0]  # 1080
         self.rectSizey = self.surface_size[1]  # 720
@@ -44,7 +45,9 @@ class Gameplay(pygame.sprite.Group):
         self.block_pixelsy = 30
         self.texture_count_per_tilex = 36
         self.texture_count_per_tiley = 24
+
         # mnożenie block_pixels i texture count per title musi byc równe rectSize
+
 
         self.floor_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 0)
         self.eastWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 1)
@@ -57,6 +60,7 @@ class Gameplay(pygame.sprite.Group):
         self.westSouthWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 8)
         self.midWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 9)
 
+        
         self.doorlistv2 = self.doors()
         self.wall_collider_rect = self.detect_rect_colliders()
         self.doorlist = None
@@ -193,30 +197,47 @@ class Gameplay(pygame.sprite.Group):
             player.direction = player.direction.normalize()
 
         # Validate player_pos
+        
 
-        self.player.rect.x += player.direction.x * self.player.speed
-        self.player.rect.y += player.direction.y * self.player.speed
+        self.player.rect.x += player.direction.x* self.player.speed
+        self.player.rect.y += player.direction.y* self.player.speed
 
+        print(self.player.rect.center)
         for x in self.wall_collider_rect:
             if player.rect.colliderect(x):
                 print(f"collided with wall")
                 print(f"player.rect.left: {self.player.rect.left}    |   x.right: {x.right}")
                 if abs(player.rect.top - x.bottom) < 20:
                     print(f"player hit top")
+                    
                     self.player.rect.y = x.bottom
 
                 if abs(player.rect.left - x.right) < 20:
                     print(f"player hit left")
-                    self.player.rect.x = x.right
-
+                    
+                    self.player.rect.x = x.right +10
                 if abs(player.rect.right - x.left) < 20:
                     print(f"player hit right")
+                   
                     self.player.rect.x = x.left - self.player.rect.width
 
-                if abs(player.rect.bottom - 30 - x.top) < 20:
+                if abs(player.rect.bottom-30 - x.top) < 20:
                     print(f"player hit bottom")
+                   
                     self.player.rect.y = x.top - self.player.rect.height
+                   
+                   
 
+        # for i in self.wall_collider_rect:
+        #     if self.player.rect.colliderect(i):
+        #         print(f"collision occured on {i}")
+        #         self.player.rect.x += player.direction.x * self.player.speed
+        #         self.player.rect.y = self.rectSizex - self.block_pixelsx
+        #         self.player_pos = self.rectSizex - self.block_pixelsx
+        #     else:
+        #         self.player_pos += player.direction * self.player.speed
+        #         self.player.rect.x += player.direction.x * self.player.speed
+        #         self.player.rect.y += player.direction.y * self.player.speed
         if self.player.rect.centerx < 0 + (self.currentChunk[0] * self.rectSizex):
             self.currentChunk[0] -= 1
         if self.player.rect.centery < 0 + (self.currentChunk[1] * self.rectSizey):
@@ -255,6 +276,27 @@ class Gameplay(pygame.sprite.Group):
             enemy.enemybulletGroup.draw(self.screen)
 
     # self.return_gamedata()
+        self.screen.blit(player.image, self.player.rect.topleft+ground_offset)
+        #pygame.draw.rect(self.screen, (255, 255, 0), self.player.rect)
+        for enemy in self.enemyGroup:
+                enemy.direction_distance(self.player)
+                enemy.draw(ground_offset)
+                enemy.status(self.player)
+                enemy.enemybulletGroup.update()
+                enemy.enemybulletGroup.draw(self.screen)
+
+        if self.player.shooting:
+
+                self.player.shoot(ground_offset)
+
+        self.player.bulletGroup.update()
+
+        self.player.bulletGroup.draw(self.screen)
+        # tile[0] == x
+        # tile[1] == y
+        # tile[2] == biom_id
+
+       # self.return_gamedata()
 
     # def return_gamedata(self):
     #     self.player.player_position = self.player_pos
@@ -280,12 +322,13 @@ class Gameplay(pygame.sprite.Group):
             # self.enemy.rangeCollide(self.player)
 
             self.camera_group.draw(self.player)
-            self.player.bulletGroup.update()
-            self.player.bulletGroup.draw(self.screen)
 
-            if self.player.shooting:
-                self.player.shoot()
 
+
+                
+            
+                
+                
             for enemies in self.enemyGroup.sprites():
                 test1 = [x for x in self.enemyGroup if x != enemies]
                 collide = pygame.sprite.spritecollide(enemies, test1, False)
@@ -302,15 +345,20 @@ class Gameplay(pygame.sprite.Group):
                         enemy.health -= 20
 
                         for bullets in self.player.bulletGroup:
+
                             bullets.kill()
+
 
                 if pygame.sprite.spritecollide(self.player, enemy.enemybulletGroup, False):
                     if enemy.alive:
-                        self.player.health -= 20
+                        self.player.health -=20
                         print(self.player.health)
 
                         for bullets in enemy.enemybulletGroup:
+
                             bullets.kill()
+
+
 
             pygame.display.update()
             pygame.time.Clock().tick(60)

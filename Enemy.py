@@ -32,18 +32,21 @@ class Enemy(pygame.sprite.Sprite):
         self.shooting = False
         self.moving = False
         self.range = 200
-
+        
+        
+        
+        
     def move(self):
-
+        print(self.rect.center)
         if self.enemyName == "bulbazaurus":
             if self.moving:
-
+                
                 if self.direction.magnitude() != 0:
                     self.direction = self.direction.normalize()
                 if self.distance >= 100:
                     self.rect.x += self.direction[0] * self.speed
                     self.rect.y += self.direction[1] * self.speed
-
+                
         if self.enemyName == "ogier":
             if self.moving:
                 if self.direction.magnitude() != 0:
@@ -74,10 +77,11 @@ class Enemy(pygame.sprite.Sprite):
         elif self.distance >= 2 * self.range:
             self.moving = False
             self.ai()
-
-    def draw(self, offset):
-        self.screen.blit(self.image, self.rect.center + offset)
-
+            
+    def draw(self,offset):
+        self.offset = offset
+        self.screen.blit(self.image, self.rect.topleft+offset)
+        
     def respawn(self):
         self.rect[0] = random.randrange(0, 600)
         self.rect[1] = random.randrange(0, 600)
@@ -114,6 +118,8 @@ class Enemy(pygame.sprite.Sprite):
                                      self.player.rect.centerx)
 
                     self.enemybulletGroup.add(bullet)
+                    
+                    
                 else:
                     bullet = Bullets(self.rect.centerx,
                                      self.rect.centery + (0.1 * self.rect.size[1] * self.direction[1]), 1,
@@ -121,3 +127,6 @@ class Enemy(pygame.sprite.Sprite):
                                      self.player.rect.centerx)
 
                     self.enemybulletGroup.add(bullet)
+                     
+                    
+              
