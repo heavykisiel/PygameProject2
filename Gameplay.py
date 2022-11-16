@@ -9,7 +9,6 @@ from map import Map
 from textures.TextureLoader import Load_Block_Textures
 from Player import Player
 from Enemy import Enemy
-from Bullets import Bullets
 
 
 class Gameplay(pygame.sprite.Group):
@@ -48,7 +47,6 @@ class Gameplay(pygame.sprite.Group):
 
         # mnożenie block_pixels i texture count per title musi byc równe rectSize
 
-
         self.floor_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 0)
         self.eastWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 1)
         self.northWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 2)
@@ -60,7 +58,6 @@ class Gameplay(pygame.sprite.Group):
         self.westSouthWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 8)
         self.midWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 9)
 
-        
         self.doorlistv2 = self.doors()
         self.wall_collider_rect = self.detect_rect_colliders()
         self.doorlist = None
@@ -100,14 +97,13 @@ class Gameplay(pygame.sprite.Group):
         return lista
 
     def OptedWalls(self):
+        # currently unused
         a = list()
         for x in self.wall_collider_rect:
             if x.x < 1100:
                 a.append(x)
             elif x.y < 800:
                 a.append(x)
-        for x in a:
-            print(f"{x}")
         return a
 
     def doors(self):
@@ -191,9 +187,82 @@ class Gameplay(pygame.sprite.Group):
         return listC
 
     def drawMap(self, player):
-
+        # player interaction with map elements
         self.GamePlay_Logic(player)
+        # fill screen with floor
+        self.Draw_Floor()
+        # fill screen with borders
+        self.draw_Borders()
+        # draw player
+        self.screen.blit(player.image, self.player.rect.topleft + self.ground_offset)
 
+        # enemy ( powinno być rozdzielone na logikę i render #TODO
+        # Do it filip bo nie chce nic zjebać) #TODO
+
+        for enemy in self.enemyGroup:
+            enemy.direction_distance(self.player)
+            enemy.draw(self.ground_offset)
+            enemy.status(self.player)
+            enemy.enemybulletGroup.update()
+            enemy.enemybulletGroup.draw(self.screen)
+
+        # self.return_gamedata()
+        self.screen.blit(player.image, self.player.rect.topleft + self.ground_offset)
+        # pygame.draw.rect(self.screen, (255, 255, 0), self.player.rect)
+        for enemy in self.enemyGroup:
+            enemy.direction_distance(self.player)
+            enemy.draw(self.ground_offset)
+            enemy.status(self.player)
+            enemy.enemybulletGroup.update()
+            enemy.enemybulletGroup.draw(self.screen)
+
+        if self.player.shooting:
+            self.player.shoot(self.ground_offset)
+
+        self.player.bulletGroup.update()
+
+        self.player.bulletGroup.draw(self.screen)
+
+    def GamePlay_Logic(self, player):
+        # normalize movement player
+        if player.direction.magnitude() != 0:
+            player.direction = player.direction.normalize()
+
+        # player movement
+        self.player.rect.x += player.direction.x * self.player.speed
+        self.player.rect.y += player.direction.y * self.player.speed
+        # print(self.player.rect.center)
+        # wall interaction
+        for x in self.wall_collider_rect:
+            if player.rect.colliderect(x):
+                print(f"collided with wall")
+                print(f"player.rect.left: {self.player.rect.left}    |   x.right: {x.right}")
+                if abs(player.rect.top - x.bottom) < 20:
+                    print(f"player hit top")
+                    self.player.rect.y = x.bottom
+                if abs(player.rect.left - x.right) < 20:
+                    print(f"player hit left")
+                    self.player.rect.x = x.right
+                if abs(player.rect.right - x.left) < 20:
+                    print(f"player hit right")
+                    self.player.rect.x = x.left - self.player.rect.width
+                if abs(player.rect.bottom - 30 - x.top) < 20:
+                    print(f"player hit bottom")
+                    self.player.rect.y = x.top - self.player.rect.height
+        # current chunk update
+        if self.player.rect.centerx < 0 + (self.currentChunk[0] * self.rectSizex):
+            self.currentChunk[0] -= 1
+        if self.player.rect.centery < 0 + (self.currentChunk[1] * self.rectSizey):
+            self.currentChunk[1] -= 1
+        if self.player.rect.centerx > self.rectSizex + (self.currentChunk[0] * self.rectSizex):
+            self.currentChunk[0] += 1
+        if self.player.rect.centery > self.rectSizey + (self.currentChunk[1] * self.rectSizey):
+            self.currentChunk[1] += 1
+        # Update offset
+        self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
+            self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)
+
+    def Draw_Floor(self):
         # fill screen with floor
         for y, row in enumerate(self.map_Data.ChunkMap):
             for x, tile in enumerate(row):
@@ -203,106 +272,10 @@ class Gameplay(pygame.sprite.Group):
                             offset_pos = tile[0] * self.rectSizex + rowC * self.block_pixelsx, \
                                          tile[1] * self.rectSizey + tileC * self.block_pixelsy
                             self.screen.blit(self.floor_tex, offset_pos + self.ground_offset)
-        # fill screen with borders
+
+    def draw_Borders(self):
         for x in self.wall_collider_rect:
             self.screen.blit(self.midWall_tex, (x.x, x.y) + self.ground_offset)
-
-        for x in self.doorlistv2:
-            self.screen.blit(self.floor_tex, (x.x, x.y) + self.ground_offset)
-
-        # self.detect_rect_colliders()
-        self.screen.blit(player.image, self.player.rect.topleft + self.ground_offset)
-
-        for enemy in self.enemyGroup:
-            enemy.direction_distance(self.player)
-            enemy.draw(self.ground_offset)
-            enemy.status(self.player)
-            enemy.enemybulletGroup.update()
-            enemy.enemybulletGroup.draw(self.screen)
-
-    # self.return_gamedata()
-        self.screen.blit(player.image, self.player.rect.topleft+self.ground_offset)
-        #pygame.draw.rect(self.screen, (255, 255, 0), self.player.rect)
-        for enemy in self.enemyGroup:
-                enemy.direction_distance(self.player)
-                enemy.draw(self.ground_offset)
-                enemy.status(self.player)
-                enemy.enemybulletGroup.update()
-                enemy.enemybulletGroup.draw(self.screen)
-
-        if self.player.shooting:
-
-                self.player.shoot(self.ground_offset)
-
-        self.player.bulletGroup.update()
-
-        self.player.bulletGroup.draw(self.screen)
-        # tile[0] == x
-        # tile[1] == y
-        # tile[2] == biom_id
-
-       # self.return_gamedata()
-
-    # def return_gamedata(self):
-    #     self.player.player_position = self.player_pos
-
-    def GamePlay_Logic(self, player):
-
-        self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
-            self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)
-        self.screen.fill((0, 0, 0))
-        if player.direction.magnitude() != 0:
-            player.direction = player.direction.normalize()
-
-        # Validate player_pos
-
-        self.player.rect.x += player.direction.x * self.player.speed
-        self.player.rect.y += player.direction.y * self.player.speed
-
-        print(self.player.rect.center)
-        for x in self.wall_collider_rect:
-            if player.rect.colliderect(x):
-                print(f"collided with wall")
-                print(f"player.rect.left: {self.player.rect.left}    |   x.right: {x.right}")
-                if abs(player.rect.top - x.bottom) < 20:
-                    print(f"player hit top")
-
-                    self.player.rect.y = x.bottom
-
-                if abs(player.rect.left - x.right) < 20:
-                    print(f"player hit left")
-
-                    self.player.rect.x = x.right
-                if abs(player.rect.right - x.left) < 20:
-                    print(f"player hit right")
-
-                    self.player.rect.x = x.left - self.player.rect.width
-
-                if abs(player.rect.bottom - 30 - x.top) < 20:
-                    print(f"player hit bottom")
-
-                    self.player.rect.y = x.top - self.player.rect.height
-
-        # for i in self.wall_collider_rect:
-        #     if self.player.rect.colliderect(i):
-        #         print(f"collision occured on {i}")
-        #         self.player.rect.x += player.direction.x * self.player.speed
-        #         self.player.rect.y = self.rectSizex - self.block_pixelsx
-        #         self.player_pos = self.rectSizex - self.block_pixelsx
-        #     else:
-        #         self.player_pos += player.direction * self.player.speed
-        #         self.player.rect.x += player.direction.x * self.player.speed
-        #         self.player.rect.y += player.direction.y * self.player.speed
-        if self.player.rect.centerx < 0 + (self.currentChunk[0] * self.rectSizex):
-            self.currentChunk[0] -= 1
-        if self.player.rect.centery < 0 + (self.currentChunk[1] * self.rectSizey):
-            self.currentChunk[1] -= 1
-        if self.player.rect.centerx > self.rectSizex + (self.currentChunk[0] * self.rectSizex):
-            self.currentChunk[0] += 1
-        if self.player.rect.centery > self.rectSizey + (self.currentChunk[1] * self.rectSizey):
-            self.currentChunk[1] += 1
-
-        # print("{0}".format(self.player_pos,))
 
     def run(self):
 
@@ -342,7 +315,6 @@ class Gameplay(pygame.sprite.Group):
                         enemy.health -= 20
 
                         for bullets in self.player.bulletGroup:
-
                             bullets.kill()
 
                 if pygame.sprite.spritecollide(self.player, enemy.enemybulletGroup, False):
@@ -351,7 +323,6 @@ class Gameplay(pygame.sprite.Group):
                         print(self.player.health)
 
                         for bullets in enemy.enemybulletGroup:
-
                             bullets.kill()
 
             pygame.display.update()
