@@ -33,9 +33,6 @@ class Enemy(pygame.sprite.Sprite):
         self.moving = False
         self.range = 200
         
-        
-        
-        
     def move(self):
         print(self.rect.center)
         if self.enemyName == "bulbazaurus":
@@ -118,8 +115,7 @@ class Enemy(pygame.sprite.Sprite):
                                      self.player.rect.centerx)
 
                     self.enemybulletGroup.add(bullet)
-                    
-                    
+
                 else:
                     bullet = Bullets(self.rect.centerx,
                                      self.rect.centery + (0.1 * self.rect.size[1] * self.direction[1]), 1,

@@ -17,12 +17,15 @@ def Load_Front_Player_Texture(side, i):
     player_img.set_colorkey((246, 246, 246))
     return player_img
 
+
 def Load_Bullet_test_Texture(i):
     player_img = pygame.image.load(f'textures/bullet/{i}.png').convert_alpha()
     player_img = pygame.transform.scale(player_img, (20, 20))
     player_img.set_colorkey((246, 246, 246))
 
     return player_img
+
+
 def Load_Enemy_Texture(i):
     enemy_img = pygame.image.load(f'textures/{i}.png').convert_alpha()
     enemy_img = pygame.transform.scale(enemy_img, (100, 100))
@@ -107,6 +110,3 @@ def Load_Buttons(self):
     self.screen.blit(img1, self.buttons[1])
     self.screen.blit(img2, self.buttons[2])
     self.screen.blit(img3, (self.screen_size[0] / 3 + 40, self.screen_size[1] / 3))
-
-
-
