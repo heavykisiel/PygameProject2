@@ -34,19 +34,12 @@ class Gameplay(pygame.sprite.Group):
         self.rectSizey = self.surface_size[1]  # 720
         self.spawn = [self.map_Data.maze_start_x, self.map_Data.maze_start_y]
         self.currentChunk = self.spawn
-        self.player = Player(
-            (540 + (self.currentChunk[0] * self.rectSizex),
-             360 + (self.currentChunk[1] * self.rectSizey)),
-            self.camera_group, self.screen, self.surface_size)
-        self.enemy = Enemy((560, 300), self.camera_group, self.screen, self.surface_size, self.player, "bulbazaurus")
-        self.enemy1 = Enemy((210, 200), self.camera_group, self.screen, self.surface_size, self.player, "ogier")
-        self.enemyGroup = pygame.sprite.Group()
-        self.enemyGroup.add(self.enemy)
-        self.enemyGroup.add(self.enemy1)
+        
         self.block_pixelsx = 30
         self.block_pixelsy = 30
         self.texture_count_per_tilex = 36
         self.texture_count_per_tiley = 24
+        
 
         # mnożenie block_pixels i texture count per title musi byc równe rectSize
 
@@ -68,6 +61,16 @@ class Gameplay(pygame.sprite.Group):
         self.MapRect = Rect(0, 0, self.map_Data.ChunksX * self.rectSizex, self.map_Data.ChunksY * self.rectSizey)
         self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
             self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)
+        
+        self.player = Player(
+            (540 + (self.currentChunk[0] * self.rectSizex),
+             360 + (self.currentChunk[1] * self.rectSizey)),
+            self.camera_group, self.screen, self.surface_size)
+        self.enemy = Enemy((560-self.ground_offset[0], 300-self.ground_offset[1]), self.camera_group, self.screen, self.surface_size, self.player, "bulbazaurus")
+        self.enemy1 = Enemy((210-self.ground_offset[0], 200-self.ground_offset[1]), self.camera_group, self.screen, self.surface_size, self.player, "ogier")
+        self.enemyGroup = pygame.sprite.Group()
+        self.enemyGroup.add(self.enemy)
+        self.enemyGroup.add(self.enemy1) 
 
     def drawMap(self, player):
         # player interaction with map elements
@@ -87,24 +90,22 @@ class Gameplay(pygame.sprite.Group):
             enemy.draw(self.ground_offset)
             enemy.status(self.player)
             enemy.enemybulletGroup.update()
-            enemy.enemybulletGroup.draw(self.screen)
+            for bullets in enemy.enemybulletGroup:
+                    self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
+                
+            if enemy.shooting:
+                enemy.shoot()
 
         # self.return_gamedata()
         self.screen.blit(player.image, self.player.rect.topleft + self.ground_offset)
         # pygame.draw.rect(self.screen, (255, 255, 0), self.player.rect)
-        for enemy in self.enemyGroup:
-            enemy.direction_distance(self.player)
-            enemy.draw(self.ground_offset)
-            enemy.status(self.player)
-            enemy.enemybulletGroup.update()
-            enemy.enemybulletGroup.draw(self.screen)
-
+        
         if self.player.shooting:
-            self.player.shoot(self.ground_offset)
+            self.player.shoot()
 
         self.player.bulletGroup.update()
-
-        self.player.bulletGroup.draw(self.screen)
+        for bullets in self.player.bulletGroup:
+                    self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
 
     def GamePlay_Logic(self, player):
         # normalize movement player
@@ -197,7 +198,7 @@ class Gameplay(pygame.sprite.Group):
                     if enemy.alive:
                         self.player.health -= 20
                         print(self.player.health)
-
+                        print("TESTESTES")
                         for bullets in enemy.enemybulletGroup:
                             bullets.kill()
 
