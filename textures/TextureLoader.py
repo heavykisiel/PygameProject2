@@ -26,9 +26,9 @@ def Load_Bullet_test_Texture(i):
     return player_img
 
 
-def Load_Enemy_Texture(i):
-    enemy_img = pygame.image.load(f'textures/{i}.png').convert_alpha()
-    enemy_img = pygame.transform.scale(enemy_img, (100, 100))
+def Load_Enemy_Texture(name,side,i):
+    enemy_img = pygame.image.load(f'textures/enemies/{name}/{side}/{i}.png').convert_alpha()
+    enemy_img = pygame.transform.scale(enemy_img, (64, 64))
     enemy_img.set_colorkey((246, 246, 246))
 
     return enemy_img
