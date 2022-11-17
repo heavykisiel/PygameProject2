@@ -84,6 +84,10 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
         wall_block_block = pygame.image.load('textures/maptex/MID.png').convert()
         wall_block_block = pygame.transform.scale(wall_block_block, (block_pixels_x, block_pixels_y))
         return wall_block_block
+    elif id_block == 10:
+        grass_block = pygame.image.load('textures/grass.jpg').convert()
+        grass_block = pygame.transform.scale(grass_block, (block_pixels_x, block_pixels_y))
+        return grass_block
 
 
 def LoadingScreenAnimation(screen, screenSize, i, bg):

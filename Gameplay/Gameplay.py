@@ -12,6 +12,7 @@ from Enemy import Enemy
 from .Utilities.GameplayUtilities import OptedWalls
 from .Utilities.GameplayUtilities import detect_rect_colliders
 from .Utilities.GameplayUtilities import doors
+from .Utilities.GameplayUtilities import one_door_rooms
 
 
 class Gameplay(pygame.sprite.Group):
@@ -34,12 +35,10 @@ class Gameplay(pygame.sprite.Group):
         self.rectSizey = self.surface_size[1]  # 720
         self.spawn = [self.map_Data.maze_start_x, self.map_Data.maze_start_y]
         self.currentChunk = self.spawn
-        
         self.block_pixelsx = 30
         self.block_pixelsy = 30
         self.texture_count_per_tilex = 36
         self.texture_count_per_tiley = 24
-        
 
         # mnożenie block_pixels i texture count per title musi byc równe rectSize
 
@@ -53,24 +52,30 @@ class Gameplay(pygame.sprite.Group):
         self.eastSouthWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 7)
         self.westSouthWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 8)
         self.midWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 9)
+        self.grass_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 10)
 
         self.doorlistv2 = doors(self)
         self.wall_collider_rect = detect_rect_colliders(self)
         self.doorlist = None
         self.walls_opti = OptedWalls(self)
+        self.OneDoorRooms = one_door_rooms(self)
+        print(self.OneDoorRooms)
+        print("@@@@@@@@@@@@@@@@@")
         self.MapRect = Rect(0, 0, self.map_Data.ChunksX * self.rectSizex, self.map_Data.ChunksY * self.rectSizey)
         self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
             self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)
-        
+
         self.player = Player(
             (540 + (self.currentChunk[0] * self.rectSizex),
              360 + (self.currentChunk[1] * self.rectSizey)),
             self.camera_group, self.screen, self.surface_size)
-        self.enemy = Enemy((560-self.ground_offset[0], 300-self.ground_offset[1]), self.camera_group, self.screen, self.surface_size, self.player, "skeleton")
-        self.enemy1 = Enemy((210-self.ground_offset[0], 200-self.ground_offset[1]), self.camera_group, self.screen, self.surface_size, self.player, "destroyer")
+        self.enemy = Enemy((560 - self.ground_offset[0], 300 - self.ground_offset[1]), self.camera_group, self.screen,
+                           self.surface_size, self.player, "skeleton")
+        self.enemy1 = Enemy((210 - self.ground_offset[0], 200 - self.ground_offset[1]), self.camera_group, self.screen,
+                            self.surface_size, self.player, "destroyer")
         self.enemyGroup = pygame.sprite.Group()
         self.enemyGroup.add(self.enemy)
-        self.enemyGroup.add(self.enemy1) 
+        self.enemyGroup.add(self.enemy1)
 
     def drawMap(self, player):
         # player interaction with map elements
@@ -91,21 +96,19 @@ class Gameplay(pygame.sprite.Group):
             enemy.status(self.player)
             enemy.enemybulletGroup.update()
             for bullets in enemy.enemybulletGroup:
-                    self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
-                
+                self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
             if enemy.shooting:
                 enemy.shoot()
 
         # self.return_gamedata()
         self.screen.blit(player.image, self.player.rect.topleft + self.ground_offset)
         # pygame.draw.rect(self.screen, (255, 255, 0), self.player.rect)
-        
         if self.player.shooting:
             self.player.shoot()
 
         self.player.bulletGroup.update()
         for bullets in self.player.bulletGroup:
-                    self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
+            self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
 
     def GamePlay_Logic(self, player):
         # normalize movement player
@@ -156,6 +159,10 @@ class Gameplay(pygame.sprite.Group):
                             offset_pos = tile[0] * self.rectSizex + rowC * self.block_pixelsx, \
                                          tile[1] * self.rectSizey + tileC * self.block_pixelsy
                             self.screen.blit(self.floor_tex, offset_pos + self.ground_offset)
+        for x in self.OneDoorRooms:
+            offset_pos = x[0] * self.rectSizex + 16 * self.block_pixelsx, \
+                         x[1] * self.rectSizey + 12 * self.block_pixelsy
+            self.screen.blit(self.grass_tex, offset_pos + self.ground_offset)
 
     def draw_Borders(self):
         for x in self.wall_collider_rect:
@@ -172,6 +179,7 @@ class Gameplay(pygame.sprite.Group):
                     running = False
                     pygame.quit()
                     sys.exit()
+            self.screen.fill((0,0,0))
             self.camera_group.update()
             self.drawMap(self.player)
             self.camera_group.draw(self.player)
@@ -183,9 +191,8 @@ class Gameplay(pygame.sprite.Group):
                     pass
                 else:
                     for a in collide:
-                        a.rect.x -=a.speed
-                        a.rect.y -=a.speed
-                        
+                        a.rect.x -= a.speed
+                        a.rect.y -= a.speed
 
             for enemy in self.enemyGroup:
                 if pygame.sprite.spritecollide(enemy, self.player.bulletGroup, False):

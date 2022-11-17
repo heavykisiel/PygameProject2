@@ -8,8 +8,13 @@ class Map:
         self.ChunkMap = [[[0, 0, 0] for _ in range(self.ChunksX)] for _ in range(self.ChunksY)]
         self.maze_start_x = random.randint(1, self.ChunksX - 2)
         self.maze_start_y = random.randint(1, self.ChunksY - 2)
+        self.isMap_invalid = True
+        self.MapGen()
 
-        self.mapPrinter()
+
+    def MapGen(self):
+        while self.isMap_invalid:
+            self.mapPrinter()
 
     def mapPrinter(self):
         # render map coords
@@ -23,6 +28,7 @@ class Map:
         # [3] visited
         # [4] mobs can spawn
         visited = list()
+        backtracked_rooms = list()
         visited.append([self.maze_start_x, self.maze_start_y])
         self.ChunkMap[self.maze_start_x][self.maze_start_y] = [self.maze_start_x, self.maze_start_y, 'wnse', 1, 0]
         backtrack_count = 0
@@ -67,14 +73,21 @@ class Map:
                     self.setRoomValue(x_pos, y_pos + 1, 'w', 1)  # delete north wall next room
                     visited.append([x_pos, y_pos + 1])
             else:
+                #self.ChunkMap[x_pos][y_pos][4] = 1
                 backtracked_room = True
-                visited.pop()
+                a = visited.pop()
+                backtracked_rooms.append(a)
+                print(f"{a}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 backtrack_count += 1
             # set random mob spawn locations
-            self.ChunkMap[x_pos][y_pos][4] = random.randint(0, 1)
+            # self.ChunkMap[x_pos][y_pos][4] = random.randint(0, 1)
+            for x in backtracked_rooms:
+                self.ChunkMap[x[0]][x[1]][4] = 1
         for x in self.ChunkMap:
             print(x)
         print("end")
+        if len(backtracked_rooms) > 2:
+            self.isMap_invalid = False
         # TODO
         # można testy też do tego napisac
 
