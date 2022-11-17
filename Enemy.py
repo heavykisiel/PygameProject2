@@ -11,7 +11,7 @@ green = (0, 255, 0)
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, group, screen, surface_size, player, enemyName):
+    def __init__(self, pos, group, screen, surface_size, player, enemyName,speed):
         super().__init__(group)
 
         self.enemyName = enemyName
@@ -19,7 +19,6 @@ class Enemy(pygame.sprite.Sprite):
         self.index = 0
         self.animation_list = []
         self.action = 0
-        
         animation_folders = ['idle', 'attack']
         for animation in animation_folders:
             loop_list = []
@@ -40,7 +39,7 @@ class Enemy(pygame.sprite.Sprite):
         self.health = 100
         self.healthMax = 100
         self.healthMin = self.health
-        self.speed = 4
+        self.speed = speed
         self.speedBullet = 32
         self.shootCooldown = 0
         self.enemybulletGroup = pygame.sprite.Group()
@@ -49,6 +48,7 @@ class Enemy(pygame.sprite.Sprite):
         self.range = 200
         self.time = pygame.time.get_ticks()
         self.shootAnimationCooldown = 0
+        self.rangeTest = 20
         
     def animation(self):
         cooldown = 300
@@ -70,8 +70,8 @@ class Enemy(pygame.sprite.Sprite):
                
             
     def move(self):
+        
         if self.enemyName == "skeleton":
-           
             if self.moving:
                 
                 if self.direction.magnitude() != 0:
@@ -79,15 +79,15 @@ class Enemy(pygame.sprite.Sprite):
                 if self.distance >= 100:
                     self.rect.x += self.direction[0] * self.speed
                     self.rect.y += self.direction[1] * self.speed
+                
                     
 
         if self.enemyName == "destroyer":
-           
             if self.moving:
                 
                 if self.direction.magnitude() != 0:
                     self.direction = self.direction.normalize()
-                if self.distance >= 100:
+                if self.distance >= 30:
                     self.rect.x += self.direction[0] * self.speed
                     self.rect.y += self.direction[1] * self.speed
 
@@ -107,18 +107,43 @@ class Enemy(pygame.sprite.Sprite):
 
     def status(self, player):
         self.distance = self.direction_distance(player)[0]
-        if self.distance <= self.range:
-            self.actionMetod(1)
-            if self.action == 1 and self.index == (self.filesNumber-1):
-                self.shooting = True
-            self.moving = False
-            
+        
+        if self.enemyName == "skeleton":
+            if self.distance <= self.range:
+                self.actionMetod(1)
+                if self.action == 1 and self.index == (self.filesNumber-1):
+                    self.shooting = True 
+                self.moving = False
+            elif self.distance >= self.range:
+                self.moving = True
+                self.actionMetod(0)
+                self.ai()
+        if self.enemyName =="destroyer":
+            if self.distance < 30:
+                self.actionMetod(1)
+                if self.action ==1 and self.index == (self.filesNumber -2):
+                    self.shooting = True
+                self.moving = False
+            if self.distance >50:
+                self.moving = True
+                self.actionMetod(0)
+            if self.distance > 200:
+                self.moving = False
+                self.actionMetod(0)
+
                 
-           
-        elif self.distance >= self.range:
-            self.moving = True
-            self.actionMetod(0)
-            self.ai()
+    def mapCollide(self,chunk):
+        print("chunk mapy",chunk[0]*1080)
+        
+        print("rect enemy",self.rect.x)
+        if self.rect.x < chunk[0]*1080 +30:
+            self.rect.x += self.speed
+        if self.rect.x > chunk[0]*1080 +990:
+            self.rect.x -= self.speed
+        
+                   
+                   
+                    
             
     def draw(self, offset):
         self.offset = offset
@@ -146,6 +171,7 @@ class Enemy(pygame.sprite.Sprite):
         self.animation()
         self.check_alive()
         self.move()
+        
     
     def shoot(self):
         if self.shooting:

@@ -69,10 +69,8 @@ class Gameplay(pygame.sprite.Group):
             (540 + (self.currentChunk[0] * self.rectSizex),
              360 + (self.currentChunk[1] * self.rectSizey)),
             self.camera_group, self.screen, self.surface_size)
-        self.enemy = Enemy((560 - self.ground_offset[0], 300 - self.ground_offset[1]), self.camera_group, self.screen,
-                           self.surface_size, self.player, "skeleton")
-        self.enemy1 = Enemy((210 - self.ground_offset[0], 200 - self.ground_offset[1]), self.camera_group, self.screen,
-                            self.surface_size, self.player, "destroyer")
+        self.enemy = Enemy((560-self.ground_offset[0], 300-self.ground_offset[1]), self.camera_group, self.screen, self.surface_size, self.player, "skeleton",6)
+        self.enemy1 = Enemy((210-self.ground_offset[0], 200-self.ground_offset[1]), self.camera_group, self.screen, self.surface_size, self.player, "destroyer",4)
         self.enemyGroup = pygame.sprite.Group()
         self.enemyGroup.add(self.enemy)
         self.enemyGroup.add(self.enemy1)
@@ -94,6 +92,7 @@ class Gameplay(pygame.sprite.Group):
             enemy.direction_distance(self.player)
             enemy.draw(self.ground_offset)
             enemy.status(self.player)
+            enemy.mapCollide(self.currentChunk)
             enemy.enemybulletGroup.update()
             for bullets in enemy.enemybulletGroup:
                 self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
@@ -191,8 +190,10 @@ class Gameplay(pygame.sprite.Group):
                     pass
                 else:
                     for a in collide:
-                        a.rect.x -= a.speed
-                        a.rect.y -= a.speed
+                        #a.rect.x -=a.speed
+                        #a.rect.y -=a.speed
+                        pass
+                        
 
             for enemy in self.enemyGroup:
                 if pygame.sprite.spritecollide(enemy, self.player.bulletGroup, False):
