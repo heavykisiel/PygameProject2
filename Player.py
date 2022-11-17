@@ -41,60 +41,75 @@ class Player(pygame.sprite.Sprite):
         self.health = 100
         self.healthMax = 100
         self.healthMin = self.health
-        
+        self.animationStopped = True
         self.bulletGroup = pygame.sprite.Group()
         self.shooting = False
         self.time = pygame.time.get_ticks()
-
+        
+        
     def animation(self):
         cooldown = 100
         self.image = self.animation_list[self.action][self.index]
-
-        if pygame.time.get_ticks() - self.time > cooldown:
-            self.time = pygame.time.get_ticks()
-            self.index += 1
-        if self.index >= len(self.animation_list[self.action]):
+        if self.animationStopped == False:
+            if pygame.time.get_ticks() - self.time > cooldown :
+                self.time = pygame.time.get_ticks()
+                self.index += 1
+            if self.index >= len(self.animation_list[self.action]):
+                self.index = 0
+        else:
             self.index = 0
-
+    
     def actionMetod(self, newAction):
         if newAction != self.action:
             self.action = newAction
             self.index = 0
             self.time = pygame.time.get_ticks()
-
+            
     def input(self):
         keys = pygame.key.get_pressed()
+        if keys[pygame.K_RIGHT]:
+            self.animationStopped = False
+            self.direction.x = 1
+            self.playerDirection = 1
+            self.actionMetod(2)
+        elif keys[pygame.K_LEFT]:
+            self.animationStopped = False
+            self.playerDirection = -1
+            self.direction.x = -1
+            self.actionMetod(3)
+        else:
+            self.direction.x = 0       
+            self.animationStopped = True
         if keys[pygame.K_UP]:
+            
+            self.actionMetod(1)  
+            print(self.animationStopped)
             self.direction.y = -1
             self.playerDirection = -2
-            self.actionMetod(1)
+            self.animationStopped = False
+            
         elif keys[pygame.K_DOWN]:
+            self.animationStopped = False
             self.direction.y = 1
             self.playerDirection = 2
             self.actionMetod(0)
         else:
             self.direction.y = 0
-        if keys[pygame.K_RIGHT]:
-            self.direction.x = 1
-            self.playerDirection = 1
-            self.actionMetod(2)
-        elif keys[pygame.K_LEFT]:
-            self.playerDirection = -1
-            self.direction.x = -1
-            self.actionMetod(3)
-        else:
-            self.direction.x = 0
+            
+      
         if keys[pygame.K_SPACE]:
-            if self.shootCooldown == 0:
-                self.shootCooldown = 1
+            if self.shootSpaceCooldown == 0:
+                self.shootSpaceCooldown = 1
                 self.shooting = True
+                
+    
                 
     def timer(self):
         if self.shootCooldown > 0:
             self.shootCooldown -= 1
         if self.shootSpaceCooldown > 0:
             self.shootSpaceCooldown -= 1
-            
+        
     def update(self):
         self.timer()
         self.input()
