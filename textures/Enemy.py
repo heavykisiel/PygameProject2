@@ -3,6 +3,7 @@ import pygame
 from textures import TextureLoader
 from Bullets import Bullets
 
+
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos, group):
         super().__init__(group)

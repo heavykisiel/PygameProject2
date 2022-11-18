@@ -45,6 +45,8 @@ class Player(pygame.sprite.Sprite):
         self.bulletGroup = pygame.sprite.Group()
         self.shooting = False
         self.time = pygame.time.get_ticks()
+
+        self.BattleMode = False
         
         
     def animation(self):
@@ -95,12 +97,15 @@ class Player(pygame.sprite.Sprite):
             self.actionMetod(0)
         else:
             self.direction.y = 0
-            
-      
+
         if keys[pygame.K_SPACE]:
             if self.shootSpaceCooldown == 0:
                 self.shootSpaceCooldown = 1
                 self.shooting = True
+
+        if keys[pygame.K_q]:
+            self.BattleMode = False if self.BattleMode else True
+
                 
     
                 

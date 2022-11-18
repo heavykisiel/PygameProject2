@@ -1,3 +1,5 @@
+import random
+
 from pygame.rect import Rect
 
 
@@ -33,21 +35,20 @@ def detect_rect_colliders(self):
                             #                     tile[1] * self.rectSizey + tileC * self.block_pixelsy,
                             #                     self.block_pixelsx, self.block_pixelsy)
                             #     listb.append(door_pos)
-    print(f"lista len before: {len(lista)}")
     for door in self.doorlistv2:
         for xx in lista:
             if xx.contains(door):
-                print(f"{door}")
                 lista.remove(xx)
     print(f"door length: {len(self.doorlistv2)}  |  lista length after: {len(lista)} ")
     return lista
+
+
 def one_door_rooms(self):
     listC = list()
     for y, row in enumerate(self.map_Data.ChunkMap):
         for x, tile in enumerate(row):
             if tile:
                 doorStr = "wnse"
-                print(f"{tile[2]}")
                 if str(tile[2]).__contains__('w'):
                     doorStr = doorStr.replace('w', '')
                 if str(tile[2]).__contains__('n'):
@@ -60,8 +61,40 @@ def one_door_rooms(self):
                     listC.append(tile)
 
     return listC
-# def one_door_rooms_validation(listOneDoor):
-#     if len(listOneDoor) == 3:
+
+
+def one_door_rooms_validation(self):
+    if len(self.OneDoorRooms) > 2:
+        SpawnRoom = None
+        Extraction_list_of_rooms = list()
+        BonusRoomList = list()
+        for x in self.OneDoorRooms:
+            Extraction_list_of_rooms.append(x)
+            if x[0] == self.map_Data.maze_start_x and x[1] == self.map_Data.maze_start_y:
+                SpawnRoom = x
+        if SpawnRoom is not None:
+            Extraction_list_of_rooms.remove(SpawnRoom)
+            random_boos_room = random.choice(Extraction_list_of_rooms)
+            Extraction_list_of_rooms.remove(random_boos_room)
+            random_key_room = random.choice(Extraction_list_of_rooms)
+            Extraction_list_of_rooms.remove(random_key_room)
+            if len(Extraction_list_of_rooms) > 0:
+                for y in Extraction_list_of_rooms:
+                    BonusRoomList.append(y)
+                    Extraction_list_of_rooms.remove(y)
+            if len(Extraction_list_of_rooms) == 0:
+                returnData = {
+                    "SpawnRoom": SpawnRoom,
+                    "BossRoom": random_boos_room,
+                    "KeyRoom": random_key_room,
+                    "BonusRooms": BonusRoomList
+                }
+                return returnData
+        else:
+            raise Exception(f"there is not spawn location in OneDoorRooms")
+    else:
+        raise Exception(f"OneDoorRooms is less than 3 {len(self.OneDoorRooms)}")
+
 
 def doors(self):
     listC = list()
@@ -69,7 +102,6 @@ def doors(self):
         for x, tile in enumerate(row):
             if tile:
                 doorStr = "wnse"
-                print(f"{tile[2]}")
                 if str(tile[2]).__contains__('w'):
                     doorStr = doorStr.replace('w', '')
                 if str(tile[2]).__contains__('n'):
@@ -80,7 +112,6 @@ def doors(self):
                     doorStr = doorStr.replace('e', '')
                 if len(tile[2]) == 1:
                     self.map_Data
-                print(f"kierunek drzwii {doorStr} w chunku x:{tile[0]} y:{tile[1]}")
                 for rowC in range(self.texture_count_per_tilex):
                     for tileC in range(self.texture_count_per_tiley):
                         if doorStr.__contains__('n') and (rowC == 0 and

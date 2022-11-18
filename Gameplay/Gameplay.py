@@ -13,6 +13,7 @@ from .Utilities.GameplayUtilities import OptedWalls
 from .Utilities.GameplayUtilities import detect_rect_colliders
 from .Utilities.GameplayUtilities import doors
 from .Utilities.GameplayUtilities import one_door_rooms
+from .Utilities.GameplayUtilities import one_door_rooms_validation
 
 
 class Gameplay(pygame.sprite.Group):
@@ -59,8 +60,9 @@ class Gameplay(pygame.sprite.Group):
         self.doorlist = None
         self.walls_opti = OptedWalls(self)
         self.OneDoorRooms = one_door_rooms(self)
-        print(self.OneDoorRooms)
-        print("@@@@@@@@@@@@@@@@@")
+        self.isOneDoorRoomsvalidData = one_door_rooms_validation(self)
+        print("OneDoorRoomValidData ||||||||")
+        print(f"{self.isOneDoorRoomsvalidData}")
         self.MapRect = Rect(0, 0, self.map_Data.ChunksX * self.rectSizex, self.map_Data.ChunksY * self.rectSizey)
         self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
             self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)
@@ -69,8 +71,10 @@ class Gameplay(pygame.sprite.Group):
             (540 + (self.currentChunk[0] * self.rectSizex),
              360 + (self.currentChunk[1] * self.rectSizey)),
             self.camera_group, self.screen, self.surface_size)
-        self.enemy = Enemy((560-self.ground_offset[0], 300-self.ground_offset[1]), self.camera_group, self.screen, self.surface_size, self.player, "skeleton",6)
-        self.enemy1 = Enemy((210-self.ground_offset[0], 200-self.ground_offset[1]), self.camera_group, self.screen, self.surface_size, self.player, "destroyer",4)
+        self.enemy = Enemy((560 - self.ground_offset[0], 300 - self.ground_offset[1]), self.camera_group, self.screen,
+                           self.surface_size, self.player, "skeleton", 6)
+        self.enemy1 = Enemy((210 - self.ground_offset[0], 200 - self.ground_offset[1]), self.camera_group, self.screen,
+                            self.surface_size, self.player, "destroyer", 4)
         self.enemyGroup = pygame.sprite.Group()
         self.enemyGroup.add(self.enemy)
         self.enemyGroup.add(self.enemy1)
@@ -113,27 +117,28 @@ class Gameplay(pygame.sprite.Group):
         # normalize movement player
         if player.direction.magnitude() != 0:
             player.direction = player.direction.normalize()
-
+        # if self.player.BattleMode:
+        #     print("BattleMode True")
+        # else:
+        #     print("false 1")
         # player movement
         self.player.rect.x += player.direction.x * self.player.speed
         self.player.rect.y += player.direction.y * self.player.speed
-        # print(self.player.rect.center)
+
         # wall interaction
         for x in self.wall_collider_rect:
             if player.rect.colliderect(x):
-                print(f"collided with wall")
-                print(f"player.rect.left: {self.player.rect.left}    |   x.right: {x.right}")
                 if abs(player.rect.top - x.bottom) < 20:
-                    print(f"player hit top")
+
                     self.player.rect.y = x.bottom
                 if abs(player.rect.left - x.right) < 20:
-                    print(f"player hit left")
+
                     self.player.rect.x = x.right
                 if abs(player.rect.right - x.left) < 20:
-                    print(f"player hit right")
+
                     self.player.rect.x = x.left - self.player.rect.width
                 if abs(player.rect.bottom - 30 - x.top) < 20:
-                    print(f"player hit bottom")
+
                     self.player.rect.y = x.top - self.player.rect.height
         # current chunk update
         if self.player.rect.centerx < 0 + (self.currentChunk[0] * self.rectSizex):
@@ -178,7 +183,7 @@ class Gameplay(pygame.sprite.Group):
                     running = False
                     pygame.quit()
                     sys.exit()
-            self.screen.fill((0,0,0))
+            self.screen.fill((0, 0, 0))
             self.camera_group.update()
             self.drawMap(self.player)
             self.camera_group.draw(self.player)
@@ -190,10 +195,9 @@ class Gameplay(pygame.sprite.Group):
                     pass
                 else:
                     for a in collide:
-                        #a.rect.x -=a.speed
-                        #a.rect.y -=a.speed
+                        # a.rect.x -=a.speed
+                        # a.rect.y -=a.speed
                         pass
-                        
 
             for enemy in self.enemyGroup:
                 if pygame.sprite.spritecollide(enemy, self.player.bulletGroup, False):
@@ -208,7 +212,6 @@ class Gameplay(pygame.sprite.Group):
                     if enemy.alive:
                         self.player.health -= 20
                         print(self.player.health)
-                        print("TESTESTES")
                         for bullets in enemy.enemybulletGroup:
                             bullets.kill()
 
