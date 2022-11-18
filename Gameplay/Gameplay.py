@@ -14,6 +14,7 @@ from .Utilities.GameplayUtilities import detect_rect_colliders
 from .Utilities.GameplayUtilities import doors
 from .Utilities.GameplayUtilities import one_door_rooms
 from .Utilities.GameplayUtilities import one_door_rooms_validation
+from .Utilities.GameplayUtilities import room_function_setter
 
 
 class Gameplay(pygame.sprite.Group):
@@ -57,10 +58,10 @@ class Gameplay(pygame.sprite.Group):
 
         self.doorlistv2 = doors(self)
         self.wall_collider_rect = detect_rect_colliders(self)
-        self.doorlist = None
         self.walls_opti = OptedWalls(self)
         self.OneDoorRooms = one_door_rooms(self)
         self.isOneDoorRoomsvalidData = one_door_rooms_validation(self)
+        self.Room_Function_setter = room_function_setter(self)
         print("OneDoorRoomValidData ||||||||")
         print(f"{self.isOneDoorRoomsvalidData}")
         self.MapRect = Rect(0, 0, self.map_Data.ChunksX * self.rectSizex, self.map_Data.ChunksY * self.rectSizey)
@@ -117,10 +118,7 @@ class Gameplay(pygame.sprite.Group):
         # normalize movement player
         if player.direction.magnitude() != 0:
             player.direction = player.direction.normalize()
-        # if self.player.BattleMode:
-        #     print("BattleMode True")
-        # else:
-        #     print("false 1")
+
         # player movement
         self.player.rect.x += player.direction.x * self.player.speed
         self.player.rect.y += player.direction.y * self.player.speed
@@ -143,12 +141,16 @@ class Gameplay(pygame.sprite.Group):
         # current chunk update
         if self.player.rect.centerx < 0 + (self.currentChunk[0] * self.rectSizex):
             self.currentChunk[0] -= 1
+            self.OnNewRoom()
         if self.player.rect.centery < 0 + (self.currentChunk[1] * self.rectSizey):
             self.currentChunk[1] -= 1
+            self.OnNewRoom()
         if self.player.rect.centerx > self.rectSizex + (self.currentChunk[0] * self.rectSizex):
             self.currentChunk[0] += 1
+            self.OnNewRoom()
         if self.player.rect.centery > self.rectSizey + (self.currentChunk[1] * self.rectSizey):
             self.currentChunk[1] += 1
+            self.OnNewRoom()
         # Update offset
         self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
             self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)
@@ -167,6 +169,13 @@ class Gameplay(pygame.sprite.Group):
             offset_pos = x[0] * self.rectSizex + 16 * self.block_pixelsx, \
                          x[1] * self.rectSizey + 12 * self.block_pixelsy
             self.screen.blit(self.grass_tex, offset_pos + self.ground_offset)
+
+    def OnNewRoom(self):
+        # Battle Mode Update
+        if self.player.BattleMode:
+            print("true 1")
+        else:
+            print("false 0")
 
     def draw_Borders(self):
         for x in self.wall_collider_rect:

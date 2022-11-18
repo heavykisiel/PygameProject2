@@ -95,6 +95,24 @@ def one_door_rooms_validation(self):
     else:
         raise Exception(f"OneDoorRooms is less than 3 {len(self.OneDoorRooms)}")
 
+def room_function_setter(self):
+    specialRoomData = self.isOneDoorRoomsvalidData
+    for enumx, x in enumerate(self.map_Data.ChunkMap):
+        for enumy, y in enumerate(x):
+            if specialRoomData["SpawnRoom"][0] == y[0] and specialRoomData["SpawnRoom"][1] == y[1]:
+                self.map_Data.ChunkMap[enumx][enumy][4] = "Spawn"
+            if specialRoomData["KeyRoom"][0] == y[0] and specialRoomData["KeyRoom"][1] == y[1]:
+                self.map_Data.ChunkMap[enumx][enumy][4] = "Key"
+            if specialRoomData["BossRoom"][0] == y[0] and specialRoomData["BossRoom"][1] == y[1]:
+                self.map_Data.ChunkMap[enumx][enumy][4] = "Boss"
+            if specialRoomData is not None:
+                for i in specialRoomData["BonusRooms"]:
+                    if i[0] == y[0] and i[1] == y[1]:
+                        self.map_Data.ChunkMap[enumx][enumy][4] = "Bonus"
+    for z in self.map_Data.ChunkMap:
+        print(z)
+    return self.map_Data.ChunkMap
+
 
 def doors(self):
     listC = list()

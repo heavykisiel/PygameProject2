@@ -12,26 +12,31 @@ class Map:
         self.isMap_invalid = True
         self.MapGen()
 
-
     def MapGen(self):
+        i = 0
         while self.isMap_invalid:
+            i += 1
             self.mapPrinter()
+        print(f"map generation with doors on {i} attempt")
+        for x in self.ChunkMap:
+            print(x)
+        print("end")
 
     def mapPrinter(self):
         # render map coords
         for enumx, x in enumerate(self.ChunkMap):
             for enumy, y in enumerate(x):
-                self.ChunkMap[enumx][enumy] = [enumx, enumy, 'wnse', 0, 0]
+                self.ChunkMap[enumx][enumy] = [enumx, enumy, 'wnse', 0, ""]
         # random spawn
         # [0] maze_start_x = random.randint(1, self.ChunksX - 2)
         # [1]maze_start_y = random.randint(1, self.ChunksY - 2)
         # [2] walls
         # [3] visited
-        # [4] mobs can spawn
+        # [4] room Function
         visited = list()
         backtracked_rooms = list()
         visited.append([self.maze_start_x, self.maze_start_y])
-        self.ChunkMap[self.maze_start_x][self.maze_start_y] = [self.maze_start_x, self.maze_start_y, 'wnse', 1, 0]
+        self.ChunkMap[self.maze_start_x][self.maze_start_y] = [self.maze_start_x, self.maze_start_y, 'wnse', 1, ""]
         backtrack_count = 0
         backtracked_room = False
         while self.ChunksX * self.ChunksY > len(visited) + backtrack_count:
@@ -75,11 +80,7 @@ class Map:
                 backtrack_count += 1
             # set random mob spawn locations
             # self.ChunkMap[x_pos][y_pos][4] = random.randint(0, 1)
-            for x in backtracked_rooms:
-                self.ChunkMap[x[0]][x[1]][4] = 1
-        for x in self.ChunkMap:
-            print(x)
-        print("end")
+
         if len(backtracked_rooms) > 2:
             visited[len(visited)-1]
             self.isMap_invalid = False

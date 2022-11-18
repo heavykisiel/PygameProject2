@@ -84,8 +84,7 @@ class Player(pygame.sprite.Sprite):
             self.animationStopped = True
         if keys[pygame.K_UP]:
             
-            self.actionMetod(1)  
-            print(self.animationStopped)
+            self.actionMetod(1)
             self.direction.y = -1
             self.playerDirection = -2
             self.animationStopped = False
@@ -102,7 +101,7 @@ class Player(pygame.sprite.Sprite):
             if self.shootSpaceCooldown == 0:
                 self.shootSpaceCooldown = 1
                 self.shooting = True
-
+        #BattleMode swith -- dev tool
         if keys[pygame.K_q]:
             self.BattleMode = False if self.BattleMode else True
 
