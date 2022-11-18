@@ -88,6 +88,11 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
         grass_block = pygame.image.load('textures/grass.jpg').convert()
         grass_block = pygame.transform.scale(grass_block, (block_pixels_x, block_pixels_y))
         return grass_block
+    elif id_block == 11:
+        Key_tex = pygame.image.load('textures/items/key_boss.png').convert()
+        Key_tex = pygame.transform.scale(Key_tex, (block_pixels_x, block_pixels_y))
+        Key_tex.set_colorkey((255, 255, 255))
+        return Key_tex
 
 
 def LoadingScreenAnimation(screen, screenSize, i, bg):

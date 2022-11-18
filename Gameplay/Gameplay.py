@@ -55,15 +55,21 @@ class Gameplay(pygame.sprite.Group):
         self.westSouthWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 8)
         self.midWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 9)
         self.grass_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 10)
+        self.key_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 11)
 
         self.doorlistv2 = doors(self)
         self.wall_collider_rect = detect_rect_colliders(self)
         self.walls_opti = OptedWalls(self)
         self.OneDoorRooms = one_door_rooms(self)
         self.isOneDoorRoomsvalidData = one_door_rooms_validation(self)
-        self.Room_Function_setter = room_function_setter(self)
         print("OneDoorRoomValidData ||||||||")
-        print(f"{self.isOneDoorRoomsvalidData}")
+        print(f"{self.isOneDoorRoomsvalidData} \t")
+        print()
+        self.Room_Function_setter = room_function_setter(self)
+        self.map_Data = self.Room_Function_setter
+        for z in self.map_Data.ChunkMap:
+            print(z)
+
         self.MapRect = Rect(0, 0, self.map_Data.ChunksX * self.rectSizex, self.map_Data.ChunksY * self.rectSizey)
         self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
             self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)
@@ -166,9 +172,15 @@ class Gameplay(pygame.sprite.Group):
                                          tile[1] * self.rectSizey + tileC * self.block_pixelsy
                             self.screen.blit(self.floor_tex, offset_pos + self.ground_offset)
         for x in self.OneDoorRooms:
-            offset_pos = x[0] * self.rectSizex + 16 * self.block_pixelsx, \
+            if x[4] == 'Key':
+                # render key
+                offset_pos = x[0] * self.rectSizex + 16 * self.block_pixelsx, \
+                             x[1] * self.rectSizey + 12 * self.block_pixelsy
+                self.screen.blit(self.key_tex, offset_pos + self.ground_offset)
+            else:
+                offset_pos = x[0] * self.rectSizex + 16 * self.block_pixelsx, \
                          x[1] * self.rectSizey + 12 * self.block_pixelsy
-            self.screen.blit(self.grass_tex, offset_pos + self.ground_offset)
+                self.screen.blit(self.grass_tex, offset_pos + self.ground_offset)
 
     def OnNewRoom(self):
         # Battle Mode Update

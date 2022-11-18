@@ -109,9 +109,7 @@ def room_function_setter(self):
                 for i in specialRoomData["BonusRooms"]:
                     if i[0] == y[0] and i[1] == y[1]:
                         self.map_Data.ChunkMap[enumx][enumy][4] = "Bonus"
-    for z in self.map_Data.ChunkMap:
-        print(z)
-    return self.map_Data.ChunkMap
+    return self.map_Data
 
 
 def doors(self):
