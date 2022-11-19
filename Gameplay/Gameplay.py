@@ -221,20 +221,17 @@ class Gameplay(pygame.sprite.Group):
                         pass
 
             for enemy in self.enemyGroup:
-                if pygame.sprite.spritecollide(enemy, self.player.bulletGroup, False):
+                if pygame.sprite.spritecollide(enemy, self.player.bulletGroup, True):
                     if enemy.alive:
                         enemy.healthMin -= 20
                         enemy.health -= 20
 
-                        for bullets in self.player.bulletGroup:
-                            bullets.kill()
+                       
 
-                if pygame.sprite.spritecollide(self.player, enemy.enemybulletGroup, False):
+                if pygame.sprite.spritecollide(self.player, enemy.enemybulletGroup, True):
                     if enemy.alive:
                         self.player.health -= 20
-                        print(self.player.health)
-                        for bullets in enemy.enemybulletGroup:
-                            bullets.kill()
+                        
 
             pygame.display.update()
             pygame.time.Clock().tick(60)
