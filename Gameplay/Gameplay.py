@@ -62,9 +62,6 @@ class Gameplay(pygame.sprite.Group):
         self.walls_opti = OptedWalls(self)
         self.OneDoorRooms = one_door_rooms(self)
         self.isOneDoorRoomsvalidData = one_door_rooms_validation(self)
-        print("OneDoorRoomValidData ||||||||")
-        print(f"{self.isOneDoorRoomsvalidData} \t")
-        print()
         self.Room_Function_setter = room_function_setter(self)
         self.map_Data = self.Room_Function_setter
         for z in self.map_Data.ChunkMap:

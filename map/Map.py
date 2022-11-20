@@ -52,9 +52,6 @@ class Map:
             if y_pos < self.ChunksY - 1 and self.ChunkMap[x_pos][y_pos + 1][3] == 0:
                 stri += 'e'
             if stri != "":
-                if backtracked_room and backtrack_count == 1:
-                    self.ChunkMap[x_pos][y_pos][4] = 1
-                    backtracked_room = False
                 random_wall = random.choice(stri)
                 if random_wall.__contains__('n'):
                     self.setRoomValue(x_pos, y_pos, 'n', 1)  # delete north wall

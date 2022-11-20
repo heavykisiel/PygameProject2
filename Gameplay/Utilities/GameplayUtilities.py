@@ -72,6 +72,10 @@ def one_door_rooms_validation(self):
             Extraction_list_of_rooms.append(x)
             if x[0] == self.map_Data.maze_start_x and x[1] == self.map_Data.maze_start_y:
                 SpawnRoom = x
+        if SpawnRoom is None:
+            print("error")
+            raise Exception("NONE SPAWNROOM")
+
         if SpawnRoom is not None:
             Extraction_list_of_rooms.remove(SpawnRoom)
             random_boos_room = random.choice(Extraction_list_of_rooms)
@@ -79,9 +83,11 @@ def one_door_rooms_validation(self):
             random_key_room = random.choice(Extraction_list_of_rooms)
             Extraction_list_of_rooms.remove(random_key_room)
             if len(Extraction_list_of_rooms) > 0:
-                for y in Extraction_list_of_rooms:
-                    BonusRoomList.append(y)
-                    Extraction_list_of_rooms.remove(y)
+                while len(Extraction_list_of_rooms) > 0:
+                    BonusRoomList.append(Extraction_list_of_rooms.pop())
+                print(f"BonusRoomList: {BonusRoomList}")
+                print(f"Extraction_list_of_rooms: {Extraction_list_of_rooms} len : {len(Extraction_list_of_rooms)}")
+
             if len(Extraction_list_of_rooms) == 0:
                 returnData = {
                     "SpawnRoom": SpawnRoom,
@@ -89,21 +95,33 @@ def one_door_rooms_validation(self):
                     "KeyRoom": random_key_room,
                     "BonusRooms": BonusRoomList
                 }
+                print(returnData)
                 return returnData
+            else:
+                raise Exception(f"Propably not all elements are properly deleted in Extraction_list_of_rooms: {Extraction_list_of_rooms}")
+                return 1234 # will cause error
         else:
-            raise Exception(f"there is not spawn location in OneDoorRooms")
+            raise Exception(f"SpawnRoom is None. SpawnRoom: {SpawnRoom}")
+            return 1235 # will cause error
+
     else:
-        raise Exception(f"OneDoorRooms is less than 3 {len(self.OneDoorRooms)}")
+        raise Exception(f"OneDoorRooms.len is less than 2. OneDoorRooms.len: {self.OneDoorRooms} OneDoorRooms.len {len(self.OneDoorRooms)}")
+        return 1236 # will cause error
 
 def room_function_setter(self):
     specialRoomData = self.isOneDoorRoomsvalidData
+    if specialRoomData is None:
+        raise Exception("None!!!")
+    if specialRoomData['SpawnRoom'] is None:
+        raise Exception("None SpawnRoom")
     for enumx, x in enumerate(self.map_Data.ChunkMap):
         for enumy, y in enumerate(x):
-            if specialRoomData["SpawnRoom"][0] == y[0] and specialRoomData["SpawnRoom"][1] == y[1]:
+            # print(f"{specialRoomData['SpawnRoom'][1]}=={y[1]},  {specialRoomData['SpawnRoom'][0]}=={y[0]}")
+            if specialRoomData["SpawnRoom"][0] == y[1] and specialRoomData["SpawnRoom"][1] == y[0]:
                 self.map_Data.ChunkMap[enumx][enumy][4] = "Spawn"
             if specialRoomData["KeyRoom"][0] == y[0] and specialRoomData["KeyRoom"][1] == y[1]:
                 self.map_Data.ChunkMap[enumx][enumy][4] = "Key"
-            if specialRoomData["BossRoom"][0] == y[0] and specialRoomData["BossRoom"][1] == y[1]:
+            if specialRoomData["BossRoom"][0] == y[1] and specialRoomData["BossRoom"][1] == y[0]:
                 self.map_Data.ChunkMap[enumx][enumy][4] = "Boss"
             if specialRoomData is not None:
                 for i in specialRoomData["BonusRooms"]:
