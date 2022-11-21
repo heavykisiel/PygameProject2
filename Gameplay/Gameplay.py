@@ -9,7 +9,7 @@ from map import Map
 from textures.TextureLoader import Load_Block_Textures
 from Player import Player
 from Enemy import Enemy
-from .Utilities.GameplayUtilities import OptedWalls
+from .Utilities.GameplayUtilities import OptedWalls, add_mob_chunks
 from .Utilities.GameplayUtilities import detect_rect_colliders
 from .Utilities.GameplayUtilities import doors
 from .Utilities.GameplayUtilities import one_door_rooms
@@ -64,6 +64,7 @@ class Gameplay(pygame.sprite.Group):
         self.isOneDoorRoomsvalidData = one_door_rooms_validation(self)
         self.Room_Function_setter = room_function_setter(self)
         self.map_Data = self.Room_Function_setter
+        self.map_Data = add_mob_chunks(self)
         for z in self.map_Data.ChunkMap:
             print(z)
 
@@ -180,11 +181,25 @@ class Gameplay(pygame.sprite.Group):
                 self.screen.blit(self.grass_tex, offset_pos + self.ground_offset)
 
     def OnNewRoom(self):
+
+        if self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4] == "Spawn":
+            print("spawn")
+        elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4] == "Key":
+            print("key")
+        elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4] == "Boss":
+            print("boss")
+        elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4] == "Bonus":
+            print("bonus")
+        elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:
+            print(f"there should be {self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count} mobs")
+        elif not self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:
+            print("there shouldnt be any mobs")
+
         # Battle Mode Update
-        if self.player.BattleMode:
-            print("true 1")
-        else:
-            print("false 0")
+        # if self.player.BattleMode:
+        #     print("true 1")
+        # else:
+        #     print("false 0")
 
     def draw_Borders(self):
         for x in self.wall_collider_rect:

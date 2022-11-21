@@ -2,6 +2,8 @@ import random
 
 from pygame.rect import Rect
 
+from roomData import roomData
+
 
 def OptedWalls(gameplay):
     # currently unused
@@ -108,6 +110,15 @@ def one_door_rooms_validation(self):
         raise Exception(f"OneDoorRooms.len is less than 2. OneDoorRooms.len: {self.OneDoorRooms} OneDoorRooms.len {len(self.OneDoorRooms)}")
         return 1236 # will cause error
 
+def add_mob_chunks(self):
+    listC = list()
+    for enumx, x in enumerate(self.map_Data.ChunkMap):
+        for enumy, y in enumerate(x):
+            if y[4] == '':
+                self.map_Data.ChunkMap[enumx][enumy][4] = roomData()
+    return self.map_Data
+
+
 def room_function_setter(self):
     specialRoomData = self.isOneDoorRoomsvalidData
     if specialRoomData is None:
@@ -117,11 +128,11 @@ def room_function_setter(self):
     for enumx, x in enumerate(self.map_Data.ChunkMap):
         for enumy, y in enumerate(x):
             # print(f"{specialRoomData['SpawnRoom'][1]}=={y[1]},  {specialRoomData['SpawnRoom'][0]}=={y[0]}")
-            if specialRoomData["SpawnRoom"][0] == y[1] and specialRoomData["SpawnRoom"][1] == y[0]:
+            if specialRoomData["SpawnRoom"][0] == y[0] and specialRoomData["SpawnRoom"][1] == y[1]:
                 self.map_Data.ChunkMap[enumx][enumy][4] = "Spawn"
             if specialRoomData["KeyRoom"][0] == y[0] and specialRoomData["KeyRoom"][1] == y[1]:
                 self.map_Data.ChunkMap[enumx][enumy][4] = "Key"
-            if specialRoomData["BossRoom"][0] == y[1] and specialRoomData["BossRoom"][1] == y[0]:
+            if specialRoomData["BossRoom"][0] == y[0] and specialRoomData["BossRoom"][1] == y[1]:
                 self.map_Data.ChunkMap[enumx][enumy][4] = "Boss"
             if specialRoomData is not None:
                 for i in specialRoomData["BonusRooms"]:
