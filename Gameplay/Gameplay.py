@@ -143,18 +143,37 @@ class Gameplay(pygame.sprite.Group):
 
                     self.player.rect.y = x.top - self.player.rect.height
         # current chunk update
-        if self.player.rect.centerx < 0 + (self.currentChunk[0] * self.rectSizex):
-            self.currentChunk[0] -= 1
-            self.OnNewRoom()
-        if self.player.rect.centery < 0 + (self.currentChunk[1] * self.rectSizey):
-            self.currentChunk[1] -= 1
-            self.OnNewRoom()
-        if self.player.rect.centerx > self.rectSizex + (self.currentChunk[0] * self.rectSizex):
-            self.currentChunk[0] += 1
-            self.OnNewRoom()
-        if self.player.rect.centery > self.rectSizey + (self.currentChunk[1] * self.rectSizey):
-            self.currentChunk[1] += 1
-            self.OnNewRoom()
+        if self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:
+
+            # Filip tutaj dodaj, że się moby spawnują i w zależności od .mobs_count
+
+
+
+            # nie można wyjśc dopuki się wszystkich mobów nie pokona
+            ax = self.currentChunk[0] * self.rectSizex
+            ay = self.currentChunk[1] * self.rectSizey
+            if abs(player.rect.top - ay) < 17:
+                self.player.rect.y = ay + 17
+            if abs(player.rect.left - ax) < 17:
+                self.player.rect.x = ax + 17
+            if abs(player.rect.right - (ax + self.rectSizex - 10)) < 17:
+                self.player.rect.x = ax + self.rectSizex - 50
+            if abs(player.rect.bottom - (ay + self.rectSizey - 10)) < 17:
+                self.player.rect.y = ay + self.rectSizey - 80
+
+        else:
+            if self.player.rect.centerx < 0 + (self.currentChunk[0] * self.rectSizex):
+                self.currentChunk[0] -= 1
+                self.OnNewRoom()
+            if self.player.rect.centery < 0 + (self.currentChunk[1] * self.rectSizey):
+                self.currentChunk[1] -= 1
+                self.OnNewRoom()
+            if self.player.rect.centerx > self.rectSizex + (self.currentChunk[0] * self.rectSizex):
+                self.currentChunk[0] += 1
+                self.OnNewRoom()
+            if self.player.rect.centery > self.rectSizey + (self.currentChunk[1] * self.rectSizey):
+                self.currentChunk[1] += 1
+                self.OnNewRoom()
         # Update offset
         self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
             self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)

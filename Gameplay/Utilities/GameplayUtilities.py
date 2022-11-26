@@ -101,21 +101,17 @@ def one_door_rooms_validation(self):
                 return returnData
             else:
                 raise Exception(f"Propably not all elements are properly deleted in Extraction_list_of_rooms: {Extraction_list_of_rooms}")
-                return 1234 # will cause error
         else:
             raise Exception(f"SpawnRoom is None. SpawnRoom: {SpawnRoom}")
-            return 1235 # will cause error
-
     else:
         raise Exception(f"OneDoorRooms.len is less than 2. OneDoorRooms.len: {self.OneDoorRooms} OneDoorRooms.len {len(self.OneDoorRooms)}")
-        return 1236 # will cause error
 
 def add_mob_chunks(self):
     listC = list()
     for enumx, x in enumerate(self.map_Data.ChunkMap):
         for enumy, y in enumerate(x):
             if y[4] == '':
-                self.map_Data.ChunkMap[enumx][enumy][4] = roomData()
+                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Room")
     return self.map_Data
 
 
@@ -129,15 +125,15 @@ def room_function_setter(self):
         for enumy, y in enumerate(x):
             # print(f"{specialRoomData['SpawnRoom'][1]}=={y[1]},  {specialRoomData['SpawnRoom'][0]}=={y[0]}")
             if specialRoomData["SpawnRoom"][0] == y[0] and specialRoomData["SpawnRoom"][1] == y[1]:
-                self.map_Data.ChunkMap[enumx][enumy][4] = "Spawn"
+                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Spawn")
             if specialRoomData["KeyRoom"][0] == y[0] and specialRoomData["KeyRoom"][1] == y[1]:
-                self.map_Data.ChunkMap[enumx][enumy][4] = "Key"
+                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Key")
             if specialRoomData["BossRoom"][0] == y[0] and specialRoomData["BossRoom"][1] == y[1]:
-                self.map_Data.ChunkMap[enumx][enumy][4] = "Boss"
+                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Boss")
             if specialRoomData is not None:
                 for i in specialRoomData["BonusRooms"]:
                     if i[0] == y[0] and i[1] == y[1]:
-                        self.map_Data.ChunkMap[enumx][enumy][4] = "Bonus"
+                        self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Bonus")
     return self.map_Data
 
 
@@ -155,8 +151,6 @@ def doors(self):
                     doorStr = doorStr.replace('s', '')
                 if str(tile[2]).__contains__('e'):
                     doorStr = doorStr.replace('e', '')
-                if len(tile[2]) == 1:
-                    self.map_Data
                 for rowC in range(self.texture_count_per_tilex):
                     for tileC in range(self.texture_count_per_tiley):
                         if doorStr.__contains__('n') and (rowC == 0 and
