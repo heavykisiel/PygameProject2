@@ -5,7 +5,7 @@ from pygame.rect import Rect
 from roomData import roomData
 
 
-def OptedWalls(gameplay):
+def opted_walls(gameplay):
     # currently unused
     a = list()
     for x in gameplay.wall_collider_rect:
@@ -46,23 +46,23 @@ def detect_rect_colliders(self):
 
 
 def one_door_rooms(self):
-    listC = list()
+    list_c = list()
     for y, row in enumerate(self.map_Data.ChunkMap):
         for x, tile in enumerate(row):
             if tile:
-                doorStr = "wnse"
+                door_str = "wnse"
                 if str(tile[2]).__contains__('w'):
-                    doorStr = doorStr.replace('w', '')
+                    door_str = door_str.replace('w', '')
                 if str(tile[2]).__contains__('n'):
-                    doorStr = doorStr.replace('n', '')
+                    door_str = door_str.replace('n', '')
                 if str(tile[2]).__contains__('s'):
-                    doorStr = doorStr.replace('s', '')
+                    door_str = door_str.replace('s', '')
                 if str(tile[2]).__contains__('e'):
-                    doorStr = doorStr.replace('e', '')
-                if len(doorStr) == 1:
-                    listC.append(tile)
+                    door_str = door_str.replace('e', '')
+                if len(door_str) == 1:
+                    list_c.append(tile)
 
-    return listC
+    return list_c
 
 
 def one_door_rooms_validation(self):
@@ -106,34 +106,35 @@ def one_door_rooms_validation(self):
     else:
         raise Exception(f"OneDoorRooms.len is less than 2. OneDoorRooms.len: {self.OneDoorRooms} OneDoorRooms.len {len(self.OneDoorRooms)}")
 
+
 def add_mob_chunks(self):
-    listC = list()
+
     for enumx, x in enumerate(self.map_Data.ChunkMap):
         for enumy, y in enumerate(x):
             if y[4] == '':
-                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Room")
+                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Room", (enumx, enumy))
     return self.map_Data
 
 
 def room_function_setter(self):
-    specialRoomData = self.isOneDoorRoomsvalidData
-    if specialRoomData is None:
+    special_room_data = self.isOneDoorRoomsvalidData
+    if special_room_data is None:
         raise Exception("None!!!")
-    if specialRoomData['SpawnRoom'] is None:
+    if special_room_data['SpawnRoom'] is None:
         raise Exception("None SpawnRoom")
     for enumx, x in enumerate(self.map_Data.ChunkMap):
         for enumy, y in enumerate(x):
-            # print(f"{specialRoomData['SpawnRoom'][1]}=={y[1]},  {specialRoomData['SpawnRoom'][0]}=={y[0]}")
-            if specialRoomData["SpawnRoom"][0] == y[0] and specialRoomData["SpawnRoom"][1] == y[1]:
-                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Spawn")
-            if specialRoomData["KeyRoom"][0] == y[0] and specialRoomData["KeyRoom"][1] == y[1]:
-                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Key")
-            if specialRoomData["BossRoom"][0] == y[0] and specialRoomData["BossRoom"][1] == y[1]:
-                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Boss")
-            if specialRoomData is not None:
-                for i in specialRoomData["BonusRooms"]:
+            # print(f"{special_room_data['SpawnRoom'][1]}=={y[1]},  {special_room_data['SpawnRoom'][0]}=={y[0]}")
+            if special_room_data["SpawnRoom"][0] == y[0] and special_room_data["SpawnRoom"][1] == y[1]:
+                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Spawn", (enumx, enumy))
+            if special_room_data["KeyRoom"][0] == y[0] and special_room_data["KeyRoom"][1] == y[1]:
+                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Key", (enumx, enumy))
+            if special_room_data["BossRoom"][0] == y[0] and special_room_data["BossRoom"][1] == y[1]:
+                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Boss", (enumx, enumy))
+            if special_room_data is not None:
+                for i in special_room_data["BonusRooms"]:
                     if i[0] == y[0] and i[1] == y[1]:
-                        self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Bonus")
+                        self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Bonus", (enumx, enumy))
     return self.map_Data
 
 

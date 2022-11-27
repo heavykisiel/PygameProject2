@@ -12,7 +12,7 @@ def LoadingScreenLoadTexture(screen_size):
 
 def Load_Front_Player_Texture(side, i):
     player_img = pygame.image.load(f'textures/player/{side}/{i}.png').convert_alpha()
-    player_img = pygame.transform.scale(player_img, (36, 56))
+    player_img = pygame.transform.scale(player_img, (40, 60))
 
     player_img.set_colorkey((246, 246, 246))
     return player_img
@@ -36,7 +36,7 @@ def Load_Enemy_Texture(name,side,i):
 
 def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
     if id_block == 0:
-        floor_block = pygame.image.load('textures/maptex/floor.png').convert()
+        floor_block = pygame.image.load('textures/maptex/Floor/floor.png').convert()
         floor_block = pygame.transform.scale(floor_block, (block_pixels_x, block_pixels_y))
         floor_block.set_colorkey((0, 0, 0))
         return floor_block
@@ -89,10 +89,25 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
         grass_block = pygame.transform.scale(grass_block, (block_pixels_x, block_pixels_y))
         return grass_block
     elif id_block == 11:
-        Key_tex = pygame.image.load('textures/items/key_boss.png').convert()
-        Key_tex = pygame.transform.scale(Key_tex, (block_pixels_x, block_pixels_y))
-        Key_tex.set_colorkey((255, 255, 255))
-        return Key_tex
+        key_tex = pygame.image.load('textures/items/key_boss.png').convert()
+        key_tex = pygame.transform.scale(key_tex, (block_pixels_x, block_pixels_y))
+        key_tex.set_colorkey((255, 255, 255))
+        return key_tex
+    elif id_block == 12:
+        floor1_tex = pygame.image.load('textures/maptex/Floor/v1.png').convert()
+        floor1_tex = pygame.transform.scale(floor1_tex, (block_pixels_x, block_pixels_y))
+        floor1_tex.set_colorkey((255, 255, 255))
+        return floor1_tex
+    elif id_block == 13:
+        floor2_tex = pygame.image.load('textures/maptex/Floor/v2.png').convert()
+        floor2_tex = pygame.transform.scale(floor2_tex, (block_pixels_x, block_pixels_y))
+        floor2_tex.set_colorkey((255, 255, 255))
+        return floor2_tex
+    elif id_block == 14:
+        floor3_tex = pygame.image.load('textures/maptex/Floor/v3.png').convert()
+        floor3_tex = pygame.transform.scale(floor3_tex, (block_pixels_x, block_pixels_y))
+        floor3_tex.set_colorkey((255, 255, 255))
+        return floor3_tex
 
 
 def LoadingScreenAnimation(screen, screenSize, i, bg):

@@ -10,7 +10,7 @@ from textures.TextureLoader import Load_Block_Textures
 from Player import Player
 from Enemy import Enemy
 from enums import MOBS
-from .Utilities.GameplayUtilities import OptedWalls, add_mob_chunks
+from .Utilities.GameplayUtilities import add_mob_chunks
 from .Utilities.GameplayUtilities import detect_rect_colliders
 from .Utilities.GameplayUtilities import doors
 from .Utilities.GameplayUtilities import one_door_rooms
@@ -38,14 +38,17 @@ class Gameplay(pygame.sprite.Group):
         self.rectSizey = self.surface_size[1]  # 720
         self.spawn = [self.map_Data.maze_start_x, self.map_Data.maze_start_y]
         self.currentChunk = self.spawn
-        self.block_pixelsx = 30
-        self.block_pixelsy = 30
-        self.texture_count_per_tilex = 36
-        self.texture_count_per_tiley = 24
+        self.block_pixelsx = 60
+        self.block_pixelsy = 60
+        self.texture_count_per_tilex = 18
+        self.texture_count_per_tiley = 12
 
         # mnożenie block_pixels i texture count per title musi byc równe rectSize
 
         self.floor_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 0)
+        self.floor1_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 12)
+        self.floor2_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 13)
+        self.floor3_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 14)
         self.eastWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 1)
         self.northWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 2)
         self.southWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 3)
@@ -60,7 +63,6 @@ class Gameplay(pygame.sprite.Group):
 
         self.doorlistv2 = doors(self)
         self.wall_collider_rect = detect_rect_colliders(self)
-        self.walls_opti = OptedWalls(self)
         self.OneDoorRooms = one_door_rooms(self)
         self.isOneDoorRoomsvalidData = one_door_rooms_validation(self)
         self.Room_Function_setter = room_function_setter(self)
@@ -77,9 +79,8 @@ class Gameplay(pygame.sprite.Group):
             (540 + (self.currentChunk[0] * self.rectSizex),
              360 + (self.currentChunk[1] * self.rectSizey)),
             self.camera_group, self.screen, self.surface_size)
-       
+
         self.enemyGroup = pygame.sprite.Group()
-        
 
     def drawMap(self, player):
         # player interaction with map elements
@@ -87,7 +88,7 @@ class Gameplay(pygame.sprite.Group):
         # fill screen with floor
         self.Draw_Floor()
         # fill screen with borders
-        self.draw_Borders()
+        self.draw_borders()
         # draw player
         self.screen.blit(player.image, self.player.rect.topleft + self.ground_offset)
 
@@ -129,21 +130,15 @@ class Gameplay(pygame.sprite.Group):
         for x in self.wall_collider_rect:
             if player.rect.colliderect(x):
                 if abs(player.rect.top - x.bottom) < 20:
-
                     self.player.rect.y = x.bottom
                 if abs(player.rect.left - x.right) < 20:
-
                     self.player.rect.x = x.right
                 if abs(player.rect.right - x.left) < 20:
-
                     self.player.rect.x = x.left - self.player.rect.width
                 if abs(player.rect.bottom - 30 - x.top) < 20:
-
                     self.player.rect.y = x.top - self.player.rect.height
         # current chunk update
         if self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:
-             
-
 
             # nie można wyjśc dopuki się wszystkich mobów nie pokona
             ax = self.currentChunk[0] * self.rectSizex
@@ -153,11 +148,11 @@ class Gameplay(pygame.sprite.Group):
             if abs(player.rect.left - ax) < 17:
                 self.player.rect.x = ax + 17
             if abs(player.rect.right - (ax + self.rectSizex - 10)) < 17:
-                self.player.rect.x = ax + self.rectSizex - 50
+                self.player.rect.x = ax + self.rectSizex - 60
             if abs(player.rect.bottom - (ay + self.rectSizey - 10)) < 17:
                 self.player.rect.y = ay + self.rectSizey - 80
-            if len(self.enemyGroup) ==0:
-                self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist = False    
+            if len(self.enemyGroup) == 0:
+                self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist = False
 
         else:
             if self.player.rect.centerx < 0 + (self.currentChunk[0] * self.rectSizex):
@@ -181,54 +176,48 @@ class Gameplay(pygame.sprite.Group):
         for y, row in enumerate(self.map_Data.ChunkMap):
             for x, tile in enumerate(row):
                 if tile:
-                    for rowC in range(self.texture_count_per_tilex):
-                        for tileC in range(self.texture_count_per_tiley):
-                            offset_pos = tile[0] * self.rectSizex + rowC * self.block_pixelsx, \
-                                         tile[1] * self.rectSizey + tileC * self.block_pixelsy
-                            self.screen.blit(self.floor_tex, offset_pos + self.ground_offset)
+                    tile[4].draw_floor(self.floor1_tex, self.screen, self.ground_offset, self.floor2_tex, self.floor3_tex)
+
         for x in self.OneDoorRooms:
-            if x[4] == 'Key':
+            if x[4].roomCode == 'Key':
                 # render key
-                offset_pos = x[0] * self.rectSizex + 16 * self.block_pixelsx, \
-                             x[1] * self.rectSizey + 12 * self.block_pixelsy
+                offset_pos = x[0] * self.rectSizex + 9 * self.block_pixelsx, \
+                             x[1] * self.rectSizey + 6 * self.block_pixelsy
                 self.screen.blit(self.key_tex, offset_pos + self.ground_offset)
             else:
-                offset_pos = x[0] * self.rectSizex + 16 * self.block_pixelsx, \
-                         x[1] * self.rectSizey + 12 * self.block_pixelsy
+                offset_pos = x[0] * self.rectSizex + 9 * self.block_pixelsx, \
+                             x[1] * self.rectSizey + 6 * self.block_pixelsy
                 self.screen.blit(self.grass_tex, offset_pos + self.ground_offset)
 
     def OnNewRoom(self):
 
-        if self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4] == "Spawn":
+        if self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Spawn":
             print("spawn")
-        elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4] == "Key":
+        elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Key":
             print("key")
-        elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4] == "Boss":
+        elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Boss":
             print("boss")
-        elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4] == "Bonus":
+        elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Bonus":
             print("bonus")
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:
             mobsCount = self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count
-            
-            for newEnemy in range (0, mobsCount):
-                    mobsType = MOBS[random.randint(0,len(MOBS)-1)]
-                    tempCurrentChunk = self.currentChunk
-                    enemy1 = Enemy(((self.currentChunk[0]*self.rectSizex) +random.randrange(100, 600),(self.currentChunk[1]*self.rectSizey)+random.randrange(100, 600)), self.camera_group, self.screen,
-                                self.surface_size, self.player, mobsType, 4,tempCurrentChunk)
-                    
-                    self.enemyGroup.add(enemy1) 
-                     
-            print(f"there should be {self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count} mobs")
+
+            for newEnemy in range(0, mobsCount):
+                mobsType = MOBS[random.randint(0, len(MOBS) - 1)]
+                tempCurrentChunk = self.currentChunk
+                enemy1 = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
+                                (self.currentChunk[1] * self.rectSizey) + random.randrange(100, 600)),
+                               self.camera_group, self.screen,
+                               self.surface_size, self.player, mobsType, 4, tempCurrentChunk)
+
+                self.enemyGroup.add(enemy1)
+
+            print(
+                f"there should be {self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count} mobs")
         elif not self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:
             print("there shouldnt be any mobs")
 
-        # Battle Mode Update
-        # if self.player.BattleMode:
-        #     print("true 1")
-        # else:
-        #     print("false 0")
-
-    def draw_Borders(self):
+    def draw_borders(self):
         for x in self.wall_collider_rect:
             self.screen.blit(self.midWall_tex, (x.x, x.y) + self.ground_offset)
 
@@ -265,12 +254,9 @@ class Gameplay(pygame.sprite.Group):
                         enemy.healthMin -= 20
                         enemy.health -= 20
 
-                       
-
                 if pygame.sprite.spritecollide(self.player, enemy.enemybulletGroup, True):
                     if enemy.alive:
                         self.player.health -= 20
-                        
 
             pygame.display.update()
             pygame.time.Clock().tick(60)
