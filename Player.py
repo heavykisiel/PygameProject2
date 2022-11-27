@@ -99,7 +99,7 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_SPACE]:
             if self.shootSpaceCooldown == 0:
-                self.shootSpaceCooldown = 1
+                self.shootSpaceCooldown = 4
                 self.shooting = True
         #BattleMode swith -- dev tool
         if keys[pygame.K_q]:

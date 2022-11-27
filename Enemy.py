@@ -11,7 +11,7 @@ green = (0, 255, 0)
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, group, screen, surface_size, player, enemyName, speed):
+    def __init__(self, pos, group, screen, surface_size, player, enemyName, speed,currentChunk):
         super().__init__(group)
 
         self.enemyName = enemyName
@@ -48,6 +48,7 @@ class Enemy(pygame.sprite.Sprite):
         self.time = pygame.time.get_ticks()
         self.shootAnimationCooldown = 0
         self.rangeTest = 20
+        self.currentChunk= currentChunk
 
     def animation(self):
         cooldown = 300
