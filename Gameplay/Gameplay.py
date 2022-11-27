@@ -1,5 +1,5 @@
 import sys
-
+import random
 import pygame.math
 from pygame.locals import *
 
@@ -9,6 +9,7 @@ from map import Map
 from textures.TextureLoader import Load_Block_Textures
 from Player import Player
 from Enemy import Enemy
+from enums import MOBS
 from .Utilities.GameplayUtilities import OptedWalls, add_mob_chunks
 from .Utilities.GameplayUtilities import detect_rect_colliders
 from .Utilities.GameplayUtilities import doors
@@ -76,13 +77,9 @@ class Gameplay(pygame.sprite.Group):
             (540 + (self.currentChunk[0] * self.rectSizex),
              360 + (self.currentChunk[1] * self.rectSizey)),
             self.camera_group, self.screen, self.surface_size)
-        self.enemy = Enemy((560 - self.ground_offset[0], 300 - self.ground_offset[1]), self.camera_group, self.screen,
-                           self.surface_size, self.player, "skeleton", 6)
-        self.enemy1 = Enemy((210 - self.ground_offset[0], 200 - self.ground_offset[1]), self.camera_group, self.screen,
-                            self.surface_size, self.player, "destroyer", 4)
+       
         self.enemyGroup = pygame.sprite.Group()
-        self.enemyGroup.add(self.enemy)
-        self.enemyGroup.add(self.enemy1)
+        
 
     def drawMap(self, player):
         # player interaction with map elements
@@ -100,7 +97,8 @@ class Gameplay(pygame.sprite.Group):
         for enemy in self.enemyGroup:
             enemy.direction_distance(self.player)
             enemy.draw(self.ground_offset)
-            enemy.status(self.player)
+            if self.currentChunk == enemy.currentChunk:
+                enemy.status(self.player)
             enemy.mapCollide(self.currentChunk)
             enemy.enemybulletGroup.update()
             for bullets in enemy.enemybulletGroup:
@@ -144,9 +142,7 @@ class Gameplay(pygame.sprite.Group):
                     self.player.rect.y = x.top - self.player.rect.height
         # current chunk update
         if self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:
-
-            # Filip tutaj dodaj, że się moby spawnują i w zależności od .mobs_count
-
+             
 
 
             # nie można wyjśc dopuki się wszystkich mobów nie pokona
@@ -160,6 +156,8 @@ class Gameplay(pygame.sprite.Group):
                 self.player.rect.x = ax + self.rectSizex - 50
             if abs(player.rect.bottom - (ay + self.rectSizey - 10)) < 17:
                 self.player.rect.y = ay + self.rectSizey - 80
+            if len(self.enemyGroup) ==0:
+                self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist = False    
 
         else:
             if self.player.rect.centerx < 0 + (self.currentChunk[0] * self.rectSizex):
@@ -210,6 +208,16 @@ class Gameplay(pygame.sprite.Group):
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4] == "Bonus":
             print("bonus")
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:
+            mobsCount = self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count
+            
+            for newEnemy in range (0, mobsCount):
+                    mobsType = MOBS[random.randint(0,len(MOBS)-1)]
+                    tempCurrentChunk = self.currentChunk
+                    enemy1 = Enemy(((self.currentChunk[0]*self.rectSizex) +random.randrange(100, 600),(self.currentChunk[1]*self.rectSizey)+random.randrange(100, 600)), self.camera_group, self.screen,
+                                self.surface_size, self.player, mobsType, 4,tempCurrentChunk)
+                    
+                    self.enemyGroup.add(enemy1) 
+                     
             print(f"there should be {self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count} mobs")
         elif not self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:
             print("there shouldnt be any mobs")
