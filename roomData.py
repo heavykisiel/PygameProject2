@@ -1,4 +1,6 @@
 import random
+import pygame
+from pygame import Rect
 
 
 class roomData:
@@ -8,14 +10,18 @@ class roomData:
     block_pixelsy = 60
     screenSizeX = 1080
     screenSizeY = 720
+    mobsCount = 20
 
-    def __init__(self, roomCode, chunk):
+    def __init__(self, roomCode, chunk, colliders_list):
         self.Chunk = chunk
         self.mobsExist = None
         self.roomCode = self.roomCodeConverter(roomCode)
         self.mobs_count = random.randint(1, 3) if self.mobsExist else 0
         self.tex_list = self.TexCoordsList()
         self.tex2_cracked_list, self.tex3_cracked_list = self.get_cracked_tex_pos()
+        # self.texture_list = self.tilerowlist()
+        # self.colliders_list = self.setColiders()
+
 
     def __repr__(self):
         return 'roomData(mobsExist=' + str(self.mobsExist) + ' ,mobs_count=' + str(self.mobs_count) + ')'
@@ -68,4 +74,21 @@ class roomData:
         for b in self.tex3_cracked_list:
             screen.blit(tex3, b + ground_offset)
 
+    def tilerowlist(self):
+        a = list()
+        for rowC in range(self.texture_count_per_tilex):
+            for tileC in range(self.texture_count_per_tiley):
+                border_pos = Rect(self.Chunk[0] * 1080 + rowC * self.block_pixelsx,
+                                  self.Chunk[1] * 720 + tileC * self.block_pixelsy,
+                                  self.block_pixelsx, self.block_pixelsy)
+                a.append(border_pos)
 
+        return a
+    def setColiders(self):
+        pass
+
+    # rozjebane nie dotykac
+
+    def draw_border(self, screen, ground_offset, wall_collider_rect, tex1, tex2, tex3, test_tex, test2):
+       pass
+    # rozjebane nie dotykac

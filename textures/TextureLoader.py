@@ -12,7 +12,7 @@ def LoadingScreenLoadTexture(screen_size):
 
 def Load_Front_Player_Texture(side, i):
     player_img = pygame.image.load(f'textures/player/{side}/{i}.png').convert_alpha()
-    player_img = pygame.transform.scale(player_img, (40, 60))
+    player_img = pygame.transform.scale(player_img, (46, 66))
 
     player_img.set_colorkey((246, 246, 246))
     return player_img
@@ -108,7 +108,71 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
         floor3_tex = pygame.transform.scale(floor3_tex, (block_pixels_x, block_pixels_y))
         floor3_tex.set_colorkey((255, 255, 255))
         return floor3_tex
-
+    elif id_block == 15:
+        west_wall_1 = pygame.image.load('textures/maptex/WestWall/V1 West Wall.png').convert()
+        west_wall_1 = pygame.transform.scale(west_wall_1, (block_pixels_x, block_pixels_y))
+        west_wall_1.set_colorkey((255, 255, 255))
+        return west_wall_1
+    elif id_block == 16:
+        west_wall_2 = pygame.image.load('textures/maptex/WestWall/V2 West Wall.png').convert()
+        west_wall_2 = pygame.transform.scale(west_wall_2, (block_pixels_x, block_pixels_y))
+        west_wall_2.set_colorkey((255, 255, 255))
+        return west_wall_2
+    elif id_block == 17:
+        west_wall_3 = pygame.image.load('textures/maptex/WestWall/V3 West Wall.png').convert()
+        west_wall_3 = pygame.transform.scale(west_wall_3, (block_pixels_x, block_pixels_y))
+        west_wall_3.set_colorkey((255, 255, 255))
+        return west_wall_3
+    elif id_block == 18:
+        north_west_wall_tex = pygame.image.load('textures/maptex/North West Corner/North West Top Wall.png').convert()
+        north_west_wall_tex = pygame.transform.scale(north_west_wall_tex, (block_pixels_x, block_pixels_y))
+        north_west_wall_tex.set_colorkey((255, 255, 255))
+        return north_west_wall_tex
+    elif id_block == 19:
+        east_wall_1_tex = pygame.image.load('textures/maptex/East Wall/V1 East Wall.png').convert()
+        east_wall_1_tex = pygame.transform.scale(east_wall_1_tex, (block_pixels_x, block_pixels_y))
+        east_wall_1_tex.set_colorkey((255, 255, 255))
+        return east_wall_1_tex
+    elif id_block == 20:
+        east_wall_2_tex = pygame.image.load('textures/maptex/East Wall/V2 East Wall.png').convert()
+        east_wall_2_tex = pygame.transform.scale(east_wall_2_tex, (block_pixels_x, block_pixels_y))
+        east_wall_2_tex.set_colorkey((255, 255, 255))
+        return east_wall_2_tex
+    elif id_block == 21:
+        east_wall_3_tex = pygame.image.load('textures/maptex/East Wall/V3 East Wall.png').convert()
+        east_wall_3_tex = pygame.transform.scale(east_wall_3_tex, (block_pixels_x, block_pixels_y))
+        east_wall_3_tex.set_colorkey((255, 255, 255))
+        return east_wall_3_tex
+    elif id_block == 22:
+        north_east_wall = pygame.image.load('textures/maptex/North East Corner/North East Top Wall.png').convert()
+        north_east_wall = pygame.transform.scale(north_east_wall, (block_pixels_x, block_pixels_y))
+        north_east_wall.set_colorkey((255, 255, 255))
+        return north_east_wall
+    elif id_block == 23:
+        north_wall1_tex = pygame.image.load('textures/maptex/North Wall/v1 North Top Wall v1.png').convert()
+        north_wall1_tex = pygame.transform.scale(north_wall1_tex, (block_pixels_x, block_pixels_y))
+        north_wall1_tex.set_colorkey((255, 255, 255))
+        return north_wall1_tex
+    elif id_block == 24:
+        north_wall2_tex = pygame.image.load('textures/maptex/North Wall/V2 North Top Wall.png').convert()
+        north_wall2_tex = pygame.transform.scale(north_wall2_tex, (block_pixels_x, block_pixels_y))
+        north_wall2_tex.set_colorkey((255, 255, 255))
+        return north_wall2_tex
+    elif id_block == 25:
+        north_wall3_tex = pygame.image.load('textures/maptex/North Wall/V3 North Top Wall.png').convert()
+        north_wall3_tex = pygame.transform.scale(north_wall3_tex, (block_pixels_x, block_pixels_y))
+        north_wall3_tex.set_colorkey((255, 255, 255))
+        return north_wall3_tex
+    elif id_block == 26:
+        southEast_tex = pygame.image.load('textures/maptex/South East Corner/South East Top Wall.png').convert()
+        southEast_tex = pygame.transform.scale(southEast_tex, (block_pixels_x, block_pixels_y))
+        southEast_tex.set_colorkey((255, 255, 255))
+        return southEast_tex
+    elif id_block == 27:
+        southWest_tex = pygame.image.load('textures/maptex/South West Corner/South West Top Wall.png').convert()
+        southWest_tex = pygame.transform.scale(southWest_tex, (block_pixels_x, block_pixels_y))
+        southWest_tex.set_colorkey((255, 255, 255))
+        return southWest_tex
 
 def LoadingScreenAnimation(screen, screenSize, i, bg):
     screen.fill((0, 0, 0))

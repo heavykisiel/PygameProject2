@@ -29,14 +29,6 @@ def detect_rect_colliders(self):
                                               tile[1] * self.rectSizey + tileC * self.block_pixelsy,
                                               self.block_pixelsx, self.block_pixelsy)
                             lista.append(border_pos)
-                            # if (rowC == self.texture_count_per_tilex / 2 and (
-                            #         tileC == self.texture_count_per_tiley - 1 or tileC == 0)) or \
-                            #         (tileC == self.texture_count_per_tiley / 2 and (
-                            #                 rowC == self.texture_count_per_tilex - 1 or rowC == 0)):
-                            #     door_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
-                            #                     tile[1] * self.rectSizey + tileC * self.block_pixelsy,
-                            #                     self.block_pixelsx, self.block_pixelsy)
-                            #     listb.append(door_pos)
     for door in self.doorlistv2:
         for xx in lista:
             if xx.contains(door):
@@ -112,7 +104,16 @@ def add_mob_chunks(self):
     for enumx, x in enumerate(self.map_Data.ChunkMap):
         for enumy, y in enumerate(x):
             if y[4] == '':
-                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Room", (enumx, enumy))
+                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Room", (enumx, enumy), self.wall_collider_rect)
+
+                #TODO
+    declared_mobs = 20
+    while declared_mobs >= 0:
+        rX = random.randint(0, 3)
+        rY = random.randint(0, 3)
+        self.map_Data.ChunkMap[rX][rY][4].mobsCount = 1
+        declared_mobs -= 1
+    print(self.map_Data.ChunkMap)
     return self.map_Data
 
 
@@ -126,15 +127,15 @@ def room_function_setter(self):
         for enumy, y in enumerate(x):
             # print(f"{special_room_data['SpawnRoom'][1]}=={y[1]},  {special_room_data['SpawnRoom'][0]}=={y[0]}")
             if special_room_data["SpawnRoom"][0] == y[0] and special_room_data["SpawnRoom"][1] == y[1]:
-                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Spawn", (enumx, enumy))
+                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Spawn", (enumx, enumy), self.wall_collider_rect)
             if special_room_data["KeyRoom"][0] == y[0] and special_room_data["KeyRoom"][1] == y[1]:
-                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Key", (enumx, enumy))
+                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Key", (enumx, enumy), self.wall_collider_rect)
             if special_room_data["BossRoom"][0] == y[0] and special_room_data["BossRoom"][1] == y[1]:
-                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Boss", (enumx, enumy))
+                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Boss", (enumx, enumy),  self.wall_collider_rect)
             if special_room_data is not None:
                 for i in special_room_data["BonusRooms"]:
                     if i[0] == y[0] and i[1] == y[1]:
-                        self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Bonus", (enumx, enumy))
+                        self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Bonus", (enumx, enumy), self.wall_collider_rect)
     return self.map_Data
 
 
