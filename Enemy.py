@@ -159,7 +159,6 @@ class Enemy(pygame.sprite.Sprite):
         self.screen.blit(self.image, self.rect.topleft + self.offset)
 
     def check_alive(self):
-        print(self.health)
         if self.health <= 0:
             self.moving=False
             self.shooting=False

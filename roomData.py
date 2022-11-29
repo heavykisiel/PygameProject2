@@ -31,6 +31,7 @@ class roomData:
             self.mobsExist = bool(random.getrandbits(1))
             return "Room"
         elif roomCode == "Boss":
+            #BOSSDOORS
             self.mobsExist = False
             return "Boss"
         elif roomCode == "Key":

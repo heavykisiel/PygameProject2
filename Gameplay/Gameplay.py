@@ -16,6 +16,7 @@ from .Utilities.GameplayUtilities import doors
 from .Utilities.GameplayUtilities import one_door_rooms
 from .Utilities.GameplayUtilities import one_door_rooms_validation
 from .Utilities.GameplayUtilities import room_function_setter
+from textures.TextureLoader import TextureUnit
 
 
 class Gameplay(pygame.sprite.Group):
@@ -44,38 +45,8 @@ class Gameplay(pygame.sprite.Group):
         self.texture_count_per_tiley = 12
 
         # mnożenie block_pixels i texture count per title musi byc równe rectSize
+        self.TextureUnit = TextureUnit(self.block_pixelsx, self.block_pixelsy) # TEXTURES
 
-        self.floor_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 0)
-        self.floor1_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 12)
-        self.floor2_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 13)
-        self.floor3_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 14)
-        self.eastWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 1)
-        self.northWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 2)
-        self.southWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 3)
-        self.westWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 4)
-        self.eastNorthWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 5)
-        self.westNorthWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 6)
-        self.eastSouthWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 7)
-        self.westSouthWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 8)
-        self.midWall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 9)
-        self.grass_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 10)
-        self.key_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 11)
-        self.westWall1_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 15)
-        self.westWall2_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 16)
-        self.westWall3_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 17)
-        self.northWestwall_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 18)
-        self.eastWall1_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 19)
-        self.eastWall2_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 20)
-        self.eastWall3_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 21)
-        self.northEastwall_tex = Load_Block_Textures(self.block_pixelsx,self.block_pixelsy, 22)
-        self.northWall1_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 23)
-        self.northWall2_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 24)
-        self.northWall3_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 25)
-        self.southEast_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 26)
-        self.southWest_tex = Load_Block_Textures(self.block_pixelsx, self.block_pixelsy, 27)
-        self.northWallList = list((self.northWall1_tex, self.northWall2_tex, self.northWall3_tex))
-        self.westWallList = list((self.westWall1_tex, self.westWall2_tex, self.westWall3_tex))
-        self.eastWallList = list((self.eastWall1_tex, self.eastWall2_tex, self.eastWall3_tex))
         self.doorlistv2 = doors(self)
         self.wall_collider_rect = detect_rect_colliders(self)
         self.OneDoorRooms = one_door_rooms(self)
@@ -193,18 +164,18 @@ class Gameplay(pygame.sprite.Group):
         for y, row in enumerate(self.map_Data.ChunkMap):
             for x, tile in enumerate(row):
                 if tile:
-                    tile[4].draw_floor(self.floor1_tex, self.screen, self.ground_offset, self.floor2_tex, self.floor3_tex)
+                    tile[4].draw_floor(self.TextureUnit.floor1_tex, self.screen, self.ground_offset, self.TextureUnit.floor2_tex, self.TextureUnit.floor3_tex)
 
         for x in self.OneDoorRooms:
             if x[4].roomCode == 'Key':
                 # render key
                 offset_pos = x[0] * self.rectSizex + 9 * self.block_pixelsx, \
                              x[1] * self.rectSizey + 6 * self.block_pixelsy
-                self.screen.blit(self.key_tex, offset_pos + self.ground_offset)
+                self.screen.blit(self.TextureUnit.key_tex, offset_pos + self.ground_offset)
             else:
                 offset_pos = x[0] * self.rectSizex + 9 * self.block_pixelsx, \
                              x[1] * self.rectSizey + 6 * self.block_pixelsy
-                self.screen.blit(self.grass_tex, offset_pos + self.ground_offset)
+                self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
 
     def OnNewRoom(self):
 
@@ -238,24 +209,24 @@ class Gameplay(pygame.sprite.Group):
         for x in self.wall_collider_rect:
             if x.x == 0 or x.x == 1080 or x.x == 2160 or x.x == 3240:
                 if x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
-                    self.screen.blit(self.northWestwall_tex, (x.x, x.y) + self.ground_offset) # west north
+                    self.screen.blit(self.TextureUnit.northWestwall_tex, (x.x, x.y) + self.ground_offset) # west north
                 elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
-                    self.screen.blit(self.southWest_tex, (x.x, x.y) + self.ground_offset)
+                    self.screen.blit(self.TextureUnit.southWest_tex, (x.x, x.y) + self.ground_offset) # south west
                 else:
-                    self.screen.blit(random.choice(self.westWallList), (x.x, x.y) + self.ground_offset) # west
+                    self.screen.blit(self.TextureUnit.westWall1_tex, (x.x, x.y) + self.ground_offset) # west
             elif x.x == 1020 or x.x == 2100 or x.x == 3180 or x.x == 4260:
                 if x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
-                    self.screen.blit(self.northEastwall_tex, (x.x, x.y) + self.ground_offset) # north east
+                    self.screen.blit(self.TextureUnit.northEastwall_tex, (x.x, x.y) + self.ground_offset) # north east
                 elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
-                    self.screen.blit(self.southEast_tex , (x.x, x.y) + self.ground_offset)
+                    self.screen.blit(self.TextureUnit.southEast_tex , (x.x, x.y) + self.ground_offset) # south east
                 else:
-                    self.screen.blit(random.choice(self.eastWallList), (x.x, x.y) + self.ground_offset) # east
+                    self.screen.blit(self.TextureUnit.eastWall1_tex, (x.x, x.y) + self.ground_offset) # east
             elif x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
-                self.screen.blit(random.choice(self.northWallList), (x.x, x.y) + self.ground_offset) # north
+                self.screen.blit(self.TextureUnit.northWall1_tex, (x.x, x.y) + self.ground_offset) # north
             elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
-                    self.screen.blit(random.choice(self.northWallList), (x.x, x.y) + self.ground_offset)  # south
+                self.screen.blit(self.TextureUnit.northWall1_tex, (x.x, x.y) + self.ground_offset)  # south
             else:
-                self.screen.blit(self.midWall_tex, (x.x, x.y) + self.ground_offset)
+                self.screen.blit(self.TextureUnit.midWall_tex, (x.x, x.y) + self.ground_offset)
 
             #Jak chcecie naprawić to to dajcie jakaś teksturkę z tej listy[0]np a nie random.choice
     def run(self):

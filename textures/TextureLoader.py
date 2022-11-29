@@ -26,7 +26,7 @@ def Load_Bullet_test_Texture(i):
     return player_img
 
 
-def Load_Enemy_Texture(name,side,i):
+def Load_Enemy_Texture(name, side, i):
     enemy_img = pygame.image.load(f'textures/enemies/{name}/{side}/{i}.png').convert_alpha()
     enemy_img = pygame.transform.scale(enemy_img, (64, 64))
     enemy_img.set_colorkey((246, 246, 246))
@@ -174,6 +174,7 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
         southWest_tex.set_colorkey((255, 255, 255))
         return southWest_tex
 
+
 def LoadingScreenAnimation(screen, screenSize, i, bg):
     screen.fill((0, 0, 0))
     screen.blit(bg, (i, 0))
@@ -198,3 +199,38 @@ def Load_Buttons(self):
     self.screen.blit(img1, self.buttons[1])
     self.screen.blit(img2, self.buttons[2])
     self.screen.blit(img3, (self.screen_size[0] / 3 + 40, self.screen_size[1] / 3))
+
+
+class TextureUnit:
+    def __init__(self, block_pixelsx, block_pixelsy):
+        self.Floor_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 0)
+        self.floor1_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 12)
+        self.floor2_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 13)
+        self.floor3_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 14)
+        self.eastWall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 1)
+        self.northWall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 2)
+        self.southWall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 3)
+        self.westWall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 4)
+        self.eastNorthWall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 5)
+        self.westNorthWall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 6)
+        self.eastSouthWall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 7)
+        self.westSouthWall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 8)
+        self.midWall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 9)
+        self.grass_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 10)
+        self.key_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 11)
+        self.westWall1_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 15)
+        self.westWall2_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 16)
+        self.westWall3_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 17)
+        self.northWestwall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 18)
+        self.eastWall1_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 19)
+        self.eastWall2_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 20)
+        self.eastWall3_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 21)
+        self.northEastwall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 22)
+        self.northWall1_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 23)
+        self.northWall2_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 24)
+        self.northWall3_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 25)
+        self.southEast_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 26)
+        self.southWest_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 27)
+        self.northWallList = list((self.northWall1_tex, self.northWall2_tex, self.northWall3_tex))
+        self.westWallList = list((self.westWall1_tex, self.westWall2_tex, self.westWall3_tex))
+        self.eastWallList = list((self.eastWall1_tex, self.eastWall2_tex, self.eastWall3_tex))
