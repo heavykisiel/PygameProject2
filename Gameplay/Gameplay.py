@@ -118,15 +118,20 @@ class Gameplay(pygame.sprite.Group):
             enemy.mapCollide(self.currentChunk)
             enemy.enemybulletGroup.update()
             for bullets in enemy.enemybulletGroup:
+                bullets.mapCollide(self.currentChunk)
                 self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
             if enemy.shooting:
                 enemy.shoot()
-
+        pygame.draw.rect(self.screen, (0,0,0), (48,8,204,14))
+        pygame.draw.rect(self.screen, (255,0,0), (50,10,200, 10))
+        if self.player.health >0:    
+            pygame.draw.rect(self.screen, (0,255,0), (50,10, 200 * (self.player.healthMin / self.player.healthMax),10))
         if self.player.shooting:
             self.player.shoot()
 
         self.player.bulletGroup.update()
         for bullets in self.player.bulletGroup:
+            bullets.mapCollide(self.currentChunk)
             self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
 
     def GamePlay_Logic(self, player):
@@ -288,7 +293,8 @@ class Gameplay(pygame.sprite.Group):
 
                 if pygame.sprite.spritecollide(self.player, enemy.enemybulletGroup, True):
                     if enemy.alive:
-                        self.player.health -= 20
+                        self.player.health -= 5
+                        self.player.healthMin -= 5
 
             pygame.display.update()
             pygame.time.Clock().tick(60)
