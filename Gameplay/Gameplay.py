@@ -6,7 +6,7 @@ from pygame.locals import *
 import Camera
 from Camera import *
 from map import Map
-from textures.TextureLoader import Load_Block_Textures
+from textures.TextureLoader import TextureUnit
 from Player import Player
 from Enemy import Enemy
 from enums import MOBS
@@ -16,7 +16,7 @@ from .Utilities.GameplayUtilities import doors
 from .Utilities.GameplayUtilities import one_door_rooms
 from .Utilities.GameplayUtilities import one_door_rooms_validation
 from .Utilities.GameplayUtilities import room_function_setter
-from textures.TextureLoader import TextureUnit
+
 
 
 class Gameplay(pygame.sprite.Group):
@@ -206,27 +206,31 @@ class Gameplay(pygame.sprite.Group):
             print("there shouldnt be any mobs")
 
     def draw_borders(self):
-        for x in self.wall_collider_rect:
-            if x.x == 0 or x.x == 1080 or x.x == 2160 or x.x == 3240:
-                if x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
-                    self.screen.blit(self.TextureUnit.northWestwall_tex, (x.x, x.y) + self.ground_offset) # west north
-                elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
-                    self.screen.blit(self.TextureUnit.southWest_tex, (x.x, x.y) + self.ground_offset) # south west
-                else:
-                    self.screen.blit(self.TextureUnit.westWall1_tex, (x.x, x.y) + self.ground_offset) # west
-            elif x.x == 1020 or x.x == 2100 or x.x == 3180 or x.x == 4260:
-                if x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
-                    self.screen.blit(self.TextureUnit.northEastwall_tex, (x.x, x.y) + self.ground_offset) # north east
-                elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
-                    self.screen.blit(self.TextureUnit.southEast_tex , (x.x, x.y) + self.ground_offset) # south east
-                else:
-                    self.screen.blit(self.TextureUnit.eastWall1_tex, (x.x, x.y) + self.ground_offset) # east
-            elif x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
-                self.screen.blit(self.TextureUnit.northWall1_tex, (x.x, x.y) + self.ground_offset) # north
-            elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
-                self.screen.blit(self.TextureUnit.northWall1_tex, (x.x, x.y) + self.ground_offset)  # south
-            else:
-                self.screen.blit(self.TextureUnit.midWall_tex, (x.x, x.y) + self.ground_offset)
+        # for x in self.wall_collider_rect:
+        #     if x.x == 0 or x.x == 1080 or x.x == 2160 or x.x == 3240:
+        #         if x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
+        #             self.screen.blit(self.TextureUnit.northWestwall_tex, (x.x, x.y) + self.ground_offset) # west north
+        #         elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
+        #             self.screen.blit(self.TextureUnit.southWest_tex, (x.x, x.y) + self.ground_offset) # south west
+        #         else:
+        #             self.screen.blit(self.TextureUnit.westWall1_tex, (x.x, x.y) + self.ground_offset) # west
+        #     elif x.x == 1020 or x.x == 2100 or x.x == 3180 or x.x == 4260:
+        #         if x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
+        #             self.screen.blit(self.TextureUnit.northEastwall_tex, (x.x, x.y) + self.ground_offset) # north east
+        #         elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
+        #             self.screen.blit(self.TextureUnit.southEast_tex , (x.x, x.y) + self.ground_offset) # south east
+        #         else:
+        #             self.screen.blit(self.TextureUnit.eastWall1_tex, (x.x, x.y) + self.ground_offset) # east
+        #     elif x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
+        #         self.screen.blit(self.TextureUnit.northWall1_tex, (x.x, x.y) + self.ground_offset) # north
+        #     elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
+        #         self.screen.blit(self.TextureUnit.northWall1_tex, (x.x, x.y) + self.ground_offset)  # south
+        #     else:
+        #         self.screen.blit(self.TextureUnit.midWall_tex, (x.x, x.y) + self.ground_offset)
+        for y, row in enumerate(self.map_Data.ChunkMap):
+            for x, tile in enumerate(row):
+                if tile:
+                    tile[4].draw_border(self.screen, self.ground_offset, self.TextureUnit.grass_tex)
 
             #Jak chcecie naprawić to to dajcie jakaś teksturkę z tej listy[0]np a nie random.choice
     def run(self):

@@ -1,9 +1,10 @@
 import random
 import pygame
 from pygame import Rect
-
+from textures.TextureLoader import TextureUnit
 
 class roomData:
+
     texture_count_per_tilex = 18
     texture_count_per_tiley = 12
     block_pixelsx = 60
@@ -19,9 +20,11 @@ class roomData:
         self.mobs_count = random.randint(1, 3) if self.mobsExist else 0
         self.tex_list = self.TexCoordsList()
         self.tex2_cracked_list, self.tex3_cracked_list = self.get_cracked_tex_pos()
+        self.rectColliders = self.roomColidersdetection(colliders_list)
+        self.textureUnit = TextureUnit(self.block_pixelsx,self.block_pixelsy)
+        print(len(self.rectColliders))
         # self.texture_list = self.tilerowlist()
         # self.colliders_list = self.setColiders()
-
 
     def __repr__(self):
         return 'roomData(mobsExist=' + str(self.mobsExist) + ' ,mobs_count=' + str(self.mobs_count) + ')'
@@ -31,7 +34,7 @@ class roomData:
             self.mobsExist = bool(random.getrandbits(1))
             return "Room"
         elif roomCode == "Boss":
-            #BOSSDOORS
+            # BOSSDOORS
             self.mobsExist = False
             return "Boss"
         elif roomCode == "Key":
@@ -64,6 +67,17 @@ class roomData:
             c.append(random.choice(a))
         return b, c
 
+    def roomColidersdetection(self, colliders_list):
+        a = list()
+        for x in colliders_list:
+            if self.Chunk[0] * self.screenSizeX <= x.x < (self.Chunk[0] * self.screenSizeX) + self.screenSizeX and \
+                    self.Chunk[1] * self.screenSizeY <= x.y < (self.Chunk[1] * self.screenSizeY) + self.screenSizeY:
+                a.append(x)
+        if len(a) == 56 or len(a) == 53 or len(a) == 50 or len(a) == 47:
+            return a
+        else:
+            raise Exception(f"on Chunk: {self.Chunk} len.colliderlist: {len(a)}, a: \t {a} , colliders: {colliders_list}")
+
     def draw_floor(self, tex, screen, ground_offset, tex2, tex3):
         for rowC in range(self.texture_count_per_tilex):
             for tileC in range(self.texture_count_per_tiley):
@@ -75,21 +89,26 @@ class roomData:
         for b in self.tex3_cracked_list:
             screen.blit(tex3, b + ground_offset)
 
-    def tilerowlist(self):
-        a = list()
-        for rowC in range(self.texture_count_per_tilex):
-            for tileC in range(self.texture_count_per_tiley):
-                border_pos = Rect(self.Chunk[0] * 1080 + rowC * self.block_pixelsx,
-                                  self.Chunk[1] * 720 + tileC * self.block_pixelsy,
-                                  self.block_pixelsx, self.block_pixelsy)
-                a.append(border_pos)
+    def draw_border(self, screen, ground_offset, test_tex):
 
-        return a
-    def setColiders(self):
-        pass
-
-    # rozjebane nie dotykac
-
-    def draw_border(self, screen, ground_offset, wall_collider_rect, tex1, tex2, tex3, test_tex, test2):
-       pass
-    # rozjebane nie dotykac
+        for x in self.rectColliders:
+            if x.x == 0 or x.x == 1080 or x.x == 2160 or x.x == 3240:
+                if x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
+                    screen.blit(self.textureUnit.northWestwall_tex, (x.x, x.y) + ground_offset) # west north
+                elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
+                    screen.blit(self.textureUnit.southWest_tex, (x.x, x.y) + ground_offset) # south west
+                else:
+                    screen.blit(self.textureUnit.westWall1_tex, (x.x, x.y) + ground_offset) # west
+            elif x.x == 1020 or x.x == 2100 or x.x == 3180 or x.x == 4260:
+                if x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
+                    screen.blit(self.textureUnit.northEastwall_tex, (x.x, x.y) + ground_offset) # north east
+                elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
+                    screen.blit(self.textureUnit.southEast_tex , (x.x, x.y) + ground_offset) # south east
+                else:
+                    screen.blit(self.textureUnit.eastWall1_tex, (x.x, x.y) + ground_offset) # east
+            elif x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
+                screen.blit(self.textureUnit.northWall1_tex, (x.x, x.y) + ground_offset) # north
+            elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
+                screen.blit(self.textureUnit.northWall1_tex, (x.x, x.y) + ground_offset)  # south
+            else:
+                screen.blit(self.textureUnit.midWall_tex, (x.x, x.y) + ground_offset)
