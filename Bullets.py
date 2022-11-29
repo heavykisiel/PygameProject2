@@ -38,7 +38,18 @@ class Bullets(pygame.sprite.Sprite):
                 self.animationIndex += 1
             else:
                 self.animationIndex == 1
-
+    def mapCollide(self, chunk):
+        if self.rect.x < chunk[0] * 1080 + 40:
+            #self.rect.x += self.speed
+            self.kill()
+        if self.rect.x > chunk[0] * 1080 + 990:
+            #self.rect.x -= self.speed
+            self.kill()
+        if self.rect.y < chunk[1]*720+50:
+            self.kill()
+        if self.rect.y > chunk[1]*720+620:
+            self.kill()
+    
     def bulletKill(self):
         cooldown = 5
         self.animationIndex = 2

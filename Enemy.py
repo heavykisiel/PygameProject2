@@ -19,7 +19,7 @@ class Enemy(pygame.sprite.Sprite):
         self.index = 0
         self.animation_list = []
         self.action = 0
-        animation_folders = ['idle', 'attack']
+        animation_folders = ['idle', 'attack','death']
         for animation in animation_folders:
             loop_list = []
             self.filesNumber = len(os.listdir(f'textures/enemies/{self.enemyName}/{animation}'))
@@ -44,11 +44,14 @@ class Enemy(pygame.sprite.Sprite):
         self.enemybulletGroup = pygame.sprite.Group()
         self.shooting = False
         self.moving = False
+        self.aiMoving = True
         self.range = 200
         self.time = pygame.time.get_ticks()
         self.shootAnimationCooldown = 0
         self.rangeTest = 20
         self.currentChunk= currentChunk
+        self.tempDirectionX = 1
+        self.tempDirectionY = 1
 
     def animation(self):
         cooldown = 300
@@ -80,7 +83,6 @@ class Enemy(pygame.sprite.Sprite):
 
         if self.enemyName == "destroyer":
             if self.moving:
-
                 if self.direction.magnitude() != 0:
                     self.direction = self.direction.normalize()
                 if self.distance >= 30:
@@ -88,8 +90,18 @@ class Enemy(pygame.sprite.Sprite):
                     self.rect.y += self.direction[1] * self.speed
 
     def ai(self):
-        if self.moving:
-            pass
+        if self.aiMoving:
+            if random.randint(1,100) == 1:
+                self.tempDirectionY *= -1
+            if random.randint(1,100) == 2:
+                self.tempDirectionX *= -1
+                
+            self.rect.x += self.tempDirectionX * 1
+            self.rect.y += self.tempDirectionY * 1
+            
+            
+            
+                
 
     def direction_distance(self, player):
         player_vec = pygame.math.Vector2(player.rect.center)
@@ -104,48 +116,61 @@ class Enemy(pygame.sprite.Sprite):
     def status(self, player):
         self.distance = self.direction_distance(player)[0]
 
-        if self.enemyName == "skeleton":
+        if self.enemyName == "skeleton" and self.alive:
             if self.distance <= self.range:
                 self.actionMetod(1)
-                if self.action == 1 and self.index == (self.filesNumber - 1):
+                if self.action == 1 and self.index == (self.filesNumber - 2):
                     self.shooting = True
                 self.moving = False
+                
             elif self.distance >= self.range:
                 self.moving = True
-                self.actionMetod(0)
-                self.ai()
-        if self.enemyName == "destroyer":
+                self.actionMetod(0)  
+        if self.enemyName == "destroyer" and self.alive:
             if self.distance < 30:
                 self.actionMetod(1)
                 if self.action == 1 and self.index == (self.filesNumber - 2):
                     self.shooting = True
                 self.moving = False
             if self.distance > 50:
+                self.aiMoving = False
                 self.moving = True
                 self.actionMetod(0)
             if self.distance > 200:
                 self.moving = False
+                self.aiMoving = True
+                self.ai()
                 self.actionMetod(0)
 
     def mapCollide(self, chunk):
         if self.rect.x < chunk[0] * 1080 + 30:
-            self.rect.x += self.speed
+            #self.rect.x += self.speed
+            self.tempDirectionX *= -1
         if self.rect.x > chunk[0] * 1080 + 990:
-            self.rect.x -= self.speed
+            #self.rect.x -= self.speed
+            self.tempDirectionX *= -1
+        if self.rect.y < chunk[1]*720+50:
+            self.tempDirectionY =1
+        if self.rect.y > chunk[1]*720+620:
+            self.tempDirectionY =-1
 
     def draw(self, offset):
         self.offset = offset
         self.screen.blit(self.image, self.rect.topleft + self.offset)
 
-    def respawn(self):
-        self.rect[0] = random.randrange(0, 600)
-        self.rect[1] = random.randrange(0, 600)
-
     def check_alive(self):
+        print(self.health)
         if self.health <= 0:
+            self.moving=False
+            self.shooting=False
+            self.actionMetod(2)
+            if self.action == 2 and self.index == (self.filesNumber - 1):
+                self.alive = False
+                self.kill()
             self.health = 0
+            
             self.alive = False
-            self.kill()
+            
 
     def timer(self):
         if self.shootAnimationCooldown > 0:
@@ -159,6 +184,7 @@ class Enemy(pygame.sprite.Sprite):
         self.animation()
         self.check_alive()
         self.move()
+        
 
     def shoot(self):
         if self.shooting:
