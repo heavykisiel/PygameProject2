@@ -3,6 +3,7 @@ import pygame
 from pygame import Rect
 from textures.TextureLoader import TextureUnit
 
+
 class roomData:
 
     texture_count_per_tilex = 18
@@ -21,7 +22,6 @@ class roomData:
         self.mobs_count = random.randint(1, 3) if self.mobsExist else 0
         self.tex_list = self.TexCoordsList()
         self.tex2_cracked_list, self.tex3_cracked_list = self.get_cracked_tex_pos()
-        self.bossDoorsRectList = self.bossDoors()
         self.textureUnit = TextureUnit(self.block_pixelsx, self.block_pixelsy)
         print(len(self.rectColliders))
 
@@ -34,9 +34,6 @@ class roomData:
             self.mobsExist = bool(random.getrandbits(1))
             return "Room"
         elif roomCode == "Boss":
-
-            # for x in self.bossDoors():
-            #     self.rectColliders.append(x)
             self.mobsExist = False
             return "Boss"
         elif roomCode == "Key":
