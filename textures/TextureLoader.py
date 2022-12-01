@@ -123,7 +123,7 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
         west_wall_3 = pygame.transform.scale(west_wall_3, (block_pixels_x, block_pixels_y))
         west_wall_3.set_colorkey((255, 255, 255))
         return west_wall_3
-    elif id_block == 18:
+    elif id_block == 18: # =>28
         north_west_wall_tex = pygame.image.load('textures/maptex/North West Corner/North West Top Wall.png').convert()
         north_west_wall_tex = pygame.transform.scale(north_west_wall_tex, (block_pixels_x, block_pixels_y))
         north_west_wall_tex.set_colorkey((255, 255, 255))
@@ -173,7 +173,76 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
         southWest_tex = pygame.transform.scale(southWest_tex, (block_pixels_x, block_pixels_y))
         southWest_tex.set_colorkey((255, 255, 255))
         return southWest_tex
-
+    elif id_block == 28: # =>18
+        north_west_wall2_tex = pygame.image.load('textures/maptex/North West Corner/North West Bot Wall.png').convert()
+        north_west_wall2_tex = pygame.transform.scale(north_west_wall2_tex, (block_pixels_x, block_pixels_y))
+        north_west_wall2_tex.set_colorkey((255, 255, 255))
+        return north_west_wall2_tex
+    elif id_block == 29:
+        southWest2_tex = pygame.image.load('textures/maptex/South West Corner/South West Bot Wall.png').convert()
+        southWest2_tex = pygame.transform.scale(southWest2_tex, (block_pixels_x, block_pixels_y))
+        southWest2_tex.set_colorkey((255, 255, 255))
+        return southWest2_tex
+    elif id_block == 30:
+        southEast2_tex = pygame.image.load('textures/maptex/South East Corner/South East Bot Wall.png').convert()
+        southEast2_tex = pygame.transform.scale(southEast2_tex, (block_pixels_x, block_pixels_y))
+        southEast2_tex.set_colorkey((255, 255, 255))
+        return southEast2_tex
+    elif id_block == 31:
+        northEastTop_tex = pygame.image.load('textures/maptex/North East Corner/North East Top Wall.png').convert()
+        northEastTop_tex = pygame.transform.scale(northEastTop_tex, (block_pixels_x, block_pixels_y))
+        northEastTop_tex.set_colorkey((255, 255, 255))
+        return northEastTop_tex
+    elif id_block == 32:
+        southEast2_tex = pygame.image.load('textures/maptex/North East Corner/North East Bot Wall.png').convert()
+        southEast2_tex = pygame.transform.scale(southEast2_tex, (block_pixels_x, block_pixels_y))
+        southEast2_tex.set_colorkey((255, 255, 255))
+        return southEast2_tex
+    elif id_block == 33:
+        north_wall1Bot_tex = pygame.image.load('textures/maptex/North Wall/v1 North Bot Wall v1.png').convert()
+        north_wall1Bot_tex = pygame.transform.scale(north_wall1Bot_tex, (block_pixels_x, block_pixels_y))
+        north_wall1Bot_tex.set_colorkey((255, 255, 255))
+        return north_wall1Bot_tex
+    elif id_block == 34:
+        north_wall2Bot_tex = pygame.image.load('textures/maptex/North Wall/V2 North Bot Wall.png').convert()
+        north_wall2Bot_tex = pygame.transform.scale(north_wall2Bot_tex, (block_pixels_x, block_pixels_y))
+        north_wall2Bot_tex.set_colorkey((255, 255, 255))
+        return north_wall2Bot_tex
+    elif id_block == 35:
+        north_wall3Bot_tex = pygame.image.load('textures/maptex/North Wall/V3 North Bot Wall.png').convert()
+        north_wall3Bot_tex = pygame.transform.scale(north_wall3Bot_tex, (block_pixels_x, block_pixels_y))
+        north_wall3Bot_tex.set_colorkey((255, 255, 255))
+        return north_wall3Bot_tex
+    elif id_block == 36:
+        south_wall1Top_tex = pygame.image.load('textures/maptex/South Wall/v1 South Bot Wall v1.png').convert()
+        south_wall1Top_tex = pygame.transform.scale(south_wall1Top_tex, (block_pixels_x, block_pixels_y))
+        south_wall1Top_tex.set_colorkey((255, 255, 255))
+        return south_wall1Top_tex
+    elif id_block == 37:
+        south_wall1Top_tex = pygame.image.load('textures/maptex/South Wall/V1 South Top Wall.png').convert()
+        south_wall1Top_tex = pygame.transform.scale(south_wall1Top_tex, (block_pixels_x, block_pixels_y))
+        south_wall1Top_tex.set_colorkey((255, 255, 255))
+        return south_wall1Top_tex
+    elif id_block == 38:
+        north_wall2Top_tex = pygame.image.load('textures/maptex/South Wall/V2 South Top Wall.png').convert()
+        north_wall2Top_tex = pygame.transform.scale(north_wall2Top_tex, (block_pixels_x, block_pixels_y))
+        north_wall2Top_tex.set_colorkey((255, 255, 255))
+        return north_wall2Top_tex
+    elif id_block == 39:
+        north_wall3Top_tex = pygame.image.load('textures/maptex/South Wall/V3 South Top Wall.png').convert()
+        north_wall3Top_tex = pygame.transform.scale(north_wall3Top_tex, (block_pixels_x, block_pixels_y))
+        north_wall3Top_tex.set_colorkey((255, 255, 255))
+        return north_wall3Top_tex
+    elif id_block == 40:
+        north_wall2Bot_tex = pygame.image.load('textures/maptex/South Wall/V2 South  Bot Wall.png').convert()
+        north_wall2Bot_tex = pygame.transform.scale(north_wall2Bot_tex, (block_pixels_x, block_pixels_y))
+        north_wall2Bot_tex.set_colorkey((255, 255, 255))
+        return north_wall2Bot_tex
+    elif id_block == 41:
+        north_wall3Bot_tex = pygame.image.load('textures/maptex/South Wall/V3 South  Bot Wall.png').convert()
+        north_wall3Bot_tex = pygame.transform.scale(north_wall3Bot_tex, (block_pixels_x, block_pixels_y))
+        north_wall3Bot_tex.set_colorkey((255, 255, 255))
+        return north_wall3Bot_tex
 
 def LoadingScreenAnimation(screen, screenSize, i, bg):
     screen.fill((0, 0, 0))
@@ -221,16 +290,30 @@ class TextureUnit:
         self.westWall1_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 15)
         self.westWall2_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 16)
         self.westWall3_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 17)
-        self.northWestwall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 18)
+        self.northWestwallTop_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 18)
         self.eastWall1_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 19)
         self.eastWall2_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 20)
         self.eastWall3_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 21)
         self.northEastwall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 22)
-        self.northWall1_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 23)
-        self.northWall2_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 24)
-        self.northWall3_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 25)
-        self.southEast_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 26)
-        self.southWest_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 27)
-        self.northWallList = list((self.northWall1_tex, self.northWall2_tex, self.northWall3_tex))
+        self.northWall1Top_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 23)
+        self.northWall2Top_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 24)
+        self.northWall3Top_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 25)
+        self.southEastTop_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 26)
+        self.southWestTop_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 27)
+        self.northWestwallBot_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 28)
+        self.southWestBot_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 29)
+        self.southEastBot_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 30)
+        self.northEastTop_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 31)
+        self.northEastBot_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 32)
+        self.northWall1Bot_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 33)
+        self.northWall2Bot_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 34)
+        self.northWall3Bot_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 35)
+        self.southWall1Bot = Load_Block_Textures(block_pixelsx, block_pixelsy, 36)
+        self.south_wall1Top_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 37)
+        self.southWall2Bot = Load_Block_Textures(block_pixelsx, block_pixelsy, 40)
+
+        self.southWall3Bot = Load_Block_Textures(block_pixelsx, block_pixelsy, 41)
+
+        self.northWallList = list((self.northWall1Top_tex, self.northWall2Top_tex, self.northWall3Top_tex))
         self.westWallList = list((self.westWall1_tex, self.westWall2_tex, self.westWall3_tex))
         self.eastWallList = list((self.eastWall1_tex, self.eastWall2_tex, self.eastWall3_tex))

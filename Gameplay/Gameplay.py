@@ -16,8 +16,9 @@ from .Utilities.GameplayUtilities import doors
 from .Utilities.GameplayUtilities import one_door_rooms
 from .Utilities.GameplayUtilities import one_door_rooms_validation
 from .Utilities.GameplayUtilities import room_function_setter
-
-
+from .Utilities.GameplayUtilities import BossRoomDoors
+from .Utilities.GameplayUtilities import addBossDoors
+from .Utilities.GameplayUtilities import RemoveBossDoors
 
 class Gameplay(pygame.sprite.Group):
 
@@ -45,15 +46,20 @@ class Gameplay(pygame.sprite.Group):
         self.texture_count_per_tiley = 12
 
         # mnożenie block_pixels i texture count per title musi byc równe rectSize
-        self.TextureUnit = TextureUnit(self.block_pixelsx, self.block_pixelsy) # TEXTURES
+        self.TextureUnit = TextureUnit(self.block_pixelsx, self.block_pixelsy)  # TEXTURES
 
         self.doorlistv2 = doors(self)
         self.wall_collider_rect = detect_rect_colliders(self)
         self.OneDoorRooms = one_door_rooms(self)
         self.isOneDoorRoomsvalidData = one_door_rooms_validation(self)
         self.Room_Function_setter = room_function_setter(self)
+
         self.map_Data = self.Room_Function_setter
         self.map_Data = add_mob_chunks(self)
+        self.doorBoss = BossRoomDoors(self)
+        self.wall_collider_rect = addBossDoors(self)
+        print(self.doorBoss)
+
         for z in self.map_Data.ChunkMap:
             print(z)
 
@@ -93,10 +99,11 @@ class Gameplay(pygame.sprite.Group):
                 self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
             if enemy.shooting:
                 enemy.shoot()
-        pygame.draw.rect(self.screen, (0,0,0), (48,8,204,14))
-        pygame.draw.rect(self.screen, (255,0,0), (50,10,200, 10))
-        if self.player.health >0:    
-            pygame.draw.rect(self.screen, (0,255,0), (50,10, 200 * (self.player.healthMin / self.player.healthMax),10))
+        pygame.draw.rect(self.screen, (0, 0, 0), (48, 8, 204, 14))
+        pygame.draw.rect(self.screen, (255, 0, 0), (50, 10, 200, 10))
+        if self.player.health > 0:
+            pygame.draw.rect(self.screen, (0, 255, 0),
+                             (50, 10, 200 * (self.player.healthMin / self.player.healthMax), 10))
         if self.player.shooting:
             self.player.shoot()
 
@@ -164,7 +171,8 @@ class Gameplay(pygame.sprite.Group):
         for y, row in enumerate(self.map_Data.ChunkMap):
             for x, tile in enumerate(row):
                 if tile:
-                    tile[4].draw_floor(self.TextureUnit.floor1_tex, self.screen, self.ground_offset, self.TextureUnit.floor2_tex, self.TextureUnit.floor3_tex)
+                    tile[4].draw_floor(self.TextureUnit.floor1_tex, self.screen, self.ground_offset,
+                                       self.TextureUnit.floor2_tex, self.TextureUnit.floor3_tex)
 
         for x in self.OneDoorRooms:
             if x[4].roomCode == 'Key':
@@ -172,6 +180,59 @@ class Gameplay(pygame.sprite.Group):
                 offset_pos = x[0] * self.rectSizex + 9 * self.block_pixelsx, \
                              x[1] * self.rectSizey + 6 * self.block_pixelsy
                 self.screen.blit(self.TextureUnit.key_tex, offset_pos + self.ground_offset)
+            elif x[4].roomCode == 'Boss':
+                if not x[2].__contains__('w'):
+                    offset_pos = x[0] * self.rectSizex + 9 * self.block_pixelsx, \
+                                 x[1] * self.rectSizey - 60
+                    self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
+                    offset_pos = x[0] * self.rectSizex + 8 * self.block_pixelsx, \
+                                 x[1] * self.rectSizey - 60
+                    self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
+                    offset_pos = x[0] * self.rectSizex + 10 * self.block_pixelsx, \
+                                 x[1] * self.rectSizey - 60
+                    self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
+                    print(f"{x[2]} w, current chunk {x[0]}{x[1]}")
+                    # oks ??
+                elif not x[2].__contains__('e'):
+                    offset_pos = x[0] * self.rectSizex + 9 * self.block_pixelsx, \
+                                 x[1] * self.rectSizey + self.rectSizey + 60
+                    self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
+                    offset_pos = x[0] * self.rectSizex + 8 * self.block_pixelsx, \
+                                 x[1] * self.rectSizey + self.rectSizey + 60
+                    self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
+                    offset_pos = x[0] * self.rectSizex + 10 * self.block_pixelsx, \
+                                 x[1] * self.rectSizey + self.rectSizey + 60
+                    self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
+                    print(f"{x[2]} e, current chunk {x[0]}{x[1]}")
+                    # oks
+                elif not x[2].__contains__('n'):
+                    offset_pos = x[0] * self.rectSizex - 60, \
+                                 x[1] * self.rectSizey + 6 * self.block_pixelsx
+                    self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
+                    offset_pos = x[0] * self.rectSizex - 60, \
+                                 x[1] * self.rectSizey + 5 * self.block_pixelsx
+                    self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
+                    offset_pos = x[0] * self.rectSizex - 60, \
+                                 x[1] * self.rectSizey + 7 * self.block_pixelsx
+                    self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
+                    print(f"{x[2]} n, current chunk {x[0]}{x[1]}")
+                elif not x[2].__contains__('s'):
+                    offset_pos = x[0] * self.rectSizex + self.rectSizex + 60, \
+                                 x[1] * self.rectSizey + 6 * self.block_pixelsx
+                    self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
+                    offset_pos = x[0] * self.rectSizex + self.rectSizex + 60, \
+                                 x[1] * self.rectSizey + 5 * self.block_pixelsx
+                    self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
+                    offset_pos = x[0] * self.rectSizex + self.rectSizex + 60, \
+                                 x[1] * self.rectSizey + 7 * self.block_pixelsx
+                    self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
+                    print(f"{x[2]} s, current chunk {x[0]}{x[1]}")
+                else:
+                    raise Exception(f"cannot find bossRoom's walls, {x[2]}")
+                # bossDoors
+                offset_pos = x[0] * self.rectSizex + 9 * self.block_pixelsx, \
+                             x[1] * self.rectSizey + 6 * self.block_pixelsy
+                self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
             else:
                 offset_pos = x[0] * self.rectSizex + 9 * self.block_pixelsx, \
                              x[1] * self.rectSizey + 6 * self.block_pixelsy
@@ -206,33 +267,12 @@ class Gameplay(pygame.sprite.Group):
             print("there shouldnt be any mobs")
 
     def draw_borders(self):
-        # for x in self.wall_collider_rect:
-        #     if x.x == 0 or x.x == 1080 or x.x == 2160 or x.x == 3240:
-        #         if x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
-        #             self.screen.blit(self.TextureUnit.northWestwall_tex, (x.x, x.y) + self.ground_offset) # west north
-        #         elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
-        #             self.screen.blit(self.TextureUnit.southWest_tex, (x.x, x.y) + self.ground_offset) # south west
-        #         else:
-        #             self.screen.blit(self.TextureUnit.westWall1_tex, (x.x, x.y) + self.ground_offset) # west
-        #     elif x.x == 1020 or x.x == 2100 or x.x == 3180 or x.x == 4260:
-        #         if x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
-        #             self.screen.blit(self.TextureUnit.northEastwall_tex, (x.x, x.y) + self.ground_offset) # north east
-        #         elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
-        #             self.screen.blit(self.TextureUnit.southEast_tex , (x.x, x.y) + self.ground_offset) # south east
-        #         else:
-        #             self.screen.blit(self.TextureUnit.eastWall1_tex, (x.x, x.y) + self.ground_offset) # east
-        #     elif x.y == 0 or x.y == 720 or x.y == 1440 or x.y == 2160:
-        #         self.screen.blit(self.TextureUnit.northWall1_tex, (x.x, x.y) + self.ground_offset) # north
-        #     elif x.y == 660 or x.y == 1380 or x.y == 2100 or x.y == 2820:
-        #         self.screen.blit(self.TextureUnit.northWall1_tex, (x.x, x.y) + self.ground_offset)  # south
-        #     else:
-        #         self.screen.blit(self.TextureUnit.midWall_tex, (x.x, x.y) + self.ground_offset)
         for y, row in enumerate(self.map_Data.ChunkMap):
             for x, tile in enumerate(row):
                 if tile:
                     tile[4].draw_border(self.screen, self.ground_offset, self.TextureUnit.grass_tex)
+            # Jak chcecie naprawić to to dajcie jakaś teksturkę z tej listy[0]np a nie random.choice
 
-            #Jak chcecie naprawić to to dajcie jakaś teksturkę z tej listy[0]np a nie random.choice
     def run(self):
 
         running = True

@@ -24,7 +24,7 @@ def detect_rect_colliders(self):
                 for rowC in range(self.texture_count_per_tilex):
                     for tileC in range(self.texture_count_per_tiley):
                         if rowC == self.texture_count_per_tilex - 1 or rowC == 0 or \
-                                tileC == self.texture_count_per_tiley - 1 or tileC == 0:
+                                tileC == self.texture_count_per_tiley - 2 or tileC == self.texture_count_per_tiley - 1 or tileC == 0 or tileC == 1:
                             border_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
                                               tile[1] * self.rectSizey + tileC * self.block_pixelsy,
                                               self.block_pixelsx, self.block_pixelsy)
@@ -36,7 +36,83 @@ def detect_rect_colliders(self):
     print(f"door length: {len(self.doorlistv2)}  |  lista length after: {len(lista)} ")
     return lista
 
+def BossRoomDoors(self):
+    listb = list()
+    for y, row in enumerate(self.map_Data.ChunkMap):
+        for x, tile in enumerate(row):
+            print(tile)
+            if tile[4].roomCode == 'Boss':
+                if not tile[2].__contains__('w'):
+                    offset_pos = Rect(tile[0] * self.rectSizex + 9 * self.block_pixelsx,
+                                      tile[1] * self.rectSizey - 60, self.block_pixelsx, self.block_pixelsy)
+                    listb.append(offset_pos)
+                    offset_pos = Rect(tile[0] * self.rectSizex + 8 * self.block_pixelsx,
+                                      tile[1] * self.rectSizey - 60, self.block_pixelsx, self.block_pixelsy)
+                    listb.append(offset_pos)
+                    offset_pos = Rect(tile[0] * self.rectSizex + 10 * self.block_pixelsx,
+                                      tile[1] * self.rectSizey - 60, self.block_pixelsx, self.block_pixelsy)
+                    listb.append(offset_pos)
+                    print(f"{tile[2]} w, current chunk {tile[0]}{tile[1]}")
+                elif not tile[2].__contains__('e'):
+                    offset_pos = Rect(tile[0] * self.rectSizex + 9 * self.block_pixelsx,
+                                      tile[1] * self.rectSizey + self.rectSizey + 60, self.block_pixelsx,
+                                      self.block_pixelsy)
+                    listb.append(offset_pos)
+                    offset_pos = Rect(tile[0] * self.rectSizex + 8 * self.block_pixelsx,
+                                      tile[1] * self.rectSizey + self.rectSizey + 60, self.block_pixelsx,
+                                      self.block_pixelsy)
+                    listb.append(offset_pos)
+                    offset_pos = Rect(tile[0] * self.rectSizex + 10 * self.block_pixelsx,
+                                      tile[1] * self.rectSizey + self.rectSizey + 60, self.block_pixelsx,
+                                      self.block_pixelsy)
+                    listb.append(offset_pos)
+                    print(f"{tile[2]} e, current chunk {tile[0]}{tile[1]}")
+                elif not tile[2].__contains__('n'):
+                    offset_pos = Rect(tile[0] * self.rectSizex - 60,
+                                      tile[1] * self.rectSizey + 6 * self.block_pixelsx, self.block_pixelsx,
+                                      self.block_pixelsy)
+                    listb.append(offset_pos)
+                    offset_pos = Rect(tile[0] * self.rectSizex - 60,
+                                      tile[1] * self.rectSizey + 5 * self.block_pixelsx, self.block_pixelsx,
+                                      self.block_pixelsy)
+                    listb.append(offset_pos)
+                    offset_pos = Rect(tile[0] * self.rectSizex - 60,
+                                      tile[1] * self.rectSizey + 7 * self.block_pixelsx, self.block_pixelsx,
+                                      self.block_pixelsy)
+                    listb.append(offset_pos)
+                    print(f"{tile[2]} n, current chunk {tile[0]}{tile[1]}")
+                elif not tile[2].__contains__('s'):
+                    offset_pos = Rect(tile[0] * self.rectSizex + self.rectSizex + 60,
+                                      tile[1] * self.rectSizey + 6 * self.block_pixelsx, self.block_pixelsx,
+                                      self.block_pixelsy)
+                    listb.append(offset_pos)
+                    offset_pos = Rect(tile[0] * self.rectSizex + self.rectSizex + 60,
+                                      tile[1] * self.rectSizey + 5 * self.block_pixelsx, self.block_pixelsx,
+                                      self.block_pixelsy)
+                    listb.append(offset_pos)
+                    offset_pos = Rect(tile[0] * self.rectSizex + self.rectSizex + 60,
+                                      tile[1] * self.rectSizey + 7 * self.block_pixelsx, self.block_pixelsx,
+                                      self.block_pixelsy)
+                    listb.append(offset_pos)
+                    print(f"{tile[2]} s, current chunk {tile[0]}{tile[1]}")
+                else:
+                    raise Exception(f"cannot find bossRoom's walls, {tile[2]}")
 
+    return listb
+
+def addBossDoors(self):
+    lista = self.doorBoss
+    listb = self.wall_collider_rect
+    for x in lista:
+        listb.append(x)
+    return listb
+
+def RemoveBossDoors(self):
+    lista = self.doorBoss
+    listb = self.wall_collider_rect
+    for x in lista:
+        listb.remove(x)
+    return listb
 def one_door_rooms(self):
     list_c = list()
     for y, row in enumerate(self.map_Data.ChunkMap):
@@ -92,21 +168,22 @@ def one_door_rooms_validation(self):
                 print(returnData)
                 return returnData
             else:
-                raise Exception(f"Propably not all elements are properly deleted in Extraction_list_of_rooms: {Extraction_list_of_rooms}")
+                raise Exception(
+                    f"Propably not all elements are properly deleted in Extraction_list_of_rooms: {Extraction_list_of_rooms}")
         else:
             raise Exception(f"SpawnRoom is None. SpawnRoom: {SpawnRoom}")
     else:
-        raise Exception(f"OneDoorRooms.len is less than 2. OneDoorRooms.len: {self.OneDoorRooms} OneDoorRooms.len {len(self.OneDoorRooms)}")
+        raise Exception(
+            f"OneDoorRooms.len is less than 2. OneDoorRooms.len: {self.OneDoorRooms} OneDoorRooms.len {len(self.OneDoorRooms)}")
 
 
 def add_mob_chunks(self):
-
     for enumx, x in enumerate(self.map_Data.ChunkMap):
         for enumy, y in enumerate(x):
             if y[4] == '':
                 self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Room", (enumx, enumy), self.wall_collider_rect)
 
-                #TODO
+                # TODO
     declared_mobs = 20
     while declared_mobs >= 0:
         rX = random.randint(0, 3)
@@ -131,11 +208,12 @@ def room_function_setter(self):
             if special_room_data["KeyRoom"][0] == y[0] and special_room_data["KeyRoom"][1] == y[1]:
                 self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Key", (enumx, enumy), self.wall_collider_rect)
             if special_room_data["BossRoom"][0] == y[0] and special_room_data["BossRoom"][1] == y[1]:
-                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Boss", (enumx, enumy),  self.wall_collider_rect)
+                self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Boss", (enumx, enumy), self.wall_collider_rect)
             if special_room_data is not None:
                 for i in special_room_data["BonusRooms"]:
                     if i[0] == y[0] and i[1] == y[1]:
-                        self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Bonus", (enumx, enumy), self.wall_collider_rect)
+                        self.map_Data.ChunkMap[enumx][enumy][4] = roomData("Bonus", (enumx, enumy),
+                                                                           self.wall_collider_rect)
     return self.map_Data
 
 
@@ -169,9 +247,9 @@ def doors(self):
                                             tile[1] * self.rectSizey + (tileC + 1) * self.block_pixelsy,
                                             self.block_pixelsx, self.block_pixelsy)
                             listC.append(door_pos)
-                        if doorStr.__contains__('w') and (
-                                rowC == self.texture_count_per_tilex / 2 and
-                                tileC == 0):
+                        if doorStr.__contains__('w') and ((rowC == self.texture_count_per_tilex / 2 and
+                                                           tileC == 0) or (rowC == self.texture_count_per_tilex / 2 and
+                                                                           tileC == 1)):
                             door_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
                                             tile[1] * self.rectSizey + tileC * self.block_pixelsy,
                                             self.block_pixelsx, self.block_pixelsy)
@@ -200,8 +278,10 @@ def doors(self):
                                             self.block_pixelsx, self.block_pixelsy)
                             listC.append(door_pos)
 
-                        if doorStr.__contains__('e') and (tileC == self.texture_count_per_tiley - 1 and
-                                                          rowC == self.texture_count_per_tilex / 2):
+                        if doorStr.__contains__('e') and ((tileC == self.texture_count_per_tiley - 1 and
+                                                           rowC == self.texture_count_per_tilex / 2) or (
+                                                                  tileC == self.texture_count_per_tiley - 2 and
+                                                                  rowC == self.texture_count_per_tilex / 2)):
                             door_pos = Rect(tile[0] * self.rectSizex + rowC * self.block_pixelsx,
                                             tile[1] * self.rectSizey + tileC * self.block_pixelsy,
                                             self.block_pixelsx, self.block_pixelsy)
