@@ -143,9 +143,9 @@ class Gameplay(pygame.sprite.Group):
             
             #draw boss healthbar
             if enemy.enemyName =='boss':
-                pygame.draw.rect(self.screen, (255,0,0), (enemy.rect.x + self.ground_offset[0],enemy.rect.y+ self.ground_offset[1]+100,enemy.rect.width, 5))
+                pygame.draw.rect(self.screen, (255,0,0), (enemy.rect.x + self.ground_offset[0],enemy.rect.y+ self.ground_offset[1]+160,enemy.rect.width, 5))
                 if enemy.healthMin >0:
-                    pygame.draw.rect(self.screen, (0,255,0), (enemy.rect.x + self.ground_offset[0],enemy.rect.y+ self.ground_offset[1]+100,int(enemy.rect.width * (enemy.healthMin / enemy.healthMax)), 5))
+                    pygame.draw.rect(self.screen, (0,255,0), (enemy.rect.x + self.ground_offset[0],enemy.rect.y+ self.ground_offset[1]+160,int(enemy.rect.width * (enemy.healthMin / enemy.healthMax)), 5))
             
             if self.currentChunk == enemy.currentChunk:
                 enemy.status(self.player)
