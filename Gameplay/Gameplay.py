@@ -90,6 +90,7 @@ class Gameplay(pygame.sprite.Group):
         for enemy in self.enemyGroup:
             enemy.direction_distance(self.player)
             enemy.draw(self.ground_offset)
+            enemy.move()
             if self.currentChunk == enemy.currentChunk:
                 enemy.status(self.player)
             enemy.mapCollide(self.currentChunk)
@@ -99,6 +100,10 @@ class Gameplay(pygame.sprite.Group):
                 self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
             if enemy.shooting:
                 enemy.shoot()
+            if enemy.enemyName =='boss':
+                pygame.draw.rect(self.screen, (255,0,0), (enemy.rect.x + self.ground_offset[0],enemy.rect.y+ self.ground_offset[1]+100,enemy.rect.width, 5))
+                if enemy.healthMin >0:
+                    pygame.draw.rect(self.screen, (0,255,0), (enemy.rect.x + self.ground_offset[0],enemy.rect.y+ self.ground_offset[1]+100,int(enemy.rect.width * (enemy.healthMin / enemy.healthMax)), 5))
         pygame.draw.rect(self.screen, (0, 0, 0), (48, 8, 204, 14))
         pygame.draw.rect(self.screen, (255, 0, 0), (50, 10, 200, 10))
         if self.player.health > 0:
@@ -245,7 +250,13 @@ class Gameplay(pygame.sprite.Group):
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Key":
             print("key")
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Boss":
-            print("boss")
+            tempBossCurrentChunk = self.currentChunk
+            boss = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
+                                 (self.currentChunk[1] * self.rectSizey) + random.randrange(100, 600)),
+                                self.camera_group, self.screen,
+                                self.surface_size, self.player,'boss', 4,10, tempBossCurrentChunk)
+            self.enemyGroup.add(boss)
+            
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Bonus":
             print("bonus")
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:
@@ -257,7 +268,7 @@ class Gameplay(pygame.sprite.Group):
                 enemy1 = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
                                 (self.currentChunk[1] * self.rectSizey) + random.randrange(100, 600)),
                                self.camera_group, self.screen,
-                               self.surface_size, self.player, mobsType, 4, tempCurrentChunk)
+                               self.surface_size, self.player, mobsType, 4,20, tempCurrentChunk)
 
                 self.enemyGroup.add(enemy1)
 
