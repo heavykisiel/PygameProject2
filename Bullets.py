@@ -22,17 +22,10 @@ class Bullets(pygame.sprite.Sprite):
         self.shoot = 0
         self.targetx = targetx
         self.targety = targety
-        self.offset = 100
         self.time = pygame.time.get_ticks()
         self.angle = math.atan2(self.targetx - self.rect.y, self.targety - self.rect.x)
-        self.angle1 = math.atan2(self.targetx - self.rect.y, self.targety - self.rect.x)
-        print(self.angle)
         self.dx = math.cos(self.angle) * bulletSpeed
         self.dy = math.sin(self.angle) * bulletSpeed
-        self.pos = x,y
-        self.direction = 120
-        self.dx1 = math.cos(self.angle1) * bulletSpeed
-        self.dy1 = math.sin(self.angle1) * bulletSpeed
         self.bulletAngle = bulletAngle
         
     def animation(self):

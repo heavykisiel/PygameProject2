@@ -11,9 +11,9 @@ green = (0, 255, 0)
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, group, screen, surface_size, player, enemyName, speed,bulletSpeed,currentChunk,texSize):
+    def __init__(self, pos, group, screen, surface_size, player, enemyName, speed,bulletSpeed,currentChunk):
         super().__init__(group)
-        self.texSize = texSize
+
         self.enemyName = enemyName
         self.index = 0
         self.animation_list = []
@@ -23,7 +23,7 @@ class Enemy(pygame.sprite.Sprite):
             loop_list = []
             self.filesNumber = len(os.listdir(f'textures/enemies/{self.enemyName}/{animation}'))
             for i in range(self.filesNumber):
-                img = TextureLoader.Load_Enemy_Texture(self.enemyName, animation, i,self.texSize)
+                img = TextureLoader.Load_Enemy_Texture(self.enemyName, animation, i)
                 loop_list.append(img)
             self.animation_list.append(loop_list)
 
@@ -194,6 +194,7 @@ class Enemy(pygame.sprite.Sprite):
         self.timer()
         self.animation()
         self.check_alive()
+        self.move()
         
     def shoot(self):
         if self.shooting:

@@ -40,6 +40,7 @@ class Player(pygame.sprite.Sprite):
         self.healthMax = 100
         self.healthMin = self.health
         self.playerDirection = 1
+        self.moving = False
         
         #player bullets
         self.bulletGroup = pygame.sprite.Group()
@@ -68,40 +69,52 @@ class Player(pygame.sprite.Sprite):
             self.action = newAction
             self.index = 0
             self.time = pygame.time.get_ticks()
+        
+    
+    def movingAnimation(self):
+        if self.moving == True and self.playerDirection == 1:
+            self.actionMetod(2)  
+        if self.moving == True and self.playerDirection == -1:
+            self.actionMetod(3)
+        if self.moving == True and self.playerDirection == 2:
+            self.actionMetod(0)
+        if self.moving == True and self.playerDirection == -2:
+            self.actionMetod(1)
             
     def input(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_RIGHT]:
-            self.animationStopped = False
-            self.direction.x = 1
-            self.playerDirection = 1
-            self.actionMetod(2)
-        elif keys[pygame.K_LEFT]:
-            self.animationStopped = False
-            self.playerDirection = -1
-            self.direction.x = -1
-            self.actionMetod(3)
-        else:
-            self.direction.x = 0       
-            self.animationStopped = True
         if keys[pygame.K_UP]:
-            
-            self.actionMetod(1)
+            self.moving = True
             self.direction.y = -1
             self.playerDirection = -2
-            self.animationStopped = False
-            
+            self.animationStopped = False   
         elif keys[pygame.K_DOWN]:
+            self.moving = True
             self.animationStopped = False
             self.direction.y = 1
-            self.playerDirection = 2
-            self.actionMetod(0)
+            self.playerDirection = 2    
         else:
             self.direction.y = 0
+            self.animationStopped = True   
+        if keys[pygame.K_RIGHT]:
+            self.moving = True
+            self.animationStopped = False
+            self.direction.x = 1
+            self.playerDirection = 1     
+        elif keys[pygame.K_LEFT]:
+            self.moving = True
+            self.animationStopped = False
+            self.playerDirection = -1
+            self.direction.x = -1     
+        else:
+            self.direction.x = 0       
+            
+            
+        
 
         if keys[pygame.K_SPACE]:
             if self.shootSpaceCooldown == 0:
-                self.shootSpaceCooldown = 4
+                self.shootSpaceCooldown = 6
                 self.shooting = True
         #BattleMode swith -- dev tool
         if keys[pygame.K_q]:
@@ -117,7 +130,7 @@ class Player(pygame.sprite.Sprite):
         self.timer()
         self.input()
         self.animation()
-
+        self.movingAnimation()
     def shoot(self):
 
         if self.shootCooldown == 0:
