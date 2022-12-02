@@ -251,26 +251,26 @@ class Gameplay(pygame.sprite.Group):
             print("key")
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Boss":
             tempBossCurrentChunk = self.currentChunk
-            boss = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
-                                 (self.currentChunk[1] * self.rectSizey) + random.randrange(100, 600)),
+            boss = Enemy(((self.currentChunk[0] * self.rectSizex) + 600,
+                                 (self.currentChunk[1] * self.rectSizey) +300),
                                 self.camera_group, self.screen,
-                                self.surface_size, self.player,'boss', 4,10, tempBossCurrentChunk)
+                                self.surface_size, self.player,'boss', 4,10, tempBossCurrentChunk,(120,120))
             self.enemyGroup.add(boss)
-            
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Bonus":
             print("bonus")
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:
             mobsCount = self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count
 
             for newEnemy in range(0, mobsCount):
-                mobsType = MOBS[random.randint(0, len(MOBS) - 1)]
-                tempCurrentChunk = self.currentChunk
-                enemy1 = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
-                                (self.currentChunk[1] * self.rectSizey) + random.randrange(100, 600)),
-                               self.camera_group, self.screen,
-                               self.surface_size, self.player, mobsType, 4,20, tempCurrentChunk)
+                 mobsType = MOBS[random.randint(0, len(MOBS) - 1)]
+                 tempCurrentChunk = self.currentChunk
+                 enemy1 = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
+                                 (self.currentChunk[1] * self.rectSizey) + random.randrange(100, 600)),
+                                self.camera_group, self.screen,
+                                self.surface_size, self.player, mobsType, 4,20, tempCurrentChunk,(64,64))
 
-                self.enemyGroup.add(enemy1)
+                 self.enemyGroup.add(enemy1)
+            
 
             print(
                 f"there should be {self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count} mobs")
