@@ -90,7 +90,7 @@ class Gameplay(pygame.sprite.Group):
         #bullets
         self.bulletRender()
                     
-        #draw healthbar            
+        #draw healthbar- (nie działa w GamePlay_logic playera)- trzeba to gdzieś przenieść            
         pygame.draw.rect(self.screen, (0, 0, 0), (48, 8, 204, 14))
         pygame.draw.rect(self.screen, (255, 0, 0), (50, 10, 200, 10))
         if self.player.health > 0:
