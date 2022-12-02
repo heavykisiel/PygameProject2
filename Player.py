@@ -11,7 +11,9 @@ green = (0, 255, 0)
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, group, screen, surface_size):
         super().__init__(group)
-
+        
+        #animation
+        self.animationStopped = True
         self.index = 0
         self.animation_list = []
         self.action = 0
@@ -28,24 +30,24 @@ class Player(pygame.sprite.Sprite):
         self.image = self.animation_list[self.action][self.index]
         self.rect = self.image.get_rect(center=pos)
         self.direction = pygame.math.Vector2()
-        self.playerDirection = 1
         self.screen = screen
         self.surface_size = surface_size
-
+        self.time = pygame.time.get_ticks()
         # spawn
         self.speed = 16
-        self.speedBullet = 32
-        self.shootCooldown = 0
-        self.shootSpaceCooldown = 0
         self.alive = True
         self.health = 100
         self.healthMax = 100
         self.healthMin = self.health
-        self.animationStopped = True
+        self.playerDirection = 1
+        
+        #player bullets
         self.bulletGroup = pygame.sprite.Group()
         self.shooting = False
-        self.time = pygame.time.get_ticks()
-
+        self.speedBullet = 32
+        self.shootCooldown = 0
+        self.shootSpaceCooldown = 0
+        
         self.BattleMode = False
         
         
@@ -104,10 +106,7 @@ class Player(pygame.sprite.Sprite):
         #BattleMode swith -- dev tool
         if keys[pygame.K_q]:
             self.BattleMode = False if self.BattleMode else True
-
-                
-    
-                
+ 
     def timer(self):
         if self.shootCooldown > 0:
             self.shootCooldown -= 1
@@ -128,14 +127,14 @@ class Player(pygame.sprite.Sprite):
             if self.playerDirection == 2: 
                 bullet = Bullets(self.rect.centerx + (0.1 * self.rect.size[0] * self.playerDirection / 2),
                                  self.rect.centery, 1, self.speedBullet, self.surface_size,
-                                 self.rect.centery + 10000, self.rect.centerx)
+                                 self.rect.centery + 10000, self.rect.centerx,'player')
                 self.bulletGroup.add(bullet)
                 self.shooting = False
                 
             elif self.playerDirection == -2:
                 bullet = Bullets(self.rect.x + (0.1 * self.rect.size[0] * self.playerDirection / 2),
                                  self.rect.y, 1, self.speedBullet, self.surface_size,
-                                 self.rect.y - 10000 , self.rect.x)
+                                 self.rect.y - 10000 , self.rect.x,'player')
                 self.bulletGroup.add(bullet)
                 self.shooting = False
                 
@@ -143,7 +142,7 @@ class Player(pygame.sprite.Sprite):
                 bullet = Bullets(self.rect.centerx,
                                  self.rect.centery + (0.1 * self.rect.size[0] * self.playerDirection), 1,
                                  self.speedBullet, self.surface_size, self.rect.centery,
-                                 self.rect.centerx + 1000)
+                                 self.rect.centerx + 1000,'player')
                 self.bulletGroup.add(bullet)
                 self.shooting = False
                
@@ -151,6 +150,6 @@ class Player(pygame.sprite.Sprite):
                 bullet = Bullets(self.rect.centerx,
                                  self.rect.centery + (0.3 * self.rect.size[0] * self.playerDirection), 1,
                                  self.speedBullet, self.surface_size, self.rect.centery,
-                                 self.rect.centerx - 1000)
+                                 self.rect.centerx - 1000,'player')
                 self.bulletGroup.add(bullet)
                 self.shooting = False
