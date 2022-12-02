@@ -108,10 +108,6 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = -1     
         else:
             self.direction.x = 0       
-            
-            
-        
-
         if keys[pygame.K_SPACE]:
             if self.shootSpaceCooldown == 0:
                 self.shootSpaceCooldown = 6
@@ -138,22 +134,22 @@ class Player(pygame.sprite.Sprite):
             self.shootCooldown = 15
 
             if self.playerDirection == 2: 
-                bullet = Bullets(self.rect.centerx + (0.1 * self.rect.size[0] * self.playerDirection / 2),
+                bullet = Bullets(self.rect.centerx,
                                  self.rect.centery, 1, self.speedBullet, self.surface_size,
                                  self.rect.centery + 10000, self.rect.centerx,'player')
                 self.bulletGroup.add(bullet)
                 self.shooting = False
                 
             elif self.playerDirection == -2:
-                bullet = Bullets(self.rect.x + (0.1 * self.rect.size[0] * self.playerDirection / 2),
-                                 self.rect.y, 1, self.speedBullet, self.surface_size,
+                bullet = Bullets(self.rect.centerx,
+                                 self.rect.centery, 1, self.speedBullet, self.surface_size,
                                  self.rect.y - 10000 , self.rect.x,'player')
                 self.bulletGroup.add(bullet)
                 self.shooting = False
                 
             elif self.playerDirection == 1:
                 bullet = Bullets(self.rect.centerx,
-                                 self.rect.centery + (0.1 * self.rect.size[0] * self.playerDirection), 1,
+                                 self.rect.centery , 1,
                                  self.speedBullet, self.surface_size, self.rect.centery,
                                  self.rect.centerx + 1000,'player')
                 self.bulletGroup.add(bullet)
@@ -161,7 +157,7 @@ class Player(pygame.sprite.Sprite):
                
             else:
                 bullet = Bullets(self.rect.centerx,
-                                 self.rect.centery + (0.3 * self.rect.size[0] * self.playerDirection), 1,
+                                 self.rect.centery, 1,
                                  self.speedBullet, self.surface_size, self.rect.centery,
                                  self.rect.centerx - 1000,'player')
                 self.bulletGroup.add(bullet)
