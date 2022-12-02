@@ -291,10 +291,10 @@ class Gameplay(pygame.sprite.Group):
             print("key")
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Boss":
             tempBossCurrentChunk = self.currentChunk
-            boss = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
+            boss = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(200, 600),
                                  (self.currentChunk[1] * self.rectSizey) + random.randrange(100, 600)),
                                 self.camera_group, self.screen,
-                                self.surface_size, self.player,'boss', 4,10, tempBossCurrentChunk)
+                                self.surface_size, self.player,'boss', 4,10, tempBossCurrentChunk,(150,150))
             self.enemyGroup.add(boss)
             
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Bonus":
@@ -308,7 +308,7 @@ class Gameplay(pygame.sprite.Group):
                 enemy1 = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
                                 (self.currentChunk[1] * self.rectSizey) + random.randrange(200, 600)),
                                self.camera_group, self.screen,
-                               self.surface_size, self.player, mobsType, 4,20, tempCurrentChunk)
+                               self.surface_size, self.player, mobsType, 4,20, tempCurrentChunk,(64,64))
 
                 self.enemyGroup.add(enemy1)
 
