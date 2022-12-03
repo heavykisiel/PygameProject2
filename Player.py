@@ -47,6 +47,7 @@ class Player(pygame.sprite.Sprite):
         self.time = pygame.time.get_ticks()
 
         self.BattleMode = False
+        self.hasKey = False
         
         
     def animation(self):

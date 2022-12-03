@@ -82,15 +82,15 @@ def BossRoomDoors(self):
                     listb.append(offset_pos)
                     print(f"{tile[2]} n, current chunk {tile[0]}{tile[1]}")
                 elif not tile[2].__contains__('s'):
-                    offset_pos = Rect(tile[0] * self.rectSizex + self.rectSizex + 60,
+                    offset_pos = Rect(tile[0] * self.rectSizex + self.rectSizex,
                                       tile[1] * self.rectSizey + 6 * self.block_pixelsx, self.block_pixelsx,
                                       self.block_pixelsy)
                     listb.append(offset_pos)
-                    offset_pos = Rect(tile[0] * self.rectSizex + self.rectSizex + 60,
+                    offset_pos = Rect(tile[0] * self.rectSizex + self.rectSizex,
                                       tile[1] * self.rectSizey + 5 * self.block_pixelsx, self.block_pixelsx,
                                       self.block_pixelsy)
                     listb.append(offset_pos)
-                    offset_pos = Rect(tile[0] * self.rectSizex + self.rectSizex + 60,
+                    offset_pos = Rect(tile[0] * self.rectSizex + self.rectSizex,
                                       tile[1] * self.rectSizey + 7 * self.block_pixelsx, self.block_pixelsx,
                                       self.block_pixelsy)
                     listb.append(offset_pos)
@@ -107,7 +107,7 @@ def addBossDoors(self):
         listb.append(x)
     return listb
 
-def RemoveBossDoors(self):
+def removeBossDoors(self):
     lista = self.doorBoss
     listb = self.wall_collider_rect
     for x in lista:

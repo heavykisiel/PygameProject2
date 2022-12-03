@@ -18,7 +18,9 @@ from .Utilities.GameplayUtilities import one_door_rooms_validation
 from .Utilities.GameplayUtilities import room_function_setter
 from .Utilities.GameplayUtilities import BossRoomDoors
 from .Utilities.GameplayUtilities import addBossDoors
-from .Utilities.GameplayUtilities import RemoveBossDoors
+from .Utilities.GameplayUtilities import removeBossDoors
+from Item import Item
+
 
 class Gameplay(pygame.sprite.Group):
 
@@ -35,7 +37,6 @@ class Gameplay(pygame.sprite.Group):
         self.screen.fill((0, 0, 0))
         self.camera_group = Camera()
 
-        self.display = pygame.Surface((300, 300))
         self.rectSizex = self.surface_size[0]  # 1080
         self.rectSizey = self.surface_size[1]  # 720
         self.spawn = [self.map_Data.maze_start_x, self.map_Data.maze_start_y]
@@ -58,6 +59,8 @@ class Gameplay(pygame.sprite.Group):
         self.map_Data = add_mob_chunks(self)
         self.doorBoss = BossRoomDoors(self)
         self.wall_collider_rect = addBossDoors(self)
+        self.bossDoorLocked = True
+        self.doorsOpened = False
         print(self.doorBoss)
 
         for z in self.map_Data.ChunkMap:
@@ -71,10 +74,19 @@ class Gameplay(pygame.sprite.Group):
             (540 + (self.currentChunk[0] * self.rectSizex),
              360 + (self.currentChunk[1] * self.rectSizey)),
             self.camera_group, self.screen, self.surface_size)
+        self.players = pygame.sprite.GroupSingle()
+        self.players.add(self.player)
 
         self.enemyGroup = pygame.sprite.Group()
+        self.itemGroup = pygame.sprite.Group()
+        self.bossRoomLocation = self.isOneDoorRoomsvalidData.get("BossRoom")
+        self.keyRoomLocation = self.isOneDoorRoomsvalidData.get("KeyRoom")
+        item = Item((self.keyRoomLocation[0] * self.rectSizex + 9 * self.block_pixelsx,
+                     self.keyRoomLocation[1] * self.rectSizey + 6 * self.block_pixelsy),
+                    self.camera_group, self.screen, 'Key', self.TextureUnit.key_tex)
+        self.itemGroup.add(item)
 
-    def drawMap(self, player):
+    def draw_map(self, player):
         # player interaction with map elements
         self.GamePlay_Logic(player)
         # fill screen with floor
@@ -112,6 +124,11 @@ class Gameplay(pygame.sprite.Group):
             bullets.mapCollide(self.currentChunk)
             self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
 
+
+        #DrawItem
+        for x in self.itemGroup:
+            x.draw(self.ground_offset)
+
     def GamePlay_Logic(self, player):
         # normalize movement player
         if player.direction.magnitude() != 0:
@@ -121,6 +138,16 @@ class Gameplay(pygame.sprite.Group):
         self.player.rect.x += player.direction.x * self.player.speed
         self.player.rect.y += player.direction.y * self.player.speed
 
+        if self.player.hasKey:
+            for x in self.doorBoss:
+                if self.player.rect.colliderect(x):
+
+                    self.bossDoorLocked = False
+                    self.player.hasKey = False
+                    print("col")
+        if not self.bossDoorLocked and not self.player.hasKey and not self.doorsOpened:
+            self.wall_collider_rect = removeBossDoors(self)
+            self.doorsOpened = True
         # wall interaction
         for x in self.wall_collider_rect:
             if player.rect.colliderect(x):
@@ -162,7 +189,17 @@ class Gameplay(pygame.sprite.Group):
             if self.player.rect.centery > self.rectSizey + (self.currentChunk[1] * self.rectSizey):
                 self.currentChunk[1] += 1
                 self.OnNewRoom()
-        # Update offset
+
+        pickupItems = pygame.sprite.groupcollide(self.players, self.itemGroup, False, True)
+        if pickupItems:
+            print(pickupItems.values())
+            self.player.hasKey = True
+            for player, item in pickupItems.items():
+                print(player)
+                print(item[0])
+                # Update offset
+
+
         self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
             self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)
 
@@ -175,12 +212,7 @@ class Gameplay(pygame.sprite.Group):
                                        self.TextureUnit.floor2_tex, self.TextureUnit.floor3_tex)
 
         for x in self.OneDoorRooms:
-            if x[4].roomCode == 'Key':
-                # render key
-                offset_pos = x[0] * self.rectSizex + 9 * self.block_pixelsx, \
-                             x[1] * self.rectSizey + 6 * self.block_pixelsy
-                self.screen.blit(self.TextureUnit.key_tex, offset_pos + self.ground_offset)
-            elif x[4].roomCode == 'Boss':
+            if x[4].roomCode == 'Boss' and self.bossDoorLocked:
                 if not x[2].__contains__('w'):
                     offset_pos = x[0] * self.rectSizex + 9 * self.block_pixelsx, \
                                  x[1] * self.rectSizey - 60
@@ -191,8 +223,7 @@ class Gameplay(pygame.sprite.Group):
                     offset_pos = x[0] * self.rectSizex + 10 * self.block_pixelsx, \
                                  x[1] * self.rectSizey - 60
                     self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
-                    print(f"{x[2]} w, current chunk {x[0]}{x[1]}")
-                    # oks ??
+
                 elif not x[2].__contains__('e'):
                     offset_pos = x[0] * self.rectSizex + 9 * self.block_pixelsx, \
                                  x[1] * self.rectSizey + self.rectSizey + 60
@@ -203,8 +234,7 @@ class Gameplay(pygame.sprite.Group):
                     offset_pos = x[0] * self.rectSizex + 10 * self.block_pixelsx, \
                                  x[1] * self.rectSizey + self.rectSizey + 60
                     self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
-                    print(f"{x[2]} e, current chunk {x[0]}{x[1]}")
-                    # oks
+
                 elif not x[2].__contains__('n'):
                     offset_pos = x[0] * self.rectSizex - 60, \
                                  x[1] * self.rectSizey + 6 * self.block_pixelsx
@@ -215,18 +245,17 @@ class Gameplay(pygame.sprite.Group):
                     offset_pos = x[0] * self.rectSizex - 60, \
                                  x[1] * self.rectSizey + 7 * self.block_pixelsx
                     self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
-                    print(f"{x[2]} n, current chunk {x[0]}{x[1]}")
+
                 elif not x[2].__contains__('s'):
-                    offset_pos = x[0] * self.rectSizex + self.rectSizex + 60, \
+                    offset_pos = x[0] * self.rectSizex + self.rectSizex, \
                                  x[1] * self.rectSizey + 6 * self.block_pixelsx
                     self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
-                    offset_pos = x[0] * self.rectSizex + self.rectSizex + 60, \
+                    offset_pos = x[0] * self.rectSizex + self.rectSizex, \
                                  x[1] * self.rectSizey + 5 * self.block_pixelsx
                     self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
-                    offset_pos = x[0] * self.rectSizex + self.rectSizex + 60, \
+                    offset_pos = x[0] * self.rectSizex + self.rectSizex, \
                                  x[1] * self.rectSizey + 7 * self.block_pixelsx
                     self.screen.blit(self.TextureUnit.grass_tex, offset_pos + self.ground_offset)
-                    print(f"{x[2]} s, current chunk {x[0]}{x[1]}")
                 else:
                     raise Exception(f"cannot find bossRoom's walls, {x[2]}")
                 # bossDoors
@@ -273,6 +302,10 @@ class Gameplay(pygame.sprite.Group):
                     tile[4].draw_border(self.screen, self.ground_offset, self.TextureUnit.grass_tex)
             # Jak chcecie naprawić to to dajcie jakaś teksturkę z tej listy[0]np a nie random.choice
 
+    def draw_items(self):
+        for item in self.itemGroup:
+            item.draw()
+
     def run(self):
 
         running = True
@@ -286,7 +319,7 @@ class Gameplay(pygame.sprite.Group):
                     sys.exit()
             self.screen.fill((0, 0, 0))
             self.camera_group.update()
-            self.drawMap(self.player)
+            self.draw_map(self.player)
             self.camera_group.draw(self.player)
 
             for enemies in self.enemyGroup.sprites():
