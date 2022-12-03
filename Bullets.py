@@ -4,7 +4,7 @@ import math
 
 
 class Bullets(pygame.sprite.Sprite):
-    def __init__(self, x, y, scale, speed, surface_size, targetx, targety):
+    def __init__(self, x, y, scale, bulletSpeed, surface_size, targetx, targety,charName, bulletAngle = 0):
         pygame.sprite.Sprite.__init__(self)
 
         self.animationIndex = 0
@@ -13,22 +13,21 @@ class Bullets(pygame.sprite.Sprite):
             image = TextureLoader.Load_Bullet_test_Texture(i)
             self.loop_list.append(image)
         self.image = self.loop_list[self.animationIndex]
-
+        self.charName = charName
         self.rect = self.image.get_rect()
         self.rect.center = [x, y]
-        # self.surface_size = surface_size
-        self.speed = speed
+        
+        self.speed = bulletSpeed
         self.surface_size = surface_size
-        self.speedBullet = 2
         self.shoot = 0
         self.targetx = targetx
         self.targety = targety
-        self.offset = 100
         self.time = pygame.time.get_ticks()
         self.angle = math.atan2(self.targetx - self.rect.y, self.targety - self.rect.x)
-        self.dx = math.cos(self.angle) * speed
-        self.dy = math.sin(self.angle) * speed
-
+        self.dx = math.cos(self.angle) * bulletSpeed
+        self.dy = math.sin(self.angle) * bulletSpeed
+        self.bulletAngle = bulletAngle
+        
     def animation(self):
         self.image = self.loop_list[self.animationIndex]
         cooldown = 50
@@ -38,18 +37,22 @@ class Bullets(pygame.sprite.Sprite):
                 self.animationIndex += 1
             else:
                 self.animationIndex == 1
+                
     def mapCollide(self, chunk):
         if self.rect.x < chunk[0] * 1080 + 40:
-            #self.rect.x += self.speed
             self.kill()
-        if self.rect.x > chunk[0] * 1080 + 990:
-            #self.rect.x -= self.speed
+        if self.rect.x > chunk[0] * 1080 + 1020:
             self.kill()
-        if self.rect.y < chunk[1]*720+50:
+        if self.rect.y < chunk[1]*720+135:
             self.kill()
-        if self.rect.y > chunk[1]*720+620:
+        if self.rect.y > chunk[1]*720+555:
             self.kill()
-    
+
+    def bossShooting(self,xy, speed, bulletAngle):
+        newVec = pygame.math.Vector2()
+        newVec.from_polar((speed, bulletAngle))
+        return xy + newVec
+
     def bulletKill(self):
         cooldown = 5
         self.animationIndex = 2
@@ -60,8 +63,12 @@ class Bullets(pygame.sprite.Sprite):
             self.kill()
 
     def move(self):
-        self.rect.x += int(self.dx)
-        self.rect.y += int(self.dy)
+        if self.charName == 'boss':
+            position = self.bossShooting(self.rect.center, self.speed, -self.bulletAngle)
+            self.rect.center = position
+        else:
+            self.rect.x += int(self.dx)
+            self.rect.y += int(self.dy)
 
     # def actionMetod(self,newIndex):
     #    if newIndex != self.animationIndex:
