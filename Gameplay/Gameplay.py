@@ -1,6 +1,7 @@
 import sys
 import random
 import pygame.math
+from timer import Timer
 from pygame.locals import *
 
 import Camera
@@ -10,6 +11,7 @@ from textures.TextureLoader import TextureUnit
 from Player import Player
 from Enemy import Enemy
 from enums import MOBS
+from textures import colors
 from .Utilities.GameplayUtilities import add_mob_chunks
 from .Utilities.GameplayUtilities import detect_rect_colliders
 from .Utilities.GameplayUtilities import doors
@@ -26,6 +28,7 @@ class Gameplay(pygame.sprite.Group):
 
     def __init__(self, screen):
         super().__init__()
+        self.frameNum = None
         self.screen = screen  # 1080x720
         self.surface_size = pygame.Surface.get_size(self.screen)
         self.map_Data = Map.Map()
@@ -37,8 +40,11 @@ class Gameplay(pygame.sprite.Group):
         self.screen.fill((0, 0, 0))
         self.camera_group = Camera()
 
+
         self.rectSizex = self.surface_size[0]  # 1080
         self.rectSizey = self.surface_size[1]  # 720
+        self.messengerRect = Rect(self.rectSizex / 2, self.rectSizey / 5, 100, 100)
+        self.messengerRect.center = [(self.rectSizex / 2), (self.rectSizey / 5)]
         self.spawn = [self.map_Data.maze_start_x, self.map_Data.maze_start_y]
         self.currentChunk = self.spawn
         self.block_pixelsx = 60
@@ -61,6 +67,7 @@ class Gameplay(pygame.sprite.Group):
         self.wall_collider_rect = addBossDoors(self)
         self.bossDoorLocked = True
         self.doorsOpened = False
+        self.bossDefeated = False
         print(self.doorBoss)
 
         for z in self.map_Data.ChunkMap:
@@ -88,30 +95,37 @@ class Gameplay(pygame.sprite.Group):
 
     def draw_map(self, player):
         # player interaction with map elements
-        self.GamePlay_Logic(player)
+        self.gameplayLogic(player)
         # fill screen with floor
-        self.Draw_Floor()
+        self.Draw_floor()
         # fill screen with borders
         self.draw_borders()
         # draw player
         self.screen.blit(player.image, self.player.rect.topleft + self.ground_offset)
-        #enemy
+        # enemy
         self.enemyRender()
-        #collisions
+        # collisions
         self.colissions()
-        #bullets
+        # bullets
         self.bulletRender()
+        # print messages
+        self.messenger("Start")
+
         # DrawItems
         for x in self.itemGroup:
             x.draw(self.ground_offset)
 
-        #draw healthbar
+        # draw healthbar
         pygame.draw.rect(self.screen, (0, 0, 0), (48, 8, 204, 14))
         pygame.draw.rect(self.screen, (255, 0, 0), (50, 10, 200, 10))
         if self.player.health > 0:
             pygame.draw.rect(self.screen, (0, 255, 0),
                              (50, 10, 200 * (self.player.healthMin / self.player.healthMax), 10))
 
+    def messenger(self, text):
+        font = pygame.font.SysFont(None, 64) # ogarnąć trzcionkę
+        img0 = font.render(text, True, colors.Colors.BLACK)
+        self.screen.blit(img0, self.messengerRect)
     def bulletRender(self):
         self.player.bulletGroup.update()
         for bullets in self.player.bulletGroup:
@@ -125,7 +139,7 @@ class Gameplay(pygame.sprite.Group):
                 self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
 
     def colissions(self):
-        #enemies collisions
+        # enemies collisions
         for enemies in self.enemyGroup.sprites():
             test1 = [x for x in self.enemyGroup if x != enemies]
             collide = pygame.sprite.spritecollide(enemies, test1, False)
@@ -137,7 +151,7 @@ class Gameplay(pygame.sprite.Group):
                     # a.rect.y -=a.speed
                     pass
 
-        #bullets collisions
+        # bullets collisions
         for enemy in self.enemyGroup:
             if pygame.sprite.spritecollide(enemy, self.player.bulletGroup, True):
                 if enemy.alive:
@@ -156,19 +170,25 @@ class Gameplay(pygame.sprite.Group):
             enemy.draw(self.ground_offset)
             enemy.mapCollide(self.currentChunk)
 
-            #draw boss healthbar
-            if enemy.enemyName =='boss':
-                pygame.draw.rect(self.screen, (255,0,0), (enemy.rect.x + self.ground_offset[0],enemy.rect.y+ self.ground_offset[1]+160,enemy.rect.width, 5))
-                if enemy.healthMin >0:
-                    pygame.draw.rect(self.screen, (0,255,0), (enemy.rect.x + self.ground_offset[0],enemy.rect.y+ self.ground_offset[1]+160,int(enemy.rect.width * (enemy.healthMin / enemy.healthMax)), 5))
-
+            # draw boss healthbar
+            if enemy.enemyName == 'boss':
+                pygame.draw.rect(self.screen, (255, 0, 0), (
+                    enemy.rect.x + self.ground_offset[0], enemy.rect.y + self.ground_offset[1] + 160, enemy.rect.width,
+                    5))
+                if enemy.healthMin > 0:
+                    pygame.draw.rect(self.screen, (0, 255, 0), (
+                        enemy.rect.x + self.ground_offset[0], enemy.rect.y + self.ground_offset[1] + 160,
+                        int(enemy.rect.width * (enemy.healthMin / enemy.healthMax)), 5))
+                if not enemy.alive:
+                    self.bossDefeated = True
+                    print("dead")
             if self.currentChunk == enemy.currentChunk:
                 enemy.status(self.player)
 
             if enemy.shooting:
                 enemy.shoot()
 
-    def GamePlay_Logic(self, player):
+    def gameplayLogic(self, player):
         # normalize movement player
         if player.direction.magnitude() != 0:
             player.direction = player.direction.normalize()
@@ -182,7 +202,6 @@ class Gameplay(pygame.sprite.Group):
         if self.player.hasKey:
             for x in self.doorBoss:
                 if self.player.rect.colliderect(x):
-
                     self.bossDoorLocked = False
                     self.player.hasKey = False
                     print("col")
@@ -239,12 +258,12 @@ class Gameplay(pygame.sprite.Group):
             #     print(player)
             #     print(item[0])
 
-                # Update offset
+            # Update offset
 
         self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
             self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)
 
-    def Draw_Floor(self):
+    def Draw_floor(self):
         # fill screen with floor
         for y, row in enumerate(self.map_Data.ChunkMap):
             for x, tile in enumerate(row):
@@ -317,9 +336,9 @@ class Gameplay(pygame.sprite.Group):
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Boss":
             tempBossCurrentChunk = self.currentChunk
             boss = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(200, 600),
-                                 (self.currentChunk[1] * self.rectSizey) + random.randrange(100, 600)),
-                                self.camera_group, self.screen,
-                                self.surface_size, self.player,'boss', 4,10, tempBossCurrentChunk,(150,150))
+                          (self.currentChunk[1] * self.rectSizey) + random.randrange(100, 600)),
+                         self.camera_group, self.screen,
+                         self.surface_size, self.player, 'boss', 4, 10, tempBossCurrentChunk, (150, 150))
             self.enemyGroup.add(boss)
 
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Bonus":
@@ -333,7 +352,7 @@ class Gameplay(pygame.sprite.Group):
                 enemy1 = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
                                 (self.currentChunk[1] * self.rectSizey) + random.randrange(200, 600)),
                                self.camera_group, self.screen,
-                               self.surface_size, self.player, mobsType, 4,20, tempCurrentChunk,(64,64))
+                               self.surface_size, self.player, mobsType, 4, 20, tempCurrentChunk, (64, 64))
 
                 self.enemyGroup.add(enemy1)
 
@@ -348,12 +367,17 @@ class Gameplay(pygame.sprite.Group):
                 if tile:
                     tile[4].draw_border(self.screen, self.ground_offset, self.TextureUnit.grass_tex)
             # Jak chcecie naprawić to to dajcie jakaś teksturkę z tej listy[0]np a nie random.choice
+
     def run(self):
 
         running = True
-        i = 0
-        while running:
+        self.frameNum = 0
+        t = Timer()
+        t.start()
 
+        while running:
+            if self.frameNum == 60:
+                self.frameNum = 0
             for event in pygame.event.get():
                 if event.type == QUIT:
                     running = False
@@ -363,9 +387,15 @@ class Gameplay(pygame.sprite.Group):
             self.camera_group.update()
             self.draw_map(self.player)
             self.camera_group.draw(self.player)
+            for enemy in self.enemyGroup:
+                if enemy.enemyName == "boss":
+                    if enemy.healthMin <= 0:
+                        t.stop()
+                    else:
+                        print("alive")
 
             pygame.display.update()
             pygame.time.Clock().tick(60)
 
-            i = i + 1
+            self.frameNum = self.frameNum + 1
             # print(i)
