@@ -86,7 +86,7 @@ class Gameplay(pygame.sprite.Group):
                     self.camera_group, self.screen, 'Key', self.TextureUnit.key_tex)
         self.itemGroup.add(item)
 
-    def drawMap(self, player):
+    def draw_map(self, player):
         # player interaction with map elements
         self.GamePlay_Logic(player)
         # fill screen with floor
@@ -101,10 +101,10 @@ class Gameplay(pygame.sprite.Group):
         self.colissions()
         #bullets
         self.bulletRender()
-
-        # DrawItem
+        # DrawItems
         for x in self.itemGroup:
             x.draw(self.ground_offset)
+
         #draw healthbar
         pygame.draw.rect(self.screen, (0, 0, 0), (48, 8, 204, 14))
         pygame.draw.rect(self.screen, (255, 0, 0), (50, 10, 200, 10))
@@ -117,10 +117,6 @@ class Gameplay(pygame.sprite.Group):
         for bullets in self.player.bulletGroup:
             bullets.mapCollide(self.currentChunk)
             self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
-
-
-
-
 
         for enemy in self.enemyGroup:
             enemy.enemybulletGroup.update()
@@ -171,7 +167,6 @@ class Gameplay(pygame.sprite.Group):
 
             if enemy.shooting:
                 enemy.shoot()
-
 
     def GamePlay_Logic(self, player):
         # normalize movement player
@@ -240,11 +235,11 @@ class Gameplay(pygame.sprite.Group):
         if pickupItems:
             print(pickupItems.values())
             self.player.hasKey = True
-            for player, item in pickupItems.items():
-                print(player)
-                print(item[0])
-                # Update offset
+            # for player, item in pickupItems.items():
+            #     print(player)
+            #     print(item[0])
 
+                # Update offset
 
         self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(
             self.currentChunk[0] * self.rectSizex, self.currentChunk[1] * self.rectSizey)
@@ -353,11 +348,6 @@ class Gameplay(pygame.sprite.Group):
                 if tile:
                     tile[4].draw_border(self.screen, self.ground_offset, self.TextureUnit.grass_tex)
             # Jak chcecie naprawić to to dajcie jakaś teksturkę z tej listy[0]np a nie random.choice
-
-    def draw_items(self):
-        for item in self.itemGroup:
-            item.draw()
-
     def run(self):
 
         running = True
