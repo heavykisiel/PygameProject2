@@ -18,12 +18,13 @@ def Load_Front_Player_Texture(side, i):
     return player_img
 
 
-def Load_Bullet_test_Texture(i):
-    player_img = pygame.image.load(f'textures/bullet/{i}.png').convert_alpha()
+def Load_Bullet_test_Texture(type,i):
+    player_img = pygame.image.load(f'textures/bullet/{type}/{i}.png').convert_alpha()
     player_img = pygame.transform.scale(player_img, (20, 20))
     player_img.set_colorkey((246, 246, 246))
 
     return player_img
+
 
 
 def Load_Enemy_Texture(name, side, i,texSize):
