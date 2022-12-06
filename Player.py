@@ -45,7 +45,7 @@ class Player(pygame.sprite.Sprite):
         #player bullets
         self.bulletGroup = pygame.sprite.Group()
         self.shooting = False
-        self.speedBullet = 32
+        self.speedBullet = 20
         self.shootCooldown = 0
         self.shootSpaceCooldown = 0
         
@@ -137,14 +137,14 @@ class Player(pygame.sprite.Sprite):
             if self.playerDirection == 2: 
                 bullet = Bullets(self.rect.centerx,
                                  self.rect.centery, 1, self.speedBullet, self.surface_size,
-                                 self.rect.centery + 10000, self.rect.centerx,'player')
+                                 self.rect.centery + 10000, self.rect.centerx,'player','red')
                 self.bulletGroup.add(bullet)
                 self.shooting = False
                 
             elif self.playerDirection == -2:
                 bullet = Bullets(self.rect.centerx,
                                  self.rect.centery, 1, self.speedBullet, self.surface_size,
-                                 self.rect.y - 10000 , self.rect.x,'player')
+                                 self.rect.y - 10000 , self.rect.x,'player','red')
                 self.bulletGroup.add(bullet)
                 self.shooting = False
                 
@@ -152,7 +152,7 @@ class Player(pygame.sprite.Sprite):
                 bullet = Bullets(self.rect.centerx,
                                  self.rect.centery , 1,
                                  self.speedBullet, self.surface_size, self.rect.centery,
-                                 self.rect.centerx + 1000,'player')
+                                 self.rect.centerx + 1000,'player','red')
                 self.bulletGroup.add(bullet)
                 self.shooting = False
                
@@ -160,6 +160,6 @@ class Player(pygame.sprite.Sprite):
                 bullet = Bullets(self.rect.centerx,
                                  self.rect.centery, 1,
                                  self.speedBullet, self.surface_size, self.rect.centery,
-                                 self.rect.centerx - 1000,'player')
+                                 self.rect.centerx - 1000,'player','red')
                 self.bulletGroup.add(bullet)
                 self.shooting = False

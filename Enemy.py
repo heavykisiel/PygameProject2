@@ -206,19 +206,19 @@ class Enemy(pygame.sprite.Sprite):
                         
                         bullet0 = Bullets(self.rect.centerx,
                                     self.rect.centery, 1, self.speedBullet, self.surface_size,
-                                    self.rect.centery + 1000, self.rect.centerx ,self.enemyName, self.bulletAngle)
+                                    self.rect.centery + 1000, self.rect.centerx ,self.enemyName,'red', self.bulletAngle)
 
                         bullet1 = Bullets(self.rect.centerx,
                                     self.rect.centery, 1, self.speedBullet, self.surface_size,
-                                    self.rect.centery + 1000, self.rect.centerx ,self.enemyName, self.bulletAngle+90)
+                                    self.rect.centery + 1000, self.rect.centerx ,self.enemyName,'red', self.bulletAngle+90)
 
                         bullet2 = Bullets(self.rect.centerx,
                                     self.rect.centery, 1, self.speedBullet, self.surface_size,
-                                    self.rect.centery + 1000, self.rect.centerx ,self.enemyName, self.bulletAngle+180)
+                                    self.rect.centery + 1000, self.rect.centerx ,self.enemyName,'red', self.bulletAngle+180)
 
                         bullet3 = Bullets(self.rect.centerx,
                                     self.rect.centery, 1, self.speedBullet, self.surface_size,
-                                    self.rect.centery + 1000, self.rect.centerx ,self.enemyName, self.bulletAngle+270)
+                                    self.rect.centery + 1000, self.rect.centerx ,self.enemyName,'red', self.bulletAngle+270)
 
                         self.enemybulletGroup.add(bullet0)
                         self.enemybulletGroup.add(bullet1)
@@ -231,7 +231,7 @@ class Enemy(pygame.sprite.Sprite):
                         bullet = Bullets(self.rect.centerx,
                                         self.rect.centery, 1, 1,self.speedBullet , self.surface_size,
                                         self.player.rect.centery,
-                                        self.player.rect.centerx,self.enemyName)
+                                        self.player.rect.centerx,self.enemyName,'yellow')
                         self.enemybulletGroup.add(bullet)
                         self.shooting=False
 
@@ -240,7 +240,7 @@ class Enemy(pygame.sprite.Sprite):
                             bullet = Bullets(self.rect.centerx,
                                             self.rect.centery, 1,
                                             self.speedBullet, self.surface_size, self.player.rect.centery,
-                                            self.player.rect.centerx,self.enemyName)
+                                            self.player.rect.centerx,self.enemyName,'yellow')
                             self.enemybulletGroup.add(bullet)
                             self.shooting=False
 
@@ -248,6 +248,6 @@ class Enemy(pygame.sprite.Sprite):
                             bullet = Bullets(self.rect.centerx,
                                             self.rect.centery, 1,
                                             self.speedBullet, self.surface_size, self.player.rect.centery,
-                                            self.player.rect.centerx,self.enemyName)
+                                            self.player.rect.centerx,self.enemyName,'yellow')
                             self.enemybulletGroup.add(bullet)
                             self.shooting=False

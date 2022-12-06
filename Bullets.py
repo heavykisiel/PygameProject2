@@ -1,18 +1,30 @@
 import pygame
 from textures import TextureLoader
 import math
-
+import os
 
 class Bullets(pygame.sprite.Sprite):
-    def __init__(self, x, y, scale, bulletSpeed, surface_size, targetx, targety,charName, bulletAngle = 0):
+    def __init__(self, x, y, scale, bulletSpeed, surface_size, targetx, targety,charName,bulletType, bulletAngle = 0):
         pygame.sprite.Sprite.__init__(self)
 
-        self.animationIndex = 0
-        self.loop_list = []
-        for i in range(3):
-            image = TextureLoader.Load_Bullet_test_Texture(i)
-            self.loop_list.append(image)
-        self.image = self.loop_list[self.animationIndex]
+        self.animationStopped = True
+        self.index = 0
+        self.animation_list = []
+        self.action = 0
+        self.bulletType = bulletType
+        
+        self.action = 0
+        animation_folders = ['attack']
+        for animation in animation_folders:
+            loop_list = []
+            filesNumber = len(os.listdir(f'textures/bullet/{self.bulletType}'))
+            for i in range(filesNumber):
+                img = TextureLoader.Load_Bullet_test_Texture(self.bulletType, i)
+                loop_list.append(img)
+            self.animation_list.append(loop_list)
+       
+
+        self.image = self.animation_list[self.action][self.index]
         self.charName = charName
         self.rect = self.image.get_rect()
         self.rect.center = [x, y]
@@ -29,14 +41,15 @@ class Bullets(pygame.sprite.Sprite):
         self.bulletAngle = bulletAngle
         
     def animation(self):
-        self.image = self.loop_list[self.animationIndex]
         cooldown = 50
+        self.image = self.animation_list[self.action][self.index]
         if pygame.time.get_ticks() - self.time > cooldown:
             self.time = pygame.time.get_ticks()
-            if self.animationIndex < 1:
-                self.animationIndex += 1
-            else:
-                self.animationIndex == 1
+            self.index += 1
+        if self.index >= len(self.animation_list[self.action]):
+            #self.index = len(self.animation_list[self.action])-1
+            self.index = 0
+                
                 
     def mapCollide(self, chunk):
         if self.rect.x < chunk[0] * 1080 + 40:
@@ -53,14 +66,14 @@ class Bullets(pygame.sprite.Sprite):
         newVec.from_polar((speed, bulletAngle))
         return xy + newVec
 
-    def bulletKill(self):
-        cooldown = 5
-        self.animationIndex = 2
-        self.image = self.loop_list[self.animationIndex]
+    #def bulletKill(self):
+        #cooldown = 5
+        #self.animationIndex = 2
+        #self.image = self.loop_list[self.animationIndex]
 
-        if pygame.time.get_ticks() - self.time > cooldown:
-            self.time = pygame.time.get_ticks()
-            self.kill()
+        #if pygame.time.get_ticks() - self.time > cooldown:
+        #    self.time = pygame.time.get_ticks()
+        #   self.kill()
 
     def move(self):
         if self.charName == 'boss':
