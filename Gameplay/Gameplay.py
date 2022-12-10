@@ -67,7 +67,6 @@ class Gameplay(pygame.sprite.Group):
         self.wall_collider_rect = addBossDoors(self)
         self.bossDoorLocked = True
         self.doorsOpened = False
-        self.bossDefeated = False
         print(self.doorBoss)
 
         for z in self.map_Data.ChunkMap:
@@ -157,6 +156,7 @@ class Gameplay(pygame.sprite.Group):
             if pygame.sprite.spritecollide(enemy, self.player.bulletGroup, True):
                 if enemy.alive:
                     enemy.health -= 20
+                   
 
             if pygame.sprite.spritecollide(self.player, enemy.enemybulletGroup, True):
                 if enemy.alive:
@@ -178,9 +178,6 @@ class Gameplay(pygame.sprite.Group):
                     pygame.draw.rect(self.screen, (0, 255, 0), (
                         enemy.rect.x + self.ground_offset[0], enemy.rect.y + self.ground_offset[1] + 160,
                         int(enemy.rect.width * (enemy.health / enemy.healthMax)), 5))
-                if not enemy.alive:
-                    self.bossDefeated = True
-                    print("dead")
             if self.currentChunk == enemy.currentChunk:
                 enemy.status(self.player)
 
@@ -203,7 +200,6 @@ class Gameplay(pygame.sprite.Group):
                 if self.player.rect.colliderect(x):
                     self.bossDoorLocked = False
                     self.player.hasKey = False
-                    print("col")
         if not self.bossDoorLocked and not self.player.hasKey and not self.doorsOpened:
             self.wall_collider_rect = removeBossDoors(self)
             self.doorsOpened = True
@@ -343,17 +339,17 @@ class Gameplay(pygame.sprite.Group):
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Bonus":
             print("bonus")
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:
-            # mobsCount = self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count
+            mobsCount = self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count
 
-            # for newEnemy in range(0, mobsCount):
-            #     mobsType = MOBS[random.randint(0, len(MOBS) - 1)]
-            #     tempCurrentChunk = self.currentChunk
-            #     enemy1 = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
-            #                     (self.currentChunk[1] * self.rectSizey) + random.randrange(200, 600)),
-            #                    self.camera_group, self.screen,
-            #                    self.surface_size, self.player, mobsType, 20, tempCurrentChunk)
+            for newEnemy in range(0, mobsCount):
+                mobsType = MOBS[random.randint(0, len(MOBS) - 1)]
+                tempCurrentChunk = self.currentChunk
+                enemy1 = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
+                                (self.currentChunk[1] * self.rectSizey) + random.randrange(200, 600)),
+                                self.camera_group, self.screen,
+                                self.surface_size, self.player, mobsType, 20, tempCurrentChunk)
 
-            #     self.enemyGroup.add(enemy1)
+                self.enemyGroup.add(enemy1)
 
             print(
                 f"there should be {self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count} mobs")
@@ -388,10 +384,9 @@ class Gameplay(pygame.sprite.Group):
             self.camera_group.draw(self.player)
             for enemy in self.enemyGroup:
                 if enemy.enemyName == "boss":
-                    if enemy.health <= 0:
+                    if enemy.health <=0:
                         t.stop()
-                    else:
-                        print("alive")
+                        print("dead2")
 
             pygame.display.update()
             pygame.time.Clock().tick(60)
