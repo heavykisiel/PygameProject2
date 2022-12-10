@@ -174,6 +174,9 @@ class Enemy(pygame.sprite.Sprite):
             self.moving=False
             self.shooting=False
             self.actionMetod(2)
+            if self.type == "boss":
+                self.alive = False
+                self.kill()
             if self.action == 2 and self.index == 4:
                 self.alive = False
                 self.kill()
