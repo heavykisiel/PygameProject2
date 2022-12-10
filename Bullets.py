@@ -9,26 +9,13 @@ class Bullets(pygame.sprite.Sprite):
 
         self.animationStopped = True
         self.index = 0
-        self.animation_list = []
         self.action = 0
         self.bulletType = bulletType
-        
-        self.action = 0
-        animation_folders = ['attack']
-        for animation in animation_folders:
-            loop_list = []
-            filesNumber = len(os.listdir(f'textures/bullet/{self.bulletType}'))
-            for i in range(filesNumber):
-                img = TextureLoader.Load_Bullet_test_Texture(self.bulletType, i)
-                loop_list.append(img)
-            self.animation_list.append(loop_list)
-       
-
-        self.image = self.animation_list[self.action][self.index]
-        self.charName = charName
+        self.imageList = TextureLoader.Load_Bullet_Texture(self.bulletType)
+        self.image = self.imageList[self.action][self.index]
         self.rect = self.image.get_rect()
         self.rect.center = [x, y]
-        
+        self.charName = charName
         self.speed = bulletSpeed
         self.surface_size = surface_size
         self.shoot = 0
@@ -42,11 +29,11 @@ class Bullets(pygame.sprite.Sprite):
         
     def animation(self):
         cooldown = 50
-        self.image = self.animation_list[self.action][self.index]
+        self.image = self.imageList[self.action][self.index]
         if pygame.time.get_ticks() - self.time > cooldown:
             self.time = pygame.time.get_ticks()
             self.index += 1
-        if self.index >= len(self.animation_list[self.action]):
+        if self.index >= len(self.imageList[self.action]):
             #self.index = len(self.animation_list[self.action])-1
             self.index = 0
                 
