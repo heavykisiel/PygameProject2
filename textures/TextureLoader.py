@@ -1,6 +1,6 @@
 import pygame
 from textures.colors import Colors
-
+import os
 Color = Colors()
 
 
@@ -10,29 +10,62 @@ def LoadingScreenLoadTexture(screen_size):
     return bg
 
 
-def Load_Front_Player_Texture(side, i):
-    player_img = pygame.image.load(f'textures/player/{side}/{i}.png').convert_alpha()
-    player_img = pygame.transform.scale(player_img, (46, 66))
+def Load_Front_Player_Texture(): 
+    animationList = []
+    animationFolders = ['front', 'back', 'right', 'left']
+    for animation in animationFolders:
+        loopList = []
+        filesNumber = len(os.listdir(f'textures/player/{animation}'))
+        for i in range(filesNumber):
+                img = pygame.image.load(f'textures/player/{animation}/{i}.png').convert_alpha()
+                img = pygame.transform.scale(img, (46, 66))
+                img.set_colorkey((246, 246, 246))
+                loopList.append(img)
+        animationList.append(loopList)
+    return animationList
+    
+    
 
-    player_img.set_colorkey((246, 246, 246))
-    return player_img
+def Load_Bullet_Texture(bulletType):
+   
+    animationList = []
+    animationFolders = ['attack']
+    for animation in animationFolders:
+        loopList = []
+        filesNumber = len(os.listdir(f'textures/bullet/{bulletType}'))
+        for i in range(filesNumber):
+                img = pygame.image.load(f'textures/bullet/{bulletType}/{i}.png').convert_alpha()
+                img = pygame.transform.scale(img, (16, 16))
+                img.set_colorkey((246, 246, 246))
+                loopList.append(img)
+        animationList.append(loopList)
+    return animationList
 
 
-def Load_Bullet_test_Texture(type,i):
-    player_img = pygame.image.load(f'textures/bullet/{type}/{i}.png').convert_alpha()
-    player_img = pygame.transform.scale(player_img, (20, 20))
-    player_img.set_colorkey((246, 246, 246))
+def Load_Enemy_Texture(name,texSize):
+    animationList = []
+    animationFolders = ['idle', 'attack','death']
+    for animation in animationFolders:
+        loopList = []
+        filesNumber = len(os.listdir(f'textures/enemies/{name}/{animation}'))
+        for i in range(filesNumber):
+                img = pygame.image.load(f'textures/enemies/{name}/{animation}/{i}.png').convert_alpha()
+                img = pygame.transform.scale(img, texSize)
+                img.set_colorkey((246, 246, 246))
+                loopList.append(img)
+        animationList.append(loopList)
+    return animationList
 
-    return player_img
+def Load_Item_Texture(name):
+    loop_list = []
+    filesNumber = len(os.listdir(f'textures/items/{name}'))
+    for i in range(filesNumber):
+        item_img = pygame.image.load(f'textures/items/{name}/{i}.png').convert_alpha()
+        item_img = pygame.transform.scale(item_img,(50,50))
+        item_img.set_colorkey((246, 246, 246))
+        loop_list.append(item_img)
 
-
-
-def Load_Enemy_Texture(name, side, i,texSize):
-    enemy_img = pygame.image.load(f'textures/enemies/{name}/{side}/{i}.png').convert_alpha()
-    enemy_img = pygame.transform.scale(enemy_img, texSize)
-    enemy_img.set_colorkey((246, 246, 246))
-
-    return enemy_img
+    return loop_list
 
 
 def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
@@ -89,11 +122,11 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
         grass_block = pygame.image.load('textures/grass.jpg').convert()
         grass_block = pygame.transform.scale(grass_block, (block_pixels_x, block_pixels_y))
         return grass_block
-    elif id_block == 11:
-        key_tex = pygame.image.load('textures/items/key_boss.png').convert()
-        key_tex = pygame.transform.scale(key_tex, (block_pixels_x, block_pixels_y))
-        key_tex.set_colorkey((255, 255, 255))
-        return key_tex
+    # elif id_block == 11:
+    #     key_tex = pygame.image.load('textures/items/key_boss.png').convert()
+    #     key_tex = pygame.transform.scale(key_tex, (block_pixels_x, block_pixels_y))
+    #     key_tex.set_colorkey((255, 255, 255))
+    #     return key_tex
     elif id_block == 12:
         floor1_tex = pygame.image.load('textures/maptex/Floor/v1.png').convert()
         floor1_tex = pygame.transform.scale(floor1_tex, (block_pixels_x, block_pixels_y))
@@ -287,7 +320,7 @@ class TextureUnit:
         self.westSouthWall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 8)
         self.midWall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 9)
         self.grass_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 10)
-        self.key_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 11)
+        
         self.westWall1_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 15)
         self.westWall2_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 16)
         self.westWall3_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 17)
@@ -314,6 +347,9 @@ class TextureUnit:
         self.southWall2Bot = Load_Block_Textures(block_pixelsx, block_pixelsy, 40)
 
         self.southWall3Bot = Load_Block_Textures(block_pixelsx, block_pixelsy, 41)
+
+        self.key_tex = Load_Item_Texture('key')
+
 
         self.northWallList = list((self.northWall1Top_tex, self.northWall2Top_tex, self.northWall3Top_tex))
         self.westWallList = list((self.westWall1_tex, self.westWall2_tex, self.westWall3_tex))
