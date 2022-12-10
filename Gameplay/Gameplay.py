@@ -114,13 +114,14 @@ class Gameplay(pygame.sprite.Group):
         # DrawItems
         for x in self.itemGroup:
             x.draw(self.ground_offset)
+            x.animation()
 
         # draw healthbar
         pygame.draw.rect(self.screen, (0, 0, 0), (48, 8, 204, 14))
         pygame.draw.rect(self.screen, (255, 0, 0), (50, 10, 200, 10))
         if self.player.health > 0:
             pygame.draw.rect(self.screen, (0, 255, 0),
-                             (50, 10, 200 * (self.player.healthMin / self.player.healthMax), 10))
+                             (50, 10, 200 * (self.player.health / self.player.healthMax), 10))
 
     def messenger(self, text):
         font = pygame.font.SysFont(None, 64) # ogarnąć trzcionkę
@@ -155,13 +156,11 @@ class Gameplay(pygame.sprite.Group):
         for enemy in self.enemyGroup:
             if pygame.sprite.spritecollide(enemy, self.player.bulletGroup, True):
                 if enemy.alive:
-                    enemy.healthMin -= 20
                     enemy.health -= 20
 
             if pygame.sprite.spritecollide(self.player, enemy.enemybulletGroup, True):
                 if enemy.alive:
                     self.player.health -= 5
-                    self.player.healthMin -= 5
 
     def enemyRender(self):
 
@@ -175,10 +174,10 @@ class Gameplay(pygame.sprite.Group):
                 pygame.draw.rect(self.screen, (255, 0, 0), (
                     enemy.rect.x + self.ground_offset[0], enemy.rect.y + self.ground_offset[1] + 160, enemy.rect.width,
                     5))
-                if enemy.healthMin > 0:
+                if enemy.health > 0:
                     pygame.draw.rect(self.screen, (0, 255, 0), (
                         enemy.rect.x + self.ground_offset[0], enemy.rect.y + self.ground_offset[1] + 160,
-                        int(enemy.rect.width * (enemy.healthMin / enemy.healthMax)), 5))
+                        int(enemy.rect.width * (enemy.health / enemy.healthMax)), 5))
                 if not enemy.alive:
                     self.bossDefeated = True
                     print("dead")
@@ -338,23 +337,23 @@ class Gameplay(pygame.sprite.Group):
             boss = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(200, 600),
                           (self.currentChunk[1] * self.rectSizey) + random.randrange(100, 600)),
                          self.camera_group, self.screen,
-                         self.surface_size, self.player, 'boss', 4, 10, tempBossCurrentChunk, (150, 150))
+                         self.surface_size, self.player, 'boss', 10, tempBossCurrentChunk)
             self.enemyGroup.add(boss)
 
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Bonus":
             print("bonus")
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:
-            mobsCount = self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count
+            # mobsCount = self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count
 
-            for newEnemy in range(0, mobsCount):
-                mobsType = MOBS[random.randint(0, len(MOBS) - 1)]
-                tempCurrentChunk = self.currentChunk
-                enemy1 = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
-                                (self.currentChunk[1] * self.rectSizey) + random.randrange(200, 600)),
-                               self.camera_group, self.screen,
-                               self.surface_size, self.player, mobsType, 4, 20, tempCurrentChunk, (64, 64))
+            # for newEnemy in range(0, mobsCount):
+            #     mobsType = MOBS[random.randint(0, len(MOBS) - 1)]
+            #     tempCurrentChunk = self.currentChunk
+            #     enemy1 = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
+            #                     (self.currentChunk[1] * self.rectSizey) + random.randrange(200, 600)),
+            #                    self.camera_group, self.screen,
+            #                    self.surface_size, self.player, mobsType, 20, tempCurrentChunk)
 
-                self.enemyGroup.add(enemy1)
+            #     self.enemyGroup.add(enemy1)
 
             print(
                 f"there should be {self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count} mobs")
@@ -389,7 +388,7 @@ class Gameplay(pygame.sprite.Group):
             self.camera_group.draw(self.player)
             for enemy in self.enemyGroup:
                 if enemy.enemyName == "boss":
-                    if enemy.healthMin <= 0:
+                    if enemy.health <= 0:
                         t.stop()
                     else:
                         print("alive")
