@@ -15,19 +15,9 @@ class Player(pygame.sprite.Sprite):
         #animation
         self.animationStopped = True
         self.index = 0
-        self.animation_list = []
         self.action = 0
-        animation_folders = ['front', 'back', 'right', 'left']
-
-        for animation in animation_folders:
-            loop_list = []
-            filesNumber = len(os.listdir(f'textures/player/{animation}'))
-            for i in range(filesNumber):
-                img = TextureLoader.Load_Front_Player_Texture(animation, i)
-                loop_list.append(img)
-            self.animation_list.append(loop_list)
-
-        self.image = self.animation_list[self.action][self.index]
+        self.imageList = TextureLoader.Load_Front_Player_Texture()
+        self.image = self.imageList[self.action][self.index]
         self.rect = self.image.get_rect(center=pos)
         self.direction = pygame.math.Vector2()
         self.screen = screen
@@ -36,9 +26,8 @@ class Player(pygame.sprite.Sprite):
         # spawn
         self.speed = 16
         self.alive = True
-        self.health = 100
-        self.healthMax = 100
-        self.healthMin = self.health
+        self.health = 200
+        self.healthMax = 200
         self.playerDirection = 1
         self.moving = False
         
@@ -55,12 +44,12 @@ class Player(pygame.sprite.Sprite):
         
     def animation(self):
         cooldown = 100
-        self.image = self.animation_list[self.action][self.index]
+        self.image = self.imageList[self.action][self.index]
         if self.animationStopped == False:
             if pygame.time.get_ticks() - self.time > cooldown :
                 self.time = pygame.time.get_ticks()
                 self.index += 1
-            if self.index >= len(self.animation_list[self.action]):
+            if self.index >= len(self.imageList[self.action]):
                 self.index = 0
         else:
             self.index = 0
