@@ -34,7 +34,6 @@ class Bullets(pygame.sprite.Sprite):
             self.time = pygame.time.get_ticks()
             self.index += 1
         if self.index >= len(self.imageList[self.action]):
-            #self.index = len(self.animation_list[self.action])-1
             self.index = 0
                 
                 
@@ -53,15 +52,6 @@ class Bullets(pygame.sprite.Sprite):
         newVec.from_polar((speed, bulletAngle))
         return xy + newVec
 
-    #def bulletKill(self):
-        #cooldown = 5
-        #self.animationIndex = 2
-        #self.image = self.loop_list[self.animationIndex]
-
-        #if pygame.time.get_ticks() - self.time > cooldown:
-        #    self.time = pygame.time.get_ticks()
-        #   self.kill()
-
     def move(self):
         if self.charName == 'boss':
             position = self.bossShooting(self.rect.center, self.speed, -self.bulletAngle)
@@ -70,13 +60,7 @@ class Bullets(pygame.sprite.Sprite):
             self.rect.x += int(self.dx)
             self.rect.y += int(self.dy)
 
-    # def actionMetod(self,newIndex):
-    #    if newIndex != self.animationIndex:
-    #        self.animationIndex = newIndex
-    #       self.index = 0
-    #       self.time = pygame.time.get_ticks()
-
+ 
     def update(self):
         self.move()
         self.animation()
-        # if self.rect.left<15 or self.rect.right > self.surface_size[0]-15: #DO ZROBIENIA PO PRZENIESIU NA LABIRYNT W WYKONANIU NIKODEMA

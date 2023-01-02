@@ -4,6 +4,7 @@ import os
 from enums import JSON
 from textures import TextureLoader
 from Bullets import Bullets
+from Item import Item
 from Player import Player
 
 red = (255, 0, 0)
@@ -56,7 +57,6 @@ class Enemy(pygame.sprite.Sprite):
         self.shootAnimationCooldown = 0
         self.shooting = False
         self.bulletAngle = 0
-        
         
 
     def animation(self):
@@ -169,7 +169,7 @@ class Enemy(pygame.sprite.Sprite):
         self.offset = offset
         self.screen.blit(self.image, self.rect.topleft + self.offset)
 
-    def check_alive(self):
+    def checkAlive(self):
         if self.health <= 0:
             self.moving=False
             self.shooting=False
@@ -180,6 +180,7 @@ class Enemy(pygame.sprite.Sprite):
             if self.action == 2 and self.index == 4:
                 self.alive = False
                 self.kill()
+                
             self.health = 0
             self.alive = False
             
@@ -193,7 +194,7 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         self.timer()
         self.animation()
-        self.check_alive()
+        self.checkAlive()
         self.move()
         
     def shoot(self):

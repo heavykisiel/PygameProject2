@@ -85,6 +85,7 @@ class Gameplay(pygame.sprite.Group):
 
         self.enemyGroup = pygame.sprite.Group()
         self.itemGroup = pygame.sprite.Group()
+        self.heartGroup = pygame.sprite.Group()
         self.bossRoomLocation = self.isOneDoorRoomsvalidData.get("BossRoom")
         self.keyRoomLocation = self.isOneDoorRoomsvalidData.get("KeyRoom")
         item = Item((self.keyRoomLocation[0] * self.rectSizex + 9 * self.block_pixelsx,
@@ -114,6 +115,10 @@ class Gameplay(pygame.sprite.Group):
         for x in self.itemGroup:
             x.draw(self.ground_offset)
             x.animation()
+        for x in self.heartGroup:
+            x.draw(self.ground_offset)
+            x.animation()
+        
 
         # draw healthbar
         pygame.draw.rect(self.screen, (0, 0, 0), (48, 8, 204, 14))
@@ -134,6 +139,7 @@ class Gameplay(pygame.sprite.Group):
 
         for enemy in self.enemyGroup:
             enemy.enemybulletGroup.update()
+            
             for bullets in enemy.enemybulletGroup:
                 bullets.mapCollide(self.currentChunk)
                 self.screen.blit(bullets.image, bullets.rect.topleft + self.ground_offset)
@@ -156,8 +162,11 @@ class Gameplay(pygame.sprite.Group):
             if pygame.sprite.spritecollide(enemy, self.player.bulletGroup, True):
                 if enemy.alive:
                     enemy.health -= 20
-                   
-
+                
+                    Heart = Item(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
+                                (self.currentChunk[1] * self.rectSizey) + random.randrange(200, 600)),
+                    self.camera_group, self.screen,"Heart", self.TextureUnit.heartTex) 
+                    self.heartGroup.add(Heart)
             if pygame.sprite.spritecollide(self.player, enemy.enemybulletGroup, True):
                 if enemy.alive:
                     self.player.health -= 5
@@ -168,7 +177,7 @@ class Gameplay(pygame.sprite.Group):
             enemy.direction_distance(self.player)
             enemy.draw(self.ground_offset)
             enemy.mapCollide(self.currentChunk)
-
+            
             # draw boss healthbar
             if enemy.enemyName == 'boss':
                 pygame.draw.rect(self.screen, (255, 0, 0), (
@@ -245,14 +254,29 @@ class Gameplay(pygame.sprite.Group):
                 self.currentChunk[1] += 1
                 self.OnNewRoom()
 
+        if self.player.health <=175:
+                    
+            if pygame.sprite.groupcollide(self.players, self.heartGroup, False, True):
+                print(self.player.health)
+                
+                self.player.health += 25
+          
+                    
         pickupItems = pygame.sprite.groupcollide(self.players, self.itemGroup, False, True)
         if pickupItems:
             print(pickupItems.values())
             self.player.hasKey = True
+        
+        
+        
             # for player, item in pickupItems.items():
             #     print(player)
             #     print(item[0])
-
+                
+                    #if self.player.health > 175:
+                     #  
+                     #   diff = self.player.healthMax - self.player.health
+                      #  self.player.health += diff
             # Update offset
 
         self.ground_offset = self.MapRect.topleft - self.camera_group.offset - pygame.math.Vector2(

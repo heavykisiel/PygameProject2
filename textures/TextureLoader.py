@@ -349,7 +349,7 @@ class TextureUnit:
         self.southWall3Bot = Load_Block_Textures(block_pixelsx, block_pixelsy, 41)
 
         self.key_tex = Load_Item_Texture('key')
-
+        self.heartTex = Load_Item_Texture('heart')
 
         self.northWallList = list((self.northWall1Top_tex, self.northWall2Top_tex, self.northWall3Top_tex))
         self.westWallList = list((self.westWall1_tex, self.westWall2_tex, self.westWall3_tex))
