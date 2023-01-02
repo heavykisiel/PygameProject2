@@ -14,7 +14,6 @@ green = (0, 255, 0)
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos, group, screen, surface_size, player, enemyName,bulletSpeed,currentChunk):
         super().__init__(group)
-        
         self.enemyName = enemyName
         mobData = ''
         for i in JSON['mobs']:
@@ -58,6 +57,8 @@ class Enemy(pygame.sprite.Sprite):
         self.shooting = False
         self.bulletAngle = 0
         
+        
+        self.killEvents = [] #profesor nakamichi 
 
     def animation(self):
         cooldown = 300
@@ -180,7 +181,8 @@ class Enemy(pygame.sprite.Sprite):
             if self.action == 2 and self.index == 4:
                 self.alive = False
                 self.kill()
-                
+                for event in self.killEvents:
+                    event()
             self.health = 0
             self.alive = False
             
@@ -196,6 +198,7 @@ class Enemy(pygame.sprite.Sprite):
         self.animation()
         self.checkAlive()
         self.move()
+        
         
     def shoot(self):
         if self.shooting:

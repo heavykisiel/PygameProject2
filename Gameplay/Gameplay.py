@@ -163,14 +163,18 @@ class Gameplay(pygame.sprite.Group):
                 if enemy.alive:
                     enemy.health -= 20
                 
-                    Heart = Item(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
-                                (self.currentChunk[1] * self.rectSizey) + random.randrange(200, 600)),
-                    self.camera_group, self.screen,"Heart", self.TextureUnit.heartTex) 
-                    self.heartGroup.add(Heart)
+                    
             if pygame.sprite.spritecollide(self.player, enemy.enemybulletGroup, True):
                 if enemy.alive:
                     self.player.health -= 5
-
+    
+    def heartSpawn(self):
+        
+        Heart = Item(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
+                                (self.currentChunk[1] * self.rectSizey) + random.randrange(200, 600)),
+                    self.camera_group, self.screen,"Heart", self.TextureUnit.heartTex) 
+        self.heartGroup.add(Heart)
+         
     def enemyRender(self):
 
         for enemy in self.enemyGroup:
@@ -372,6 +376,8 @@ class Gameplay(pygame.sprite.Group):
                                 (self.currentChunk[1] * self.rectSizey) + random.randrange(200, 600)),
                                 self.camera_group, self.screen,
                                 self.surface_size, self.player, mobsType, 20, tempCurrentChunk)
+                
+                enemy1.killEvents.append(self.heartSpawn)
 
                 self.enemyGroup.add(enemy1)
 
