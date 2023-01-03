@@ -61,7 +61,7 @@ class Enemy(pygame.sprite.Sprite):
         self.killEvents = [] #profesor nakamichi 
 
     def animation(self):
-        cooldown = 300
+        cooldown = 200
         self.image = self.imageList[self.action][self.index]
         if pygame.time.get_ticks() - self.time > cooldown:
             self.time = pygame.time.get_ticks()
@@ -98,22 +98,33 @@ class Enemy(pygame.sprite.Sprite):
                 self.rect.y += self.direction[1] * self.speed
                 
     def ai(self):
-        if self.aiMoving:
-            if random.randint(1,100) == 1:
-                self.tempDirectionY *= -1
-            if random.randint(1,100) == 2:
-                self.tempDirectionX *= -1
+        if self.type == "skeleton":
+           if self.aiMoving:
+                self.moving = False
+                if random.randint(1,50) == 1:
+                    self.tempDirectionY *= -1
+                if random.randint(1,50) == 2:
+                    self.tempDirectionX *= -1
+                    
+                self.rect.x += self.tempDirectionX * self.aiMovementSpeed
+                self.rect.y += self.tempDirectionY * self.aiMovementSpeed
+        else:
+            if self.aiMoving:
+                if random.randint(1,100) == 1:
+                    self.tempDirectionY *= -1
+                if random.randint(1,100) == 2:
+                    self.tempDirectionX *= -1
+                    
+                self.rect.x += self.tempDirectionX * self.aiMovementSpeed
+                self.rect.y += self.tempDirectionY * self.aiMovementSpeed
                 
-            self.rect.x += self.tempDirectionX * self.aiMovementSpeed
-            self.rect.y += self.tempDirectionY * self.aiMovementSpeed
-            
     def direction_distance(self, player):
-        player_vec = pygame.math.Vector2(player.rect.center)
-        enemy_vec = pygame.math.Vector2(self.rect.center)
-        distance = (player_vec - enemy_vec).magnitude()
-        vecSum = player_vec - enemy_vec
+        playerVec = pygame.math.Vector2(player.rect.center)
+        enemyVec = pygame.math.Vector2(self.rect.center)
+        distance = (playerVec - enemyVec).magnitude()
+        vecSum = playerVec - enemyVec
         if vecSum.magnitude() != 0:
-            self.direction = (player_vec - enemy_vec).normalize()
+            self.direction = (playerVec - enemyVec).normalize()
 
         return distance, self.direction
 
@@ -174,6 +185,7 @@ class Enemy(pygame.sprite.Sprite):
         if self.health <= 0:
             self.moving=False
             self.shooting=False
+            self.speed = 0
             self.actionMetod(2)
             if self.type == "boss":
                 self.alive = False
@@ -185,7 +197,7 @@ class Enemy(pygame.sprite.Sprite):
                     event()
             self.health = 0
             self.alive = False
-            
+        
     def timer(self):
         if self.shootAnimationCooldown > 0:
             self.shootAnimationCooldown -= 1

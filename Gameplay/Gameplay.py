@@ -149,13 +149,21 @@ class Gameplay(pygame.sprite.Group):
         for enemies in self.enemyGroup.sprites():
             test1 = [x for x in self.enemyGroup if x != enemies]
             collide = pygame.sprite.spritecollide(enemies, test1, False)
+            
             if not collide:
-                pass
+                for a in collide:
+                    if a.type == "skeleton":
+                        a.range = 200
+                    
             else:
                 for a in collide:
-                    # a.rect.x -=a.speed
-                    # a.rect.y -=a.speed
-                    pass
+                    if a.type == "skeleton":
+                        a.ai()
+                        
+                        a.aiMoving= True
+                        a.range =300
+                    
+                    
 
         # bullets collisions
         for enemy in self.enemyGroup:
