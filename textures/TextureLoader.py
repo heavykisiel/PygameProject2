@@ -35,7 +35,7 @@ def Load_Bullet_Texture(bulletType):
         filesNumber = len(os.listdir(f'textures/bullet/{bulletType}'))
         for i in range(filesNumber):
                 img = pygame.image.load(f'textures/bullet/{bulletType}/{i}.png').convert_alpha()
-                img = pygame.transform.scale(img, (16, 16))
+                img = pygame.transform.scale(img, (18, 18))
                 img.set_colorkey((246, 246, 246))
                 loopList.append(img)
         animationList.append(loopList)
