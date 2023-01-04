@@ -111,7 +111,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.rect.y += self.tempDirectionY * self.aiMovementSpeed
         else:
             if self.aiMoving:
-                print(self.tempDirectionX)
+               
                  
                 if random.randint(1,100) == 1:
                     self.tempDirectionY *= -1
@@ -122,7 +122,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.rect.y += self.tempDirectionY * self.aiMovementSpeed
             if not self.aiMoving:
                 self.tempDirectionX = 1    
-                print("aiDirection",self.tempDirectionX) 
+                
     def direction_distance(self, player):
         playerVec = pygame.math.Vector2(player.rect.center)
         enemyVec = pygame.math.Vector2(self.rect.center)
@@ -132,27 +132,7 @@ class Enemy(pygame.sprite.Sprite):
             self.direction = (playerVec - enemyVec).normalize()
 
         return distance, self.direction
-
-    # def checkDirection(self):
-        
-    #     if not self.shooting:
-        
-    #     if self.tempDirectionX >0:
-    #          self.flip = False
-                
-    #         if self.tempDirectionX <0:
-    #             self.flip = True 
-    #     else:    
-    #         #     if self.direction[0] < 0:
-    #         #         self.flip = True
-    #         #     if self.direction[0] >0:
-    #         #         self.flip = False    
-    #         #     print("direction",self.direction[0])
-        
-        
-        
-        
-        
+      
     def status(self, player):
         self.distance = self.direction_distance(player)[0]
         self.direction = self.direction_distance(player)[1]
