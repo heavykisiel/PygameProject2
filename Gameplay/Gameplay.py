@@ -115,9 +115,11 @@ class Gameplay(pygame.sprite.Group):
         for x in self.itemGroup:
             x.draw(self.ground_offset)
             x.animation()
+            x.following(player)
         for x in self.heartGroup:
             x.draw(self.ground_offset)
             x.animation()
+            x.following(player)
         
 
         # draw healthbar
