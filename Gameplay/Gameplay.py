@@ -151,7 +151,6 @@ class Gameplay(pygame.sprite.Group):
         for enemies in self.enemyGroup.sprites():
             test1 = [x for x in self.enemyGroup if x != enemies]
             collide = pygame.sprite.spritecollide(enemies, test1, False)
-            
             if not collide:
                 for a in collide:
                     if a.type == "skeleton":

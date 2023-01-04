@@ -19,6 +19,7 @@ JSON = {
         "moveSpeed" : 5,
         "bulletSpeed" : 10,
         "bulletType" : "orange",
+        
         "hp" : 100,
         "textureSize" : (64,64),
     }, 
@@ -34,9 +35,9 @@ JSON = {
     {
         "name" : "destroyer",
         "type" : "destroyer",
-        "moveSpeed" : 3,
+        "moveSpeed" : 5,
         "bulletSpeed" : 5,
-        "bulletType" : "red",
+        "bulletType" : "green",
         "hp" : 100,
         "textureSize" : (64,64),
         
