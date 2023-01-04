@@ -40,10 +40,9 @@ class Gameplay(pygame.sprite.Group):
         self.screen.fill((0, 0, 0))
         self.camera_group = Camera()
 
-
         self.rectSizex = self.surface_size[0]  # 1080
         self.rectSizey = self.surface_size[1]  # 720
-        self.messengerRect = Rect(self.rectSizex / 2, self.rectSizey / 5, 100, 100)
+        self.messengerRect = Rect(self.rectSizex / 2, self.rectSizey / 4, 200, 100)
         self.messengerRect.center = [(self.rectSizex / 2), (self.rectSizey / 5)]
         self.spawn = [self.map_Data.maze_start_x, self.map_Data.maze_start_y]
         self.currentChunk = self.spawn
@@ -67,6 +66,7 @@ class Gameplay(pygame.sprite.Group):
         self.wall_collider_rect = addBossDoors(self)
         self.bossDoorLocked = True
         self.doorsOpened = False
+        self.bossDeafated = False
         print(self.doorBoss)
 
         for z in self.map_Data.ChunkMap:
@@ -109,7 +109,7 @@ class Gameplay(pygame.sprite.Group):
         # bullets
         self.bulletRender()
         # print messages
-        self.messenger("Start")
+        self.messenger()
 
         # DrawItems
         for x in self.itemGroup:
@@ -127,10 +127,12 @@ class Gameplay(pygame.sprite.Group):
             pygame.draw.rect(self.screen, (0, 255, 0),
                              (50, 10, 200 * (self.player.health / self.player.healthMax), 10))
 
-    def messenger(self, text):
-        font = pygame.font.SysFont(None, 64) # ogarnąć trzcionkę
-        img0 = font.render(text, True, colors.Colors.BLACK)
-        self.screen.blit(img0, self.messengerRect)
+    def messenger(self):
+        if self.bossDeafated:
+            font = pygame.font.SysFont(None, 64) # ogarnąć trzcionkę
+            img0 = font.render("Boss Defeated", True, colors.Colors.BLACK)
+            self.screen.blit(img0, self.messengerRect)
+
     def bulletRender(self):
         self.player.bulletGroup.update()
         for bullets in self.player.bulletGroup:
@@ -425,6 +427,7 @@ class Gameplay(pygame.sprite.Group):
                     if enemy.health <=0:
                         t.stop()
                         print("dead2")
+                        self.bossDeafated = True
 
             pygame.display.update()
             pygame.time.Clock().tick(60)
