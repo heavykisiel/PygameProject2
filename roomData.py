@@ -19,19 +19,18 @@ class roomData:
         self.mobsExist = None
         self.rectColliders = self.roomColidersdetection(colliders_list)
         self.roomCode = self.roomCodeConverter(roomCode)
-        self.mobs_count = random.randint(1, 3) if self.mobsExist else 0
+        self.mobs_count = random.randint(2, 5) if self.mobsExist else 0
         self.tex_list = self.TexCoordsList()
         self.tex2_cracked_list, self.tex3_cracked_list = self.get_cracked_tex_pos()
         self.textureUnit = TextureUnit(self.block_pixelsx, self.block_pixelsy)
         print(len(self.rectColliders))
-
 
     def __repr__(self):
         return 'roomData(mobsExist=' + str(self.mobsExist) + ' ,mobs_count=' + str(self.mobs_count) + ')'
 
     def roomCodeConverter(self, roomCode):
         if roomCode == "Room":
-            self.mobsExist = bool(random.getrandbits(1))
+            self.mobsExist = True if random.randint(0,100) < 90 else False
             return "Room"
         elif roomCode == "Boss":
             self.mobsExist = False
