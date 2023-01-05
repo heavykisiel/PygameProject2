@@ -1,6 +1,7 @@
 import pygame
 from textures.colors import Colors
 import os
+
 Color = Colors()
 
 
@@ -10,58 +11,57 @@ def LoadingScreenLoadTexture(screen_size):
     return bg
 
 
-def Load_Front_Player_Texture(): 
+def Load_Front_Player_Texture():
     animationList = []
     animationFolders = ['front', 'back', 'right', 'left']
     for animation in animationFolders:
         loopList = []
         filesNumber = len(os.listdir(f'textures/player/{animation}'))
         for i in range(filesNumber):
-                img = pygame.image.load(f'textures/player/{animation}/{i}.png').convert_alpha()
-                img = pygame.transform.scale(img, (46, 66))
-                img.set_colorkey((246, 246, 246))
-                loopList.append(img)
+            img = pygame.image.load(f'textures/player/{animation}/{i}.png').convert_alpha()
+            img = pygame.transform.scale(img, (46, 66))
+            img.set_colorkey((246, 246, 246))
+            loopList.append(img)
         animationList.append(loopList)
     return animationList
-    
-    
+
 
 def Load_Bullet_Texture(bulletType):
-   
     animationList = []
     animationFolders = ['attack']
     for animation in animationFolders:
         loopList = []
         filesNumber = len(os.listdir(f'textures/bullet/{bulletType}'))
         for i in range(filesNumber):
-                img = pygame.image.load(f'textures/bullet/{bulletType}/{i}.png').convert_alpha()
-                img = pygame.transform.scale(img, (18, 18))
-                img.set_colorkey((246, 246, 246))
-                loopList.append(img)
+            img = pygame.image.load(f'textures/bullet/{bulletType}/{i}.png').convert_alpha()
+            img = pygame.transform.scale(img, (18, 18))
+            img.set_colorkey((246, 246, 246))
+            loopList.append(img)
         animationList.append(loopList)
     return animationList
 
 
-def Load_Enemy_Texture(name,texSize):
+def Load_Enemy_Texture(name, texSize):
     animationList = []
-    animationFolders = ['idle', 'attack','death']
+    animationFolders = ['idle', 'attack', 'death']
     for animation in animationFolders:
         loopList = []
         filesNumber = len(os.listdir(f'textures/enemies/{name}/{animation}'))
         for i in range(filesNumber):
-                img = pygame.image.load(f'textures/enemies/{name}/{animation}/{i}.png').convert_alpha()
-                img = pygame.transform.scale(img, texSize)
-                img.set_colorkey((246, 246, 246))
-                loopList.append(img)
+            img = pygame.image.load(f'textures/enemies/{name}/{animation}/{i}.png').convert_alpha()
+            img = pygame.transform.scale(img, texSize)
+            img.set_colorkey((246, 246, 246))
+            loopList.append(img)
         animationList.append(loopList)
     return animationList
+
 
 def Load_Item_Texture(name):
     loop_list = []
     filesNumber = len(os.listdir(f'textures/items/{name}'))
     for i in range(filesNumber):
         item_img = pygame.image.load(f'textures/items/{name}/{i}.png').convert_alpha()
-        item_img = pygame.transform.scale(item_img,(50,50))
+        item_img = pygame.transform.scale(item_img, (50, 50))
         item_img.set_colorkey((246, 246, 246))
         loop_list.append(item_img)
 
@@ -157,7 +157,7 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
         west_wall_3 = pygame.transform.scale(west_wall_3, (block_pixels_x, block_pixels_y))
         west_wall_3.set_colorkey((255, 255, 255))
         return west_wall_3
-    elif id_block == 18: # =>28
+    elif id_block == 18:  # =>28
         north_west_wall_tex = pygame.image.load('textures/maptex/North West Corner/North West Top Wall.png').convert()
         north_west_wall_tex = pygame.transform.scale(north_west_wall_tex, (block_pixels_x, block_pixels_y))
         north_west_wall_tex.set_colorkey((255, 255, 255))
@@ -207,7 +207,7 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
         southWest_tex = pygame.transform.scale(southWest_tex, (block_pixels_x, block_pixels_y))
         southWest_tex.set_colorkey((255, 255, 255))
         return southWest_tex
-    elif id_block == 28: # =>18
+    elif id_block == 28:  # =>18
         north_west_wall2_tex = pygame.image.load('textures/maptex/North West Corner/North West Bot Wall.png').convert()
         north_west_wall2_tex = pygame.transform.scale(north_west_wall2_tex, (block_pixels_x, block_pixels_y))
         north_west_wall2_tex.set_colorkey((255, 255, 255))
@@ -278,6 +278,7 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
         north_wall3Bot_tex.set_colorkey((255, 255, 255))
         return north_wall3Bot_tex
 
+
 def LoadingScreenAnimation(screen, screenSize, i, bg):
     screen.fill((0, 0, 0))
     screen.blit(bg, (i, 0))
@@ -289,19 +290,57 @@ def LoadingScreenAnimation(screen, screenSize, i, bg):
     return i
 
 
+def blit_text(surface, text, pos, font, color=pygame.Color('black')):
+
+    words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
+    space = font.size(' ')[0]  # The width of a space.
+    max_width, max_height = surface.get_size()
+    x, y = pos
+    for line in words:
+        for word in line:
+            word_surface = font.render(word, 0, color)
+            word_width, word_height = word_surface.get_size()
+            if x + word_width >= max_width:
+                x = pos[0]  # Reset the x.
+                y += word_height  # Start on new row.
+            surface.blit(word_surface, (x, y))
+            x += word_width + space
+        x = pos[0]  # Reset the x.
+        y += word_height  # Start on new row.
+def LoadAboutInfo(screen):
+    rectText = [screen.get_size()[0] / 7,
+                screen.get_size()[1] / 7,
+                screen.get_size()[0],
+                screen.get_size()[0]]
+    font = pygame.font.SysFont('constantia', 64)
+    AboutContent = '''
+    Autors:
+        Nikodem Luto 
+        Filip Mielnik 
+        Adam Lorek 
+        Karol Madejski 
+    '''
+    label = []
+    blit_text(screen, AboutContent, (rectText[0], rectText[1]), font)
+
+
 def Load_Buttons(self):
-    pygame.draw.rect(self.screen, Color.RED, self.buttons[0])
-    pygame.draw.rect(self.screen, Color.GREEN, self.buttons[1])
-    pygame.draw.rect(self.screen, Color.BLUE, self.buttons[2])
-    font = pygame.font.SysFont(None, 64)
-    img0 = font.render('   START', True, Color.BLACK)
-    img1 = font.render('OPTIONS', True, Color.BLACK)
-    img2 = font.render('    QUIT', True, Color.BLACK)
-    img3 = font.render('Wizzard in Dungeon', True, Color.GREEN)
+    pygame.draw.rect(self.screen, (62, 57, 55), self.buttons[0])
+    pygame.draw.rect(self.screen, (62, 57, 55), self.buttons[1])
+    pygame.draw.rect(self.screen, (62, 57, 55), self.buttons[2])
+    fontButton = pygame.font.SysFont('constantia', 64)
+    fontTitle = pygame.font.SysFont('constantia', 72)
+    fontTitle2 = pygame.font.SysFont('constantia', 74)
+    img0 = fontButton.render('   Start', True, (236, 233, 232))
+    img1 = fontButton.render('  About', True, (236, 233, 232))
+    img2 = fontButton.render('   Quit', True, (236, 233, 232))
+    img3 = fontTitle.render('Wizzard in Dungeon', True, (100, 100, 100))
+    img4 = fontTitle2.render('Wizzard in Dungeon', True, (0, 0, 0))
     self.screen.blit(img0, self.buttons[0])
     self.screen.blit(img1, self.buttons[1])
     self.screen.blit(img2, self.buttons[2])
-    self.screen.blit(img3, (self.screen_size[0] / 3 - 30, self.screen_size[1] / 3))
+    self.screen.blit(img3, (self.screen_size[0] / 3 - 120, self.screen_size[1] / 3))
+    self.screen.blit(img4, (self.screen_size[0] / 3 - 119, self.screen_size[1] / 3))
 
 
 class TextureUnit:
@@ -320,7 +359,7 @@ class TextureUnit:
         self.westSouthWall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 8)
         self.midWall_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 9)
         self.grass_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 10)
-        
+
         self.westWall1_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 15)
         self.westWall2_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 16)
         self.westWall3_tex = Load_Block_Textures(block_pixelsx, block_pixelsy, 17)

@@ -47,6 +47,7 @@ class App:
         running = True
         i = 0
         gameplay_instance = None
+        keys = pygame.key.get_pressed()
         while running:
             pygame.time.Clock().tick(60)  # tickrate
             if self.current_Game_State == "playing":
@@ -73,10 +74,14 @@ class App:
                 pygame.quit()
                 exit()
             elif self.current_Game_State == "options":
+                i = LoadingScreenAnimation(self.screen, self.screen_size, i, self.bg)
+                LoadAboutInfo(self.screen)
                 for event in pygame.event.get():
                     if event.type == QUIT:
-                        running = False
-                    print("options")
+                        self.current_Game_State = self.gameState[3]
+                    if event.type == KEYDOWN:
+                        if event.key == K_ESCAPE:
+                            self.current_Game_State = self.gameState[3]
 
             pygame.display.update()
 
