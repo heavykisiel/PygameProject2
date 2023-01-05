@@ -5,8 +5,8 @@ Color = Colors()
 
 
 def LoadingScreenLoadTexture(screen_size):
-    bg = pygame.image.load("textures/background_menu.jpg")
-    bg = pygame.transform.scale(bg, screen_size)
+    bg = pygame.image.load("textures/background_menu.jpg").convert()
+    bg = pygame.transform.scale(bg, (bg.get_size()[0], screen_size[1]))
     return bg
 
 
@@ -281,9 +281,9 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
 def LoadingScreenAnimation(screen, screenSize, i, bg):
     screen.fill((0, 0, 0))
     screen.blit(bg, (i, 0))
-    screen.blit(bg, (screenSize[0] + i, 0))
-    if i == -screenSize[0]:
-        screen.blit(bg, (screenSize[0] + i, 0))
+    screen.blit(bg, (bg.get_size()[0] + i, 0))
+    if i == -bg.get_size()[0]:
+        screen.blit(bg, (bg.get_size()[0] + i, 0))
         i = 0
     i -= 1
     return i
@@ -297,11 +297,11 @@ def Load_Buttons(self):
     img0 = font.render('   START', True, Color.BLACK)
     img1 = font.render('OPTIONS', True, Color.BLACK)
     img2 = font.render('    QUIT', True, Color.BLACK)
-    img3 = font.render('JAREK GAME ', True, Color.GREEN)
+    img3 = font.render('Wizzard in Dungeon', True, Color.GREEN)
     self.screen.blit(img0, self.buttons[0])
     self.screen.blit(img1, self.buttons[1])
     self.screen.blit(img2, self.buttons[2])
-    self.screen.blit(img3, (self.screen_size[0] / 3 + 40, self.screen_size[1] / 3))
+    self.screen.blit(img3, (self.screen_size[0] / 3 - 30, self.screen_size[1] / 3))
 
 
 class TextureUnit:

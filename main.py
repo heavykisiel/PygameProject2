@@ -16,7 +16,7 @@ class App:
         self.screen = pygame.display.set_mode(self.screen_size)
         self.Colors = Colors()
 
-        caption = "Jarek Game"
+        caption = "Wizard in Dungeon"
         pygame.display.set_caption(caption)
         self.screen.fill(Colors.BLACK)
         self.width_b = 1 / 5 * self.screen_size[0]
