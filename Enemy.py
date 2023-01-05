@@ -44,9 +44,8 @@ class Enemy(pygame.sprite.Sprite):
         self.aiMoving = True
         self.tempDirectionX = 1
         self.tempDirectionY = 1
-        self.moving = False
-        self.aiMoving = True
         self.aiMovementSpeed =1
+        self.flip= False
         
         #enemy bullets
         self.enemybulletGroup = pygame.sprite.Group()
@@ -86,9 +85,11 @@ class Enemy(pygame.sprite.Sprite):
         if self.enemyName == "destroyer":
             if self.moving:
                 if self.direction.magnitude() != 0:
+                    
                     self.direction = self.direction.normalize() 
                 self.rect.x += self.direction[0] * self.speed
                 self.rect.y += self.direction[1] * self.speed
+            
                 
         if self.enemyName =="boss":
             if self.moving:
@@ -110,6 +111,8 @@ class Enemy(pygame.sprite.Sprite):
                 self.rect.y += self.tempDirectionY * self.aiMovementSpeed
         else:
             if self.aiMoving:
+               
+                 
                 if random.randint(1,100) == 1:
                     self.tempDirectionY *= -1
                 if random.randint(1,100) == 2:
@@ -117,6 +120,8 @@ class Enemy(pygame.sprite.Sprite):
                     
                 self.rect.x += self.tempDirectionX * self.aiMovementSpeed
                 self.rect.y += self.tempDirectionY * self.aiMovementSpeed
+            if not self.aiMoving:
+                self.tempDirectionX = 1    
                 
     def direction_distance(self, player):
         playerVec = pygame.math.Vector2(player.rect.center)
@@ -127,10 +132,10 @@ class Enemy(pygame.sprite.Sprite):
             self.direction = (playerVec - enemyVec).normalize()
 
         return distance, self.direction
-
+      
     def status(self, player):
         self.distance = self.direction_distance(player)[0]
-
+        self.direction = self.direction_distance(player)[1]
         if self.type == "skeleton" and self.alive:
             if self.distance <= self.range:
                 self.actionMetod(1)
@@ -147,11 +152,22 @@ class Enemy(pygame.sprite.Sprite):
                 if self.action == 1 and self.index == 1:
                     self.shooting = True
                 self.moving = False
+                
             if self.distance > 50:
                 self.aiMoving = False
                 self.moving = True
                 self.actionMetod(0)
+                if self.direction[0] < 0:
+                    self.flip = True
+                if self.direction[0] >0:
+                    self.flip = False 
+                
             if self.distance > 200:
+                if self.tempDirectionX >0:
+                    self.flip = False
+                
+                if self.tempDirectionX <0:
+                    self.flip = True 
                 self.moving = False
                 self.aiMoving = True
                 self.ai()
@@ -179,7 +195,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def draw(self, offset):
         self.offset = offset
-        self.screen.blit(self.image, self.rect.topleft + self.offset)
+        self.screen.blit(pygame.transform.flip(self.image,self.flip,False), self.rect.topleft + self.offset)
 
     def checkAlive(self):
         if self.health <= 0:
@@ -210,7 +226,7 @@ class Enemy(pygame.sprite.Sprite):
         self.animation()
         self.checkAlive()
         self.move()
-        
+        #self.checkDirection()
         
     def shoot(self):
         if self.shooting:

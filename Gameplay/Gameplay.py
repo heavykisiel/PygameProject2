@@ -115,9 +115,11 @@ class Gameplay(pygame.sprite.Group):
         for x in self.itemGroup:
             x.draw(self.ground_offset)
             x.animation()
+            x.following(player)
         for x in self.heartGroup:
             x.draw(self.ground_offset)
             x.animation()
+            x.following(player)
         
 
         # draw healthbar
@@ -151,7 +153,6 @@ class Gameplay(pygame.sprite.Group):
         for enemies in self.enemyGroup.sprites():
             test1 = [x for x in self.enemyGroup if x != enemies]
             collide = pygame.sprite.spritecollide(enemies, test1, False)
-            
             if not collide:
                 for a in collide:
                     if a.type == "skeleton":

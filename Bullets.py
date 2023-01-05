@@ -42,9 +42,9 @@ class Bullets(pygame.sprite.Sprite):
             self.kill()
         if self.rect.x > chunk[0] * 1080 + 1020:
             self.kill()
-        if self.rect.y < chunk[1]*720+135:
+        if self.rect.y < chunk[1]*720+125:
             self.kill()
-        if self.rect.y > chunk[1]*720+555:
+        if self.rect.y > chunk[1]*720+585:
             self.kill()
 
     def bossShooting(self,xy, speed, bulletAngle):

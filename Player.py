@@ -41,7 +41,9 @@ class Player(pygame.sprite.Sprite):
         self.BattleMode = False
         self.hasKey = False
         
-        
+    def checkAlive(self):
+        if self.health <0:
+            self.kill()    
     def animation(self):
         cooldown = 100
         self.image = self.imageList[self.action][self.index]
@@ -117,6 +119,7 @@ class Player(pygame.sprite.Sprite):
         self.input()
         self.animation()
         self.movingAnimation()
+        self.checkAlive()
     def shoot(self):
 
         if self.shootCooldown == 0:
