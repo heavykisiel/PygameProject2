@@ -329,7 +329,7 @@ def Load_Buttons(self):
     pygame.draw.rect(self.screen, (62, 57, 55), self.buttons[1])
     pygame.draw.rect(self.screen, (62, 57, 55), self.buttons[2])
     fontButton = pygame.font.SysFont('constantia', 64)
-    fontTitle = pygame.font.SysFont('constantia', 72)
+    fontTitle = pygame.font.SysFont('constantia', 74)
     fontTitle2 = pygame.font.SysFont('constantia', 74)
     img0 = fontButton.render('   Start', True, (236, 233, 232))
     img1 = fontButton.render('  About', True, (236, 233, 232))
@@ -340,7 +340,7 @@ def Load_Buttons(self):
     self.screen.blit(img1, self.buttons[1])
     self.screen.blit(img2, self.buttons[2])
     self.screen.blit(img3, (self.screen_size[0] / 3 - 120, self.screen_size[1] / 3))
-    self.screen.blit(img4, (self.screen_size[0] / 3 - 119, self.screen_size[1] / 3))
+    self.screen.blit(img4, (self.screen_size[0] / 3 - 115, self.screen_size[1] / 3))
 
 
 class TextureUnit:

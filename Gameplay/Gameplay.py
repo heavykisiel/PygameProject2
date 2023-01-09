@@ -165,8 +165,6 @@ class Gameplay(pygame.sprite.Group):
                         
                         a.aiMoving= True
                         a.range =300
-                    
-                    
 
         # bullets collisions
         for enemy in self.enemyGroup:

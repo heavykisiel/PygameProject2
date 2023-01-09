@@ -38,7 +38,7 @@ class Map:
         visited.append([self.maze_start_x, self.maze_start_y])
         self.ChunkMap[self.maze_start_x][self.maze_start_y] = [self.maze_start_x, self.maze_start_y, 'wnse', 1, ""]
         backtrack_count = 0
-        backtracked_room = False
+
         while self.ChunksX * self.ChunksY > len(visited) + backtrack_count:
             # neighbours / breaking wall options
             stri = ""
@@ -70,8 +70,6 @@ class Map:
                     self.setRoomValue(x_pos, y_pos + 1, 'w', 1)  # delete north wall next room
                     visited.append([x_pos, y_pos + 1])
             else:
-
-                backtracked_room = True
                 a = visited.pop()
                 backtracked_rooms.append(a)
                 backtrack_count += 1
