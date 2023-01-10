@@ -55,14 +55,13 @@ class Player(pygame.sprite.Sprite):
                 self.index = 0
         else:
             self.index = 0
-    
+
     def actionMetod(self, newAction):
         if newAction != self.action:
             self.action = newAction
             self.index = 0
             self.time = pygame.time.get_ticks()
-        
-    
+
     def movingAnimation(self):
         if self.moving == True and self.playerDirection == 1:
             self.actionMetod(2)  

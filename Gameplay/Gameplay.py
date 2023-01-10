@@ -407,6 +407,7 @@ class Gameplay(pygame.sprite.Group):
         running = True
         self.frameNum = 0
         t = Timer()
+        endloopTimer = 0
         t.start()
 
         while running:
@@ -427,7 +428,12 @@ class Gameplay(pygame.sprite.Group):
                         t.stop()
                         print("dead2")
                         self.bossDeafated = True
+                        endloopTimer = pygame.time.get_ticks()
 
+            print(endloopTimer, pygame.time.get_ticks())
+            if self.bossDeafated:
+                if pygame.time.get_ticks() - endloopTimer >= 1000 * 5:
+                    running = False
             pygame.display.update()
             pygame.time.Clock().tick(60)
 

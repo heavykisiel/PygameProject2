@@ -53,7 +53,9 @@ class App:
             if self.current_Game_State == "playing":
                 if gameplay_instance is not None:
                     gameplay_instance.run()
-                    running = False
+                    self.current_Game_State = "menu"
+                    gameplay_instance = None
+                    #running = False
             if self.current_Game_State == "menu":
                 i = LoadingScreenAnimation(self.screen, self.screen_size, i, self.bg)
                 Load_Buttons(self)
