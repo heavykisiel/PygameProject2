@@ -30,7 +30,7 @@ class roomData:
 
     def roomCodeConverter(self, roomCode):
         if roomCode == "Room":
-            self.mobsExist =False # True if random.randint(0, 100) < 90 else False
+            self.mobsExist = True if random.randint(0, 100) < 90 else False
             return "Room"
         elif roomCode == "Boss":
             self.mobsExist = False
