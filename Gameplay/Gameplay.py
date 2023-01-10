@@ -134,6 +134,11 @@ class Gameplay(pygame.sprite.Group):
             font = pygame.font.SysFont(None, 64) # ogarnąć trzcionkę
             img0 = font.render("Boss Defeated", True, colors.Colors.BLACK)
             self.screen.blit(img0, self.messengerRect)
+        if self.player.health < 0:
+            font = pygame.font.SysFont(None, 64)  # ogarnąć trzcionkę
+            img0 = font.render("Your Died", True, colors.Colors.BLACK)
+            self.screen.blit(img0, self.messengerRect)
+
 
     def bulletRender(self):
         self.player.bulletGroup.update()
@@ -430,9 +435,13 @@ class Gameplay(pygame.sprite.Group):
                         self.bossDeafated = True
                         endloopTimer = pygame.time.get_ticks()
 
-            print(endloopTimer, pygame.time.get_ticks())
+            #print(endloopTimer, pygame.time.get_ticks())
             if self.bossDeafated:
                 if pygame.time.get_ticks() - endloopTimer >= 1000 * 5:
+                    running = False
+            if not self.player.alive:
+                print(pygame.time.get_ticks(), self.player.deathTime)
+                if pygame.time.get_ticks() - self.player.deathTime >= 1000 * 5:
                     running = False
             pygame.display.update()
             pygame.time.Clock().tick(60)

@@ -26,6 +26,7 @@ class Player(pygame.sprite.Sprite):
         # spawn
         self.speed = 16
         self.alive = True
+        self.deathTime = 0
         self.health = 200
         self.healthMax = 200
         self.playerDirection = 1
@@ -42,13 +43,15 @@ class Player(pygame.sprite.Sprite):
         self.hasKey = False
         
     def checkAlive(self):
-        if self.health <0:
+        if self.health < 0:
+            self.deathTime = pygame.time.get_ticks()
+            self.alive = False
             self.kill()    
     def animation(self):
         cooldown = 100
         self.image = self.imageList[self.action][self.index]
         if self.animationStopped == False:
-            if pygame.time.get_ticks() - self.time > cooldown :
+            if pygame.time.get_ticks() - self.time > cooldown:
                 self.time = pygame.time.get_ticks()
                 self.index += 1
             if self.index >= len(self.imageList[self.action]):
