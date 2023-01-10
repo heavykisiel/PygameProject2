@@ -277,6 +277,11 @@ def Load_Block_Textures(block_pixels_x, block_pixels_y, id_block):
         north_wall3Bot_tex = pygame.transform.scale(north_wall3Bot_tex, (block_pixels_x, block_pixels_y))
         north_wall3Bot_tex.set_colorkey((255, 255, 255))
         return north_wall3Bot_tex
+    elif id_block == 42:
+        button = pygame.image.load('textures/button.png').convert()
+        button = pygame.transform.scale(button, (block_pixels_x, block_pixels_y))
+        button.set_colorkey((255, 255, 255))
+        return button
 
 
 def LoadingScreenAnimation(screen, screenSize, i, bg):
@@ -325,10 +330,10 @@ def LoadAboutInfo(screen):
 
 
 def Load_Buttons(self):
-    pygame.draw.rect(self.screen, (62, 57, 55), self.buttons[0])
-    pygame.draw.rect(self.screen, (62, 57, 55), self.buttons[1])
-    pygame.draw.rect(self.screen, (62, 57, 55), self.buttons[2])
-    fontButton = pygame.font.SysFont('constantia', 64)
+    self.screen.blit(TextureUnit(60,60).ButtonMenu, self.buttons[0])
+    self.screen.blit(TextureUnit(60, 60).ButtonMenu, self.buttons[1])
+    self.screen.blit(TextureUnit(60, 60).ButtonMenu, self.buttons[2])
+    fontButton = pygame.font.SysFont('constantia', 48)
     fontTitle = pygame.font.SysFont('constantia', 74)
     fontTitle2 = pygame.font.SysFont('constantia', 74)
     img0 = fontButton.render('   Start', True, (236, 233, 232))
@@ -336,9 +341,9 @@ def Load_Buttons(self):
     img2 = fontButton.render('   Quit', True, (236, 233, 232))
     img3 = fontTitle.render('Wizzard in Dungeon', True, (100, 100, 100))
     img4 = fontTitle2.render('Wizzard in Dungeon', True, (0, 0, 0))
-    self.screen.blit(img0, self.buttons[0])
-    self.screen.blit(img1, self.buttons[1])
-    self.screen.blit(img2, self.buttons[2])
+    self.screen.blit(img0, (self.buttons[0][0] + 25, self.buttons[0][1]+10))
+    self.screen.blit(img1,(self.buttons[1][0] + 25, self.buttons[1][1]+10))
+    self.screen.blit(img2, (self.buttons[2][0] + 25, self.buttons[2][1]+10))
     self.screen.blit(img3, (self.screen_size[0] / 3 - 120, self.screen_size[1] / 3))
     self.screen.blit(img4, (self.screen_size[0] / 3 - 115, self.screen_size[1] / 3))
 
@@ -393,3 +398,4 @@ class TextureUnit:
         self.northWallList = list((self.northWall1Top_tex, self.northWall2Top_tex, self.northWall3Top_tex))
         self.westWallList = list((self.westWall1_tex, self.westWall2_tex, self.westWall3_tex))
         self.eastWallList = list((self.eastWall1_tex, self.eastWall2_tex, self.eastWall3_tex))
+        self.ButtonMenu = Load_Block_Textures(220,80,42)

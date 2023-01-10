@@ -74,7 +74,6 @@ class Map:
                 backtracked_rooms.append(a)
                 backtrack_count += 1
             # set random mob spawn locations
-            # self.ChunkMap[x_pos][y_pos][4] = random.randint(0, 1)
 
         if len(backtracked_rooms) > 2:
             visited[len(visited)-1]
