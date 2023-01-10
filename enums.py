@@ -11,6 +11,8 @@ JSON = {
         "bulletType" : "green",
         "hp" : 100,
         "textureSize" : (64,64),
+        "cooldown": 200.
+        
         
     }, 
     {
@@ -19,7 +21,7 @@ JSON = {
         "moveSpeed" : 5,
         "bulletSpeed" : 10,
         "bulletType" : "orange",
-        
+        "cooldown": 200,
         "hp" : 100,
         "textureSize" : (64,64),
     }, 
@@ -29,6 +31,7 @@ JSON = {
         "moveSpeed" : 5,
         "bulletSpeed" : 10,
         "bulletType" : "aqua",
+        "cooldown": 200,
         "hp" : 100,
         "textureSize" : (64,64),
     },
@@ -38,6 +41,7 @@ JSON = {
         "moveSpeed" : 5,
         "bulletSpeed" : 5,
         "bulletType" : "green",
+        "cooldown": 200,
         "hp" : 100,
         "textureSize" : (64,64),
         
@@ -47,8 +51,9 @@ JSON = {
         "type" : "boss",
         "moveSpeed" : 2,
         "bulletSpeed" : 5,
-        "bulletType" : "red",
-        "hp" : 100,
+        "bulletType" : "green",
+        "cooldown": 20,
+        "hp" : 1000,
         "textureSize" : (120,120),           
     }
     ]

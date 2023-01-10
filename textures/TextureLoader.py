@@ -50,7 +50,7 @@ def Load_Enemy_Texture(name, texSize):
         for i in range(filesNumber):
             img = pygame.image.load(f'textures/enemies/{name}/{animation}/{i}.png').convert_alpha()
             img = pygame.transform.scale(img, texSize)
-            img.set_colorkey((246, 246, 246))
+            img.set_colorkey((246,246, 246))
             loopList.append(img)
         animationList.append(loopList)
     return animationList

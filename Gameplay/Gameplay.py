@@ -388,13 +388,13 @@ class Gameplay(pygame.sprite.Group):
                 tempCurrentChunk = self.currentChunk
                 enemy1 = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
                                 (self.currentChunk[1] * self.rectSizey) + random.randrange(200, 600)),
-                                self.camera_group, self.screen,
-                                self.surface_size, self.player, mobsType, 20, tempCurrentChunk)
+                                 self.camera_group, self.screen,
+                                 self.surface_size, self.player, mobsType, 20, tempCurrentChunk)
                 
                 enemy1.killEvents.append(self.heartSpawn)
 
                 self.enemyGroup.add(enemy1)
-
+               
             print(
                 f"there should be {self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count} mobs")
         elif not self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:

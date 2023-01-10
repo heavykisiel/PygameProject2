@@ -51,6 +51,7 @@ class Enemy(pygame.sprite.Sprite):
         self.enemybulletGroup = pygame.sprite.Group()
         self.speedBullet = int(mobData['bulletSpeed'])
         self.bulletType = mobData['bulletType']
+        self.cooldown = int(mobData['cooldown'])
         self.shootCooldown = 0
         self.shootAnimationCooldown = 0
         self.shooting = False
@@ -60,9 +61,9 @@ class Enemy(pygame.sprite.Sprite):
         self.killEvents = [] #profesor nakamichi 
 
     def animation(self):
-        cooldown = 200
+        
         self.image = self.imageList[self.action][self.index]
-        if pygame.time.get_ticks() - self.time > cooldown:
+        if pygame.time.get_ticks() - self.time > self.cooldown:
             self.time = pygame.time.get_ticks()
             self.index += 1
         if self.index >= len(self.imageList[self.action]):
@@ -176,7 +177,7 @@ class Enemy(pygame.sprite.Sprite):
         if self.type == "boss" and self.alive:
             if self.distance <= self.range*2:
                 self.actionMetod(1)
-                if self.action == 1:
+                if self.action == 1 and self.index == 17:
                     self.shooting = True
                 self.moving = False
             elif self.distance >= self.range:
@@ -204,6 +205,7 @@ class Enemy(pygame.sprite.Sprite):
             self.speed = 0
             self.actionMetod(2)
             if self.type == "boss":
+                self.actionMetod(2)
                 self.alive = False
                 self.kill()
             if self.action == 2 and self.index == 4:
@@ -236,19 +238,19 @@ class Enemy(pygame.sprite.Sprite):
                         self.shootCooldown=15
                         
                         bullet0 = Bullets(self.rect.centerx,
-                                    self.rect.centery, 1, self.speedBullet, self.surface_size,
+                                    self.rect.centery-55, 1, self.speedBullet, self.surface_size,
                                     self.rect.centery + 1000, self.rect.centerx ,self.type,self.bulletType, self.bulletAngle)
 
                         bullet1 = Bullets(self.rect.centerx,
-                                    self.rect.centery, 1, self.speedBullet, self.surface_size,
+                                    self.rect.centery-55, 1, self.speedBullet, self.surface_size,
                                     self.rect.centery + 1000, self.rect.centerx ,self.type,self.bulletType, self.bulletAngle+90)
 
                         bullet2 = Bullets(self.rect.centerx,
-                                    self.rect.centery, 1, self.speedBullet, self.surface_size,
+                                    self.rect.centery-55, 1, self.speedBullet, self.surface_size,
                                     self.rect.centery + 1000, self.rect.centerx ,self.type,self.bulletType, self.bulletAngle+180)
 
                         bullet3 = Bullets(self.rect.centerx,
-                                    self.rect.centery, 1, self.speedBullet, self.surface_size,
+                                    self.rect.centery-55, 1, self.speedBullet, self.surface_size,
                                     self.rect.centery + 1000, self.rect.centerx ,self.type,self.bulletType, self.bulletAngle+270)
 
                         self.enemybulletGroup.add(bullet0)
