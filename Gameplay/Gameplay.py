@@ -407,6 +407,18 @@ class Gameplay(pygame.sprite.Group):
                     tile[4].draw_border(self.screen, self.ground_offset, self.TextureUnit.grass_tex)
             # Jak chcecie naprawić to to dajcie jakaś teksturkę z tej listy[0]np a nie random.choice
 
+
+    def ending_game_loop(self, endloopTimer):
+        if self.bossDeafated:
+            if pygame.time.get_ticks() - endloopTimer >= 1000 * 5:
+                return False
+        if not self.player.alive:
+            print(pygame.time.get_ticks(), self.player.deathTime)
+            if pygame.time.get_ticks() - self.player.deathTime >= 1000 * 5:
+                return False
+        else:
+            return True
+
     def run(self):
 
         running = True
@@ -434,15 +446,14 @@ class Gameplay(pygame.sprite.Group):
                         print("dead2")
                         self.bossDeafated = True
                         endloopTimer = pygame.time.get_ticks()
-
-            #print(endloopTimer, pygame.time.get_ticks())
-            if self.bossDeafated:
-                if pygame.time.get_ticks() - endloopTimer >= 1000 * 5:
-                    running = False
-            if not self.player.alive:
-                print(pygame.time.get_ticks(), self.player.deathTime)
-                if pygame.time.get_ticks() - self.player.deathTime >= 1000 * 5:
-                    running = False
+            running = self.ending_game_loop(endloopTimer)
+            # if self.bossDeafated:
+            #     if pygame.time.get_ticks() - endloopTimer >= 1000 * 5:
+            #         running = False
+            # if not self.player.alive:
+            #     print(pygame.time.get_ticks(), self.player.deathTime)
+            #     if pygame.time.get_ticks() - self.player.deathTime >= 1000 * 5:
+            #         running = False
             pygame.display.update()
             pygame.time.Clock().tick(60)
 

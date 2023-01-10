@@ -47,7 +47,6 @@ class App:
         running = True
         i = 0
         gameplay_instance = None
-        keys = pygame.key.get_pressed()
         while running:
             pygame.time.Clock().tick(60)  # tickrate
             if self.current_Game_State == "playing":
@@ -55,7 +54,6 @@ class App:
                     gameplay_instance.run()
                     self.current_Game_State = "menu"
                     gameplay_instance = None
-                    #running = False
             if self.current_Game_State == "menu":
                 i = LoadingScreenAnimation(self.screen, self.screen_size, i, self.bg)
                 Load_Buttons(self)
