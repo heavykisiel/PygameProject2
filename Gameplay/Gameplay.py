@@ -180,7 +180,10 @@ class Gameplay(pygame.sprite.Group):
                     
             if pygame.sprite.spritecollide(self.player, enemy.enemybulletGroup, True):
                 if enemy.alive:
-                    self.player.health -= 5
+                    if enemy.type=="boss":
+                        self.player.health -=30
+                    else:
+                        self.player.health -= 5
     
     def heartSpawn(self):
         
@@ -372,8 +375,8 @@ class Gameplay(pygame.sprite.Group):
             print("key")
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].roomCode == "Boss":
             tempBossCurrentChunk = self.currentChunk
-            boss = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(200, 600),
-                          (self.currentChunk[1] * self.rectSizey) + random.randrange(100, 600)),
+            boss = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(300, 400),
+                          (self.currentChunk[1] * self.rectSizey) + random.randrange(300, 400)),
                          self.camera_group, self.screen,
                          self.surface_size, self.player, 'boss', 10, tempBossCurrentChunk)
             self.enemyGroup.add(boss)
@@ -383,17 +386,18 @@ class Gameplay(pygame.sprite.Group):
         elif self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobsExist:
             mobsCount = self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count
 
-            for newEnemy in range(0, mobsCount):
+            for _ in range(0, mobsCount):
                 mobsType = MOBS[random.randint(0, len(MOBS) - 1)]
                 tempCurrentChunk = self.currentChunk
                 enemy1 = Enemy(((self.currentChunk[0] * self.rectSizex) + random.randrange(100, 600),
-                                (self.currentChunk[1] * self.rectSizey) + random.randrange(200, 600)),
-                                 self.camera_group, self.screen,
-                                 self.surface_size, self.player, mobsType, 20, tempCurrentChunk)
+                                 (self.currentChunk[1] * self.rectSizey) + random.randrange(200, 600)),
+                                  self.camera_group, self.screen,
+                                  self.surface_size, self.player, mobsType, 20, tempCurrentChunk)
                 
                 enemy1.killEvents.append(self.heartSpawn)
 
                 self.enemyGroup.add(enemy1)
+                
                
             print(
                 f"there should be {self.map_Data.ChunkMap[self.currentChunk[0]][self.currentChunk[1]][4].mobs_count} mobs")
