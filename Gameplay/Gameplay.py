@@ -417,12 +417,12 @@ class Gameplay(pygame.sprite.Group):
             if pygame.time.get_ticks() - endloopTimer >= 1000 * 5:
                 return False
         if not self.player.alive:
-            print(pygame.time.get_ticks(), self.player.deathTime)
             if pygame.time.get_ticks() - self.player.deathTime >= 1000 * 5:
                 return False
+            else:
+                return True
         else:
             return True
-
     def run(self):
 
         running = True
