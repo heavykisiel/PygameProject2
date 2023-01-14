@@ -136,7 +136,7 @@ class Gameplay(pygame.sprite.Group):
             self.screen.blit(img0, self.messengerRect)
         if self.player.health < 0:
             font = pygame.font.SysFont(None, 64)  # ogarnąć trzcionkę
-            img0 = font.render("Your Died", True, colors.Colors.BLACK)
+            img0 = font.render("You Died", True, colors.Colors.BLACK)
             self.screen.blit(img0, self.messengerRect)
 
 
